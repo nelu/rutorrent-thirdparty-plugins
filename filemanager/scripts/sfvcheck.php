@@ -16,7 +16,11 @@ $path = implode('/', $path);
 
 $hi = array();
 
-$filelines = file($argv[2]);
+$fr = file($argv[2]);
+
+$filelines = array();
+foreach($fr as $fl) {if (substr(trim($fl), 0, 1) == ';') {continue;} $filelines[] = $fl;}
+
 $t = count($filelines);
 $c = 1;
 
@@ -32,8 +36,6 @@ foreach($filelines as $line) {
 	$hi['file'] = implode(' ', $hi['file']);
 
 	$filepath= $path.'/'.$hi['file'];
-
-	if (substr(trim($line), 0, 1) == ';' && !is_file($filepath)) {continue;}
 	
 	fwrite($log, '0: '.$c.'/'.$t.' checking '.$hi['file']."\n");
 	if(!is_file($filepath)) {fwrite($log, '0: FAILED: no such file '.$filepath."\n"); continue;}

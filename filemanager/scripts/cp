@@ -1,10 +1,10 @@
 #!/bin/bash
 
 
-if [[ ! -d "$1" ]]; then
+if [ ! -d "$1" ]; then
 mkdir --mode=0777 -p "$1" || { echo "FATAL ERROR: temp dir creation failed"; exit; }
 
-elif [[ ! -w "$2" ]]; then
+elif [ ! -w "$2" ]; then
 
 echo "FATAL ERROR: Destination $2 not permitted"; 
 exit; 

@@ -249,11 +249,11 @@ class FLM {
 	}
 
 	public function get_file($file, $large = FALSE) {
-
+			$this->shout = FALSE;
 			set_time_limit(0);
 			if ($large) {passthru('cat '.escapeshellarg($file), $err);} 
 			else { readfile($file); }
-			$this->sdie();
+			exit;
 	}
 
 	public function get_filelist($what) {
@@ -266,7 +266,17 @@ class FLM {
 		return $filelist;
 	}
 
-	public function get_session() {$this->output['sess'] = session_id();}
+	public function get_session() {
+		$sid = session_id();
+		
+		if(empty($sid)) {
+			session_start();
+			$_SESSION['uname'] = getUser();
+			$sid = session_id();
+		}
+
+		$this->output['sess'] = $sid;
+	}
 
 	public function kill($token) {
 
@@ -453,6 +463,8 @@ class FLM {
 	}
 
 	public function stream($file) {
+
+		$this->shout = FALSE;
 
 		if (!preg_match('/^(avi|divx|mpeg|mp4|mkv)$/i', $this->fext($file))) {$this->sdie('404 Invalid format');}
 

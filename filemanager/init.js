@@ -35,7 +35,7 @@ theWebUI.fManager = {
 	actionlp: 0,
 	activediag: '',
 	homedir: '',
-
+	streamer: 'plugins/filemanager/view.php',
 
 	action: {
 			
@@ -838,7 +838,7 @@ theWebUI.fManager = {
 		this.action.request('action=sess', function (data) { 
 				if(theWebUI.fManager.isErr(data.errcode)) {log('Play failed'); return false;}
 				theWebUI.fManager.makeVisbile('fMan_Vplay');
-				theWebUI.fManager.player.Open('plugins/filemanager/view.php?ses='+encodeURIComponent(data.sess)+'&action=view&dir='+encodeURIComponent(theWebUI.fManager.curpath)+'&target='+encodeURIComponent(target));
+				theWebUI.fManager.player.Open(theWebUI.fManager.streamer+'?ses='+encodeURIComponent(data.sess)+'&action=view&dir='+encodeURIComponent(theWebUI.fManager.curpath)+'&target='+encodeURIComponent(target));
 		});
 	},
 

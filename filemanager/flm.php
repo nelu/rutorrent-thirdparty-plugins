@@ -1,6 +1,8 @@
 <?php
 
-require_once( '../../php/xmlrpc.php' );
+$rtp = realpath(dirname(__FILE__).'/../../php/xmlrpc.php');
+
+require_once($rtp);
 include('xmlfix.php');
 
 include('conf.php');

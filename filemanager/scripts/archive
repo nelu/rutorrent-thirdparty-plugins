@@ -9,7 +9,7 @@ volume="$6"
 vformat="$7"
 
 
-if [[ ! -d "$tempdir" ]]; then
+if [ ! -d "$tempdir" ]; then
 mkdir --mode=0777 -p "$tempdir" || { echo "FATAL ERROR: temp dir creation failed"; exit; }
 
 fi
@@ -17,7 +17,7 @@ fi
 echo "$$" > "$tempdir/pid";
 
 
-if [[ ! -w "${archive%/*}" ]]; then
+if [ ! -w "${archive%/*}" ]; then
 
 echo "1: FATAL ERROR: Destination ${archive%/*} not permitted" >> "$tempdir/log"; 
 
