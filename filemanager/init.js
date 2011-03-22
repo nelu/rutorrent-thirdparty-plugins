@@ -256,7 +256,7 @@ theWebUI.fManager = {
 
 		var console = $('#fMan_ConsoleLog');
 
-		if(browser.isIE) {console.innerHTML = "<pre>"+text+"</pre>";
+		if(browser.isIE) {console.innerHTML = "<pre>"+console.html()+text+"</pre>";
 		} else {console.children('pre').append(text);}
 
 		console[0].scrollTop = console[0].scrollHeight;
@@ -1009,9 +1009,7 @@ theWebUI.fManager = {
 									if(browser.isIE) {document.getElementById("nfo_content").innerHTML = "<pre>"+data.nfo+"</pre>";} 
 									else {cont.html(data.nfo);}
 
-								},
-								function () {log("Move: "+theUILang.fErrMsg[11]); theWebUI.fManager.cleanactions();},
-								function () {log("Move: Failed"); theWebUI.fManager.cleanactions();}
+								}
 			);
 
 
@@ -1573,7 +1571,23 @@ theWebUI.config = function(data) {
 
 		theWebUI.fManager.optSet();
 		theWebUI.fManager.createTable();
-		theWebUI.fManager.renameStuff();	
+		theWebUI.fManager.renameStuff();
+
+
+		var table = this.getTable("flm");
+		table.oldFilesSortAlphaNumeric = table.sortAlphaNumeric;
+		table.sortAlphaNumeric = function(x, y) 
+		{
+	
+			if(x.key.split('_flm_')[1] == theWebUI.fManager.getLastPath(theWebUI.fManager.curpath)) {return(this.reverse ? 1 : -1);}
+			return(this.oldFilesSortAlphaNumeric(x,y));
+		}
+		table.oldFilesSortNumeric = table.sortNumeric;
+		table.sortNumeric = function(x, y)
+		{
+			if(x.key.split('_flm_')[1] == theWebUI.fManager.getLastPath(theWebUI.fManager.curpath)) {return(this.reverse ? 1 : -1);}
+			return(this.oldFilesSortNumeric(x,y));
+		}	
 
 		plugin.config.call(this,data);
 }
