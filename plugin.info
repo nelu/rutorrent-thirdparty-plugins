@@ -1,6 +1,0 @@
-plugin.description: File Manager plugin.
-plugin.author: HWK
-plugin.version: 0.02
-rtorrent.remote: error
-rtorrent.external.error: php
-web.external.error: rar,zip,unzip
