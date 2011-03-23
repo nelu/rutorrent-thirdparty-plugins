@@ -158,6 +158,8 @@ theWebUI.fManager = {
 			this.activediag = diag;
 			if (this.settings.cleanlog) {$('#fMan_ClearConsole').click();} else { this.cmdlog("-------\n");}
 
+			this.cmdlog(theUILang.fStarts[diag]+"\n");
+
 			theDialogManager.hide('fMan_'+diag);
 	},
 
@@ -177,7 +179,7 @@ theWebUI.fManager = {
 
 			this.doSel('fMan_CArchive');
 
-			$('#fMan_CArchivebpath').val(this.homedir+this.curpath+this.recname(this.trimslashes(name))+'.'+theWebUI.fManager.archives.types[ext]);
+			$('#fMan_CArchivebpath').val(this.homedir+this.curpath+this.recname(this.trimslashes(name))+'.'+this.archives.types[ext]);
 
 			var type = $('#fMan_archtype').empty();
 
@@ -232,7 +234,7 @@ theWebUI.fManager = {
 
 			if ((path == this.trimslashes(this.curpath)) && !forcedir) { alert(theUILang.fDiagNoPath); return false;}
 
-			var funky = this.trimslashes(this.curpath) ? this.trimslashes(path.split(this.trimslashes(this.curpath))[1]).split('/').shift() : path.split('/').shift();
+			var funky = this.trimslashes(this.curpath) ? this.trimslashes(path.split(this.trimslashes(this.curpath)+'/')[1]).split('/').shift() : path.split('/').shift();
 			if (	this.isChecked('fMan_'+diag, this.basename(path)) || 
 				this.fileExists(funky)) {alert(theUILang.fDiagNoPath); return false;}
 
@@ -352,7 +354,6 @@ theWebUI.fManager = {
 
 
 		this.action.request('action=archive&target='+encodeURIComponent(archive)+'&format='+this.settings.arcnscheme+'&mode='+type+'&file='+compression+'&to='+vsize+'&fls='+encodeURIComponent(json_encode(theWebUI.fManager.actionlist)));
-		theWebUI.fManager.cmdlog("File archiving started\n");
 
 	},
 
@@ -368,7 +369,6 @@ theWebUI.fManager = {
 			this.actStart(diag);
 
 			this.action.request('action=extract&target='+encodeURIComponent(archive)+'&to='+encodeURIComponent(path));
-			this.cmdlog("Archive extraction started\n");
 	},
 
 
@@ -380,7 +380,6 @@ theWebUI.fManager = {
 			this.actStart(diag);
 
 			this.action.request('action=sfvch&target='+encodeURIComponent(sfvfile));
-			this.cmdlog("File checking started\n");
 	},
 
 
@@ -396,7 +395,6 @@ theWebUI.fManager = {
 			this.actStart(diag);
 
 			this.action.request('action=sfvcr&target='+encodeURIComponent(file)+'&fls='+encodeURIComponent(json_encode(theWebUI.fManager.actionlist)));
-			theWebUI.fManager.cmdlog("File hashing started\n");
 	},
 
 
@@ -409,7 +407,6 @@ theWebUI.fManager = {
 			this.actStart(diag);
 
 			this.action.request('action=rm&fls='+encodeURIComponent(json_encode(theWebUI.fManager.actionlist)));
-			theWebUI.fManager.cmdlog("File removal started\n");
 
 	},
 
@@ -425,7 +422,6 @@ theWebUI.fManager = {
 
 			this.actStart(diag);
 			this.action.request('action=mv&to='+encodeURIComponent(path)+'&fls='+encodeURIComponent(json_encode(theWebUI.fManager.actionlist)));
-			theWebUI.fManager.cmdlog("File relocation started\n");
 
 	},
 
@@ -442,7 +438,6 @@ theWebUI.fManager = {
 
 			this.actStart(diag);
 			this.action.request('action=cp&to='+encodeURIComponent(path)+'&fls='+encodeURIComponent(json_encode(theWebUI.fManager.actionlist)));
-			theWebUI.fManager.cmdlog("File duplication started\n");
 	},
 
 
@@ -778,7 +773,8 @@ theWebUI.fManager = {
 
 	makeVisbile: function (what) {
 
-			if($('#'+what).css('overflow', 'visible').css('display') == 'none') {theDialogManager.toggle(what);}
+		if($('#'+what).css('overflow', 'visible').css('display') == 'none') {theDialogManager.toggle(what);}
+
 	},
 
 	
@@ -989,7 +985,7 @@ theWebUI.fManager = {
 
 
 			this.makeVisbile('fMan_Nfo');
-
+			$("#fMan_nfoformat option[value='"+mode+"']").attr('selected', 'selected');
 
 			var cont = $('#nfo_content pre');
 			cont.empty();
@@ -1034,11 +1030,9 @@ theWebUI.fManager.flmSelect = function(e, id) {
 					var targetIsDir = theWebUI.fManager.isDir(target);
 
  			
-					if(table.selCount > 1) {
-						theContextMenu.add([theUILang.fOpen, null]);
-					} else {
-						theContextMenu.add([theUILang.fOpen, targetIsDir ? function () {theWebUI.fManager.changedir(target);} : function () {theWebUI.fManager.getFile(target);}]);
-					}
+		
+					theContextMenu.add([theUILang.fOpen, (table.selCount > 1) ? null : (targetIsDir ? function () {theWebUI.fManager.changedir(target);} : function () {theWebUI.fManager.getFile(target);})]);
+
 
 					if(target != theWebUI.fManager.getLastPath(theWebUI.fManager.curpath)) {
 
@@ -1046,7 +1040,7 @@ theWebUI.fManager.flmSelect = function(e, id) {
 
 						var fext = theWebUI.fManager.getExt(target);
 
-						if((fext == 'nfo') || (fext == 'avi') || (fext == 'mp4') || (fext == 'divx')) {
+						if(fext.match(/^(nfo|mp4|avi|divx)$/i)) {
 							theContextMenu.add([CMENU_SEP]);
 							if(fext == 'nfo') {theContextMenu.add([theUILang.fView, function() {theWebUI.fManager.viewNFO(target, 1);}]); } else {
 								theContextMenu.add([theUILang.fView, function() {theWebUI.fManager.playfile(target);}]); 
@@ -1336,7 +1330,7 @@ var dialogs = {
 			CreateSFV: theUILang.fDiagSFVHashfile,
 			Move: theUILang.fDiagMoveTo, 
 			Copy: theUILang.fDiagCopyTo,
-			Extract: theUILang.fDiagTo,
+			Extract: theUILang.fDiagTo
 		}
 		
 		var dcontent;
@@ -1413,33 +1407,7 @@ Dialogs button binds bellow:
 
 		$('.fMan_Stop').click(function() {
 
-			var msg;
-			switch(theWebUI.fManager.activediag) {
-				case 'fMan_Delete':
-					msg = "File removal stopped\n";
-					break;
-				case 'fMan_Extract':
-					msg = "Extraction stopped\n";
-					break;
-				case 'fMan_CArchive':
-					msg = "Archive creation stopped\n";
-					break;
-				case 'fMan_CheckSFV':
-					msg = "SFV check stopped\n";
-					break;
-				case 'fMan_CreateSFV':
-					msg = "SFV creation stopped\n";
-					break;
-				case 'fMan_Move':
-					msg = "File relocation stopped\n";
-					break;
-				case 'fMan_Copy':
-					msg = "File duplication stopped\n";
-					break;
-
-			}
-
-			theWebUI.fManager.cmdlog(msg);
+			theWebUI.fManager.cmdlog(theUILang.fStops[theWebUI.fManager.activediag]+"\n");
 			theWebUI.fManager.actStop();   
 
 		});
@@ -1491,7 +1459,7 @@ Dialogs button binds bellow:
 
 		$("#fMan_nfoformat").change(function() {
 
-				var mode = $("#fMan_nfoformat option:selected").attr('value');
+				var mode = $(this).val();
 				var nfofile = $("#fMan_nfofile").val();
 
 				theWebUI.fManager.viewNFO(nfofile, mode)

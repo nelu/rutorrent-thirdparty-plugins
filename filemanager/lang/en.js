@@ -72,23 +72,19 @@ theUILang.fDiagDeleteBut	= 'Delete';
 
 theUILang.fDiagConsole	= 'Console';
 
-
 theUILang.fDiagMove		= 'Move files and folders';
 theUILang.fDiagMoveSel	= 'Files marked for relocation:';
 theUILang.fDiagMoveTo	= 'Move files to:';
-theUILang.fDiagMoveBut	= 'Move';
 theUILang.fDiagMoveEmpty	= 'Please select the path where to move the files to';
 theUILang.fDiagMoveFalse	= 'Path not permitted';
 
 theUILang.fDiagCopy		= 'Copy files and folders';
 theUILang.fDiagCopySel	= 'Files marked for duplication:';
 theUILang.fDiagCopyTo	= 'Copy files to:';
-theUILang.fDiagCopyBut	= 'Copy';
 
 theUILang.fDiagNFO		= '.NFO Viewer';
 theUILang.fDiagSFVCheck	= 'Simple File Verification';
 theUILang.fDiagSFVCheckf	= 'Checksum file:';
-theUILang.fDiagSFVCheckBut	= 'Check';
 
 theUILang.fDiagSFVCreate	= 'Create SFV file';
 theUILang.fDiagSFVCreateSel	= 'Files marked for hashing:';
@@ -120,11 +116,30 @@ theUILang.fDiagCArchiveSel	= 'Add to archive:';
 theUILang.fDiagExtract	= 'Extract Archive';
 theUILang.fDiagArchive	= 'Archive:';
 theUILang.fDiagCompression	= 'Compression:';
-theUILang.fDiagArchiveLog	= 'Archive log:';
 theUILang.fDiagExtDo		= 'Extract';
 theUILang.fDiagArchempty	= 'Please name an archive file';
 
 theUILang.fDiagVplay		= 'Video player';
+
+theUILang.fStarts = { 
+	Delete: 	'File removal started',
+	Extract:	'Archive extraction started',
+	CArchive: 	'File archiving started',
+	CheckSFV: 	'File checking started',
+	CreateSFV:	'File hashing started',
+	Move:		'File relocation started',
+	Copy:		'File duplication started'
+}
+
+theUILang.fStops = { 
+	Delete: 	'File removal stopped',
+	Extract:	'Extraction stopped',
+	CArchive: 	'Archive creation stopped',
+	CheckSFV: 	'SFV check stopped',
+	CreateSFV:	'SFV creation stopped',
+	Move:		'File relocation stopped',
+	Copy:		'File duplication stopped'
+}
 
 
 

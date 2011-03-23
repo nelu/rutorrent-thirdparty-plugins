@@ -50,7 +50,7 @@ class FLM {
 
 		$a['file'] = $this->userdir.$this->postlist['target'];
 
-		if (($this->postlist['target'] === FALSE) || LFS::test($a['file'],'e')) {$output['errcode'] = 16; return false;}
+		if (($this->postlist['target'] === FALSE) || LFS::test($a['file'],'e')) {$this->output['errcode'] = 16; return false;}
 		if(($this->postlist['mode'] === FALSE) || !isset($this->settings['archive']['types'][$this->postlist['mode']])) { $this->sdie('Invalid archive type');}
 
 		$a['type'] = $this->settings['archive']['types'][$this->postlist['mode']];
@@ -315,7 +315,7 @@ class FLM {
 
 		exec(getExternal("mediainfo").' --Output=HTML '.escapeshellarg($this->workdir.$file), $out, $failure);
 
-        	if($failure) {$output['errcode'] = 14; return false;}
+        	if($failure) {$this->output['errcode'] = 14; return false;}
 
 		$this->output['minfo'] = preg_replace("/.*<body[^>]*>|<\/body>.*/si", "", implode('', $out));
 	}
@@ -344,7 +344,7 @@ class FLM {
 	public function nfo_get($nfofile, $dos = TRUE) {
 
 		if (!is_file($this->workdir.$nfofile)) 	{ $this->output['errcode'] = 6; return false;}
-		elseif (($this->fext($nfofile) != 'nfo') || (filesize($this->userhome.$nfofile) > 50000)) {$this->output['errcode'] = 18; return false;}
+		elseif (($this->fext($nfofile) != 'nfo') || (filesize($this->workdir.$nfofile) > 50000)) {$this->output['errcode'] = 18; return false;}
 		elseif (($fc = $this->read_file($nfofile, FALSE)) === FALSE) { $this->output['errcode'] = 3; die();}
 
 		$this->output['nfo'] = $dos ? $this->dos_format($fc, TRUE) : htmlentities($fc);
@@ -456,7 +456,7 @@ class FLM {
 	public function sfv_create ($file) {
 
 		if (empty($this->filelist)) {$this->output['errcode'] = 22; return false;}
-		if(LFS::test($this->userdir.$file,'e')) {$output['errcode'] = 16; return false;}
+		if(LFS::test($this->userdir.$file,'e')) {$this->output['errcode'] = 16; return false;}
 
 		$this->batch_exec(array("sh", "-c", escapeshellarg(getPHP())." ".escapeshellarg($this->fman_path.'/scripts/sfvcreate.php')." ".
 							escapeshellarg($this->temp['dir'])." ".escapeshellarg($this->userdir.$file)));
