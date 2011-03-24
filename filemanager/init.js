@@ -1040,7 +1040,7 @@ theWebUI.fManager.flmSelect = function(e, id) {
 
 						var fext = theWebUI.fManager.getExt(target);
 
-						if(fext.match(/^(nfo|mp4|avi|divx)$/i)) {
+						if(fext.match(/^(nfo|mp4|avi|divx|mkv)$/i)) {
 							theContextMenu.add([CMENU_SEP]);
 							if(fext == 'nfo') {theContextMenu.add([theUILang.fView, function() {theWebUI.fManager.viewNFO(target, 1);}]); } else {
 								theContextMenu.add([theUILang.fView, function() {theWebUI.fManager.playfile(target);}]); 
