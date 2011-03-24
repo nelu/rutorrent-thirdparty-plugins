@@ -8,7 +8,7 @@ plugin.attachPageToTabs($('<div>').attr("id","FileManager").addClass('table_tab'
 
 
 plugin.loadMainCSS();
-plugin.loadLang(true);
+
 
 theWebUI.fManager = {
 
@@ -1315,6 +1315,7 @@ var dialogs = {
 		plugin.attachPageToOptions($("<div>").attr("id",'fMan_optPan').html(dialogs.optPan.content).get(0),theUILang[dialogs.optPan.title]);
 		delete dialogs.optPan;
 
+
 		var buttons = '<div class="aright buttons-list">'+
 					'<input type="button" class="fMan_Start Button" value="'+theUILang.fDiagStart+'" class="Button" />'+
 					'<input type="button" class="Cancel Button" value="'+theUILang.fDiagClose+'"/>'+
@@ -1353,7 +1354,8 @@ var dialogs = {
 			if ( i == 'Delete') {dcontent = $(dialogs[i].content).append('<div id="fMan_'+i+'list" class="checklist"><ul></ul></div>').get(0); pathbrowse = ''}
 			else {pathbrowse = '';}
 
-			theDialogManager.make('fMan_'+i, theUILang[dialogs[i].title], $('<div>').addClass('cont fxcaret').html(dcontent).append(pathbrowse).parent().append(((i != 'Vplay') && (i != 'Nfo')) ? ((i == 'Console') ? consbut : buttons) : '').get(0), dialogs[i].modal);
+			var fcontent = $('<div>').html($('<div>').addClass('cont fxcaret').html(dcontent).append(pathbrowse)).append(((i != 'Vplay') && (i != 'Nfo')) ? ((i == 'Console') ? consbut : buttons) : '').get(0).innerHTML;
+			theDialogManager.make('fMan_'+i, theUILang[dialogs[i].title], fcontent, dialogs[i].modal);
 		}
 
 		var dialogs = null;
@@ -1604,3 +1606,4 @@ plugin.onRemove = function()
 	$('[id^="fMan_"]').remove();
 }
 
+plugin.loadLang(true);
