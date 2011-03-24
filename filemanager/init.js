@@ -15,7 +15,6 @@ theWebUI.fManager = {
 
 	paths: [],
 	curpath: '/',
-	disabledcmds: { },
 	workpath: '/',
 	settings: {	timef: '%d-%M-%y %h:%m:%s',
 			permf: 1,
@@ -746,12 +745,6 @@ theWebUI.fManager = {
 
 	isDir: function(element) {return	 (element.charAt(element.length-1) == '/') },
 	
-	isDisabled: function(cmd) {
-
-		if(this.disabledcmds.hasOwnProperty(cmd)) {log('FILE MANAGER error: '+cmd+' binary was not defined. See conf.php'); return true;}
-		return false;
-	},
-
 	isErr: function(errcode, extra) {
 
 
@@ -1020,77 +1013,71 @@ theWebUI.fManager = {
 
 theWebUI.fManager.flmSelect = function(e, id) {
 
-				if($type(id) && (e.button == 2)) {
+		if($type(id) && (e.button == 2)) {
 
-		        		theContextMenu.clear();
+		       theContextMenu.clear();
 
-					var table = theWebUI.getTable("flm");
+			var table = theWebUI.getTable("flm");
+			var flm = theWebUI.fManager;
 
-					var target = id.slice(5,id.length);
-					var targetIsDir = theWebUI.fManager.isDir(target);
-
- 			
+			var target = id.split('_flm_')[1];
+			var targetIsDir = flm.isDir(target);
 		
-					theContextMenu.add([theUILang.fOpen, (table.selCount > 1) ? null : (targetIsDir ? function () {theWebUI.fManager.changedir(target);} : function () {theWebUI.fManager.getFile(target);})]);
+			theContextMenu.add([theUILang.fOpen, (table.selCount > 1) ? null : (targetIsDir ? function () {flm.changedir(target);} : function () {flm.getFile(target);})]);
 
+			if(target != flm.getLastPath(flm.curpath)) {
 
-					if(target != theWebUI.fManager.getLastPath(theWebUI.fManager.curpath)) {
+				flm.workpath = flm.curpath;
 
-						theWebUI.fManager.workpath = theWebUI.fManager.curpath;
+				var fext = flm.getExt(target);
 
-						var fext = theWebUI.fManager.getExt(target);
+				if(fext.match(/^(nfo|mp4|avi|divx|mkv)$/i)) {
+					theContextMenu.add([CMENU_SEP]);
+					if(fext == 'nfo') {theContextMenu.add([theUILang.fView, function() {flm.viewNFO(target, 1);}]); } else {
+						theContextMenu.add([theUILang.fView, function() {flm.playfile(target);}]); 
+					}
+					theContextMenu.add([CMENU_SEP]);
+				}
 
-						if(fext.match(/^(nfo|mp4|avi|divx|mkv)$/i)) {
-							theContextMenu.add([CMENU_SEP]);
-							if(fext == 'nfo') {theContextMenu.add([theUILang.fView, function() {theWebUI.fManager.viewNFO(target, 1);}]); } else {
-								theContextMenu.add([theUILang.fView, function() {theWebUI.fManager.playfile(target);}]); 
-							}
-							theContextMenu.add([CMENU_SEP]);
-						}
+				theContextMenu.add([theUILang.fCopy, flm.actionCheck('fMan_Copy') ? "theWebUI.fManager.doSel('fMan_Copy')" : null ]);
+				theContextMenu.add([theUILang.fMove, flm.actionCheck('fMan_Move') ? "theWebUI.fManager.doSel('fMan_Move')" : null ]);
+				theContextMenu.add([theUILang.fDelete, flm.actionCheck('fMan_Delete') ? "theWebUI.fManager.doSel('fMan_Delete')" : null ]);
 
-						theContextMenu.add([theUILang.fCopy, theWebUI.fManager.actionCheck('fMan_Copy') ? function () {theWebUI.fManager.doSel('fMan_Copy');} : null ]);
-						theContextMenu.add([theUILang.fMove, theWebUI.fManager.actionCheck('fMan_Move') ? function () {theWebUI.fManager.doSel('fMan_Move');} : null ]);
-						theContextMenu.add([theUILang.fDelete, theWebUI.fManager.actionCheck('fMan_Delete') ? function () {theWebUI.fManager.doSel('fMan_Delete');} : null ]);
+				theContextMenu.add([theUILang.fRename, ((table.selCount > 1) && !flm.actionCheck('fMan_Rename')) ? null : function() {flm.rename(target);}]);
 
-						theContextMenu.add([theUILang.fRename, ((table.selCount > 1) && !theWebUI.fManager.actionCheck('fMan_Rename')) ? null : function() {theWebUI.fManager.rename(target);}]);
+				theContextMenu.add([CMENU_SEP]);
 
-						theContextMenu.add([CMENU_SEP]);
+				if((fext == 'rar') || (fext == 'zip') && !(table.selCount > 1)) {
 
-
-						if((fext == 'rar') || (fext == 'zip') && !(table.selCount > 1)) {
-
-							theContextMenu.add([theUILang.fExtracta, function() {if(theWebUI.fManager.isDisabled((fext == 'zip') ? 'unzip' : 'rar')) {return false;} theWebUI.fManager.extract(target, false);}]);
-							theContextMenu.add([theUILang.fExtracth, function() {if(theWebUI.fManager.isDisabled((fext == 'zip') ? 'unzip' : 'rar')) {return false;} theWebUI.fManager.extract(target, true);}]);
-
-							theContextMenu.add([CMENU_SEP]);
-
-						}
-
-						var create_sub = [];
-
-	
-						create_sub.push([theUILang.fcNewTor, thePlugins.isInstalled('create') && (table.selCount == 1) ? function () {theWebUI.fManager.createT(target);} : null]);
-						create_sub.push([CMENU_SEP]);
-						create_sub.push([theUILang.fcNewDir, "theWebUI.fManager.createDir()"]);
-						create_sub.push([theUILang.fcNewRar, function() {if(theWebUI.fManager.isDisabled('rar')) {return false;} theWebUI.fManager.Archive(target, 0);}]);
-						create_sub.push([theUILang.fcNewZip, function() {if(theWebUI.fManager.isDisabled('zip')) {return false;}theWebUI.fManager.Archive(target, 1);}]);
-						create_sub.push([CMENU_SEP]);
-						create_sub.push([theUILang.fcSFV, (!targetIsDir && theWebUI.fManager.actionCheck('fMan_CreateSFV')) ? function() {theWebUI.fManager.sfvCreate(target);} : null]);
-
-						theContextMenu.add([CMENU_CHILD, theUILang.fcreate, create_sub]);
-
-						theContextMenu.add([theUILang.fcheckSFV, (theWebUI.fManager.actionCheck('fMan_CheckSFV') && (fext == 'sfv')) ? function () {theWebUI.fManager.sfvCheck(target);} : null]);
-		
-						theContextMenu.add([theUILang.fMediaI, thePlugins.isInstalled('mediainfo') ? function() {theWebUI.fManager.mediainfo(target); } : null]);
-
-					} else { theContextMenu.add([theUILang.fcNewDir, "theWebUI.fManager.createDir()"]); }
+					theContextMenu.add([theUILang.fExtracta, function() {flm.extract(target, false);}]);
+					theContextMenu.add([theUILang.fExtracth, function() {flm.extract(target, true);}]);
 
 					theContextMenu.add([CMENU_SEP]);
-					theContextMenu.add([theUILang.fRefresh, "theWebUI.fManager.Refresh()"]);
-
-	   				theContextMenu.show();
-					return(true);
 				}
+
+				var create_sub = [];
+
+				create_sub.push([theUILang.fcNewTor, thePlugins.isInstalled('create') && (table.selCount == 1) ? function () {flm.createT(target);} : null]);
+				create_sub.push([CMENU_SEP]);
+				create_sub.push([theUILang.fcNewDir, "theWebUI.fManager.createDir()"]);
+				create_sub.push([theUILang.fcNewRar, function() {flm.Archive(target, 0);}]);
+				create_sub.push([theUILang.fcNewZip, function() {flm.Archive(target, 1);}]);
+				create_sub.push([CMENU_SEP]);
+				create_sub.push([theUILang.fcSFV, (!targetIsDir && flm.actionCheck('fMan_CreateSFV')) ? function() {flm.sfvCreate(target);} : null]);
+
+				theContextMenu.add([CMENU_CHILD, theUILang.fcreate, create_sub]);
+
+				theContextMenu.add([theUILang.fcheckSFV, (flm.actionCheck('fMan_CheckSFV') && (fext == 'sfv')) ? function () {flm.sfvCheck(target);} : null]);
+				theContextMenu.add([theUILang.fMediaI, thePlugins.isInstalled('mediainfo') ? function() {flm.mediainfo(target); } : null]);
+
+			} else { theContextMenu.add([theUILang.fcNewDir, "theWebUI.fManager.createDir()"]); }
+
+			theContextMenu.add([CMENU_SEP]);
+			theContextMenu.add([theUILang.fRefresh, "theWebUI.fManager.Refresh()"]);
+
+	   		theContextMenu.show();
+			return(true);
+		}
 		return(false);
 }
 
@@ -1222,24 +1209,21 @@ var dialogs = {
 	Copy: {
 		title: 'fDiagCopy',
 		modal: true,
-		content: 
-			'<fieldset><legend>'+theUILang.fDiagCopySel+'</legend></fieldset>'
+		content: '<fieldset><legend>'+theUILang.fDiagCopySel+'</legend></fieldset>'
 	},
 
 
 	CreateSFV: {
 		title: 'fDiagSFVCreate',
 		modal: true,
-		content: 
-			'<fieldset><legend>'+theUILang.fDiagSFVCreateSel+'</legend></fieldset>'
+		content: '<fieldset><legend>'+theUILang.fDiagSFVCreateSel+'</legend></fieldset>'
 	},
 
 
 	Delete: {
 		title: 'fDiagDelete',
 		modal: true,
-		content: 
-			'<fieldset><legend>'+theUILang.fDiagDeleteSel+'</legend></fieldset>'
+		content: '<fieldset><legend>'+theUILang.fDiagDeleteSel+'</legend></fieldset>'
 	},
 
 
@@ -1268,9 +1252,7 @@ var dialogs = {
 	Move: {
 		title: 'fDiagMove',
 		modal: true,
-		content: 
-			'<fieldset><legend>'+theUILang.fDiagMoveSel+'</legend>'+
-			'</fieldset>'
+		content: '<fieldset><legend>'+theUILang.fDiagMoveSel+'</legend></fieldset>'
 	},
 
 	Nfo: {
@@ -1334,27 +1316,25 @@ var dialogs = {
 			Extract: theUILang.fDiagTo
 		}
 		
-		var dcontent;
 		var pathbrowse;
 		
 		for (i in dialogs) {
 
-			dcontent = dialogs[i].content;
+			var dcontent = dialogs[i].content;
 
 			if($type(browsediags[i]) && (i != 'Vplay')) { 
 
-				pathbrowse = $('<fieldset>').append($('<legend>').text(browsediags[i]));
+				if (i != 'Extract') {dcontent = $(dialogs[i].content).append('<div id="fMan_'+i+'list" class="checklist"><ul></ul></div>');}
 
-				if (i != 'Extract') {dcontent = $(dialogs[i].content).append('<div id="fMan_'+i+'list" class="checklist"><ul></ul></div>').get(0);}
-
-				pathbrowse.append($('<input type="text" style="width:350px;" autocomplete="off" />').attr('id', 'fMan_'+i+'bpath').addClass('TextboxLarge')).
-						append($('<input type="button" value="..." style="float: right;" />').attr('id', 'fMan_'+i+'bbut').addClass('Button aright')).get(0);
-
+				pathbrowse = $('<fieldset>').html($('<legend>').text(browsediags[i])).
+						append($('<input type="text" style="width:350px;" autocomplete="off" />').attr('id', 'fMan_'+i+'bpath').addClass('TextboxLarge')).
+						append($('<input type="button" value="..." style="float: right;" />').attr('id', 'fMan_'+i+'bbut').addClass('Button aright'));
 			} else 
-			if ( i == 'Delete') {dcontent = $(dialogs[i].content).append('<div id="fMan_'+i+'list" class="checklist"><ul></ul></div>').get(0); pathbrowse = ''}
+			if ( i == 'Delete') {dcontent = $(dialogs[i].content).append('<div id="fMan_'+i+'list" class="checklist"><ul></ul></div>'); pathbrowse = ''}
 			else {pathbrowse = '';}
 
-			var fcontent = $('<div>').html($('<div>').addClass('cont fxcaret').html(dcontent).append(pathbrowse)).append(((i != 'Vplay') && (i != 'Nfo')) ? ((i == 'Console') ? consbut : buttons) : '').get(0).innerHTML;
+
+			var fcontent = $('<div>').html($('<div>').addClass('cont fxcaret').html(dcontent).append(pathbrowse)).append(((i != 'Vplay') && (i != 'Nfo')) ? ((i == 'Console') ? consbut : buttons) : '').get(0);
 			theDialogManager.make('fMan_'+i, theUILang[dialogs[i].title], fcontent, dialogs[i].modal);
 		}
 

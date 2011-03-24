@@ -3,9 +3,10 @@
 $fm['tempdir'] = '/tmp';		// path were to store temporary data ; must be writable 
 $fm['mkdperm'] = 755; 		// default permission to set to new created directories
 
-$fm['rar'] = 'rar';
-$fm['zip'] = 'zip';
-$fm['unzip'] = 'unzip';
+// set with fullpath to binary or leave empty
+$pathToExternals['rar'] = '/usr/local/bin/rar';
+$pathToExternals['zip'] = '/usr/bin/zip';
+$pathToExternals['unzip'] = '';
 
 // path on domain where a symlink to view.php can be found
 // change only if you use web AUTH

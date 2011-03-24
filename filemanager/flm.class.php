@@ -58,18 +58,7 @@ class FLM {
 		$a['volume'] = (intval($this->postlist['to'])*1024);
 		$a['multif'] = (($a['type'] == 'rar') && ($this->postlist['format'] == 'old')) ? '-vn' : '';
 
-		switch($a['type']) {
-			case 'rar':
-				$bin = $this->settings['rar'];
-				break;
-			case 'zip':
-				$bin = $this->settings['zip'];
-				break;
-			default:
-				$this->sdie('Unknown compressor');
-		}
-
-		$this->batch_exec(array("sh", "-c", escapeshellarg($this->fman_path.'/scripts/archive')." ".escapeshellarg($bin)." ".
+		$this->batch_exec(array("sh", "-c", escapeshellarg($this->fman_path.'/scripts/archive')." ".escapeshellarg(getExternal($a['type']))." ".
 							escapeshellarg($this->temp['dir'])." ".escapeshellarg($a['file'])." ".
 							escapeshellarg($a['type'])." ".escapeshellarg($a['comp'])." ".
 							escapeshellarg($a['volume'])." ".escapeshellarg($a['multif'])));
@@ -229,17 +218,16 @@ class FLM {
 
 		switch($this->fext($archive)) {
 			case 'rar':
-				$bin = $this->settings['rar'];
+				$bin = 'rar';
 				break;
 			case 'zip':
-				$bin = $this->settings['unzip'];
+				$bin = 'unzip';
 				break;
 			default:
 				$this->output['errcode'] = 18; return false; 
 		}
 
-
-		$this->batch_exec(array("sh", "-c", escapeshellarg($this->fman_path.'/scripts/extract')." ".escapeshellarg($bin)." ".
+		$this->batch_exec(array("sh", "-c", escapeshellarg($this->fman_path.'/scripts/extract')." ".escapeshellarg(getExternal($bin))." ".
 							escapeshellarg($this->temp['dir'])." ".escapeshellarg($this->userdir.$archive)." ".escapeshellarg($this->userdir.$target)));
 
 	}
