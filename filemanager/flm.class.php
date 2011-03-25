@@ -271,7 +271,7 @@ class FLM {
 			$cl = $seek_end - $seek_start + 1;
 
 			header('Content-Length: '.$cl);
-			ob_end_flush();
+			ob_flush();
 
    			$fo = fopen($file, 'rb');
 
