@@ -827,7 +827,10 @@ theWebUI.fManager = {
 		this.action.request('action=sess', function (data) { 
 				if(theWebUI.fManager.isErr(data.errcode)) {log('Play failed'); return false;}
 				theWebUI.fManager.makeVisbile('fMan_Vplay');
-				theWebUI.fManager.player.Open(theWebUI.fManager.streamer+'?ses='+encodeURIComponent(data.sess)+'&action=view&dir='+encodeURIComponent(theWebUI.fManager.curpath)+'&target='+encodeURIComponent(target));
+
+				if(theWebUI.fManager.player.hasOwnProperty('GetVersion')) {
+					theWebUI.fManager.player.Open(theWebUI.fManager.streamer+'?ses='+encodeURIComponent(data.sess)+'&action=view&dir='+encodeURIComponent(theWebUI.fManager.curpath)+'&target='+encodeURIComponent(target));
+				}
 		});
 	},
 
@@ -1289,7 +1292,7 @@ var dialogs = {
  				'<param name="previewImage" value="" />'+
  				'<param name="autoPlay" value="false" />'+
     				'<param name="src" value="" />'+
-				'<embed id="np_plugin" type="video/divx" src="" custommode="none" width="300" height="245" autoPlay="false" previewImage="" pluginspage="http://go.divx.com/plugin/download/"></embed>'+
+				'<embed id="np_plugin" type="video/divx" src="" custommode="none" width="300" height="245" autoPlay="false"  previewImage="" pluginspage="http://go.divx.com/plugin/download/"></embed>'+
 			'</object>'
 	}
 }
@@ -1341,7 +1344,7 @@ var dialogs = {
 		var dialogs = null;
 
 		theWebUI.fManager.player = (browser.isIE) ? document.getElementById('ie_plugin') : document.getElementById('np_plugin');
-		theDialogManager.setHandler('fMan_Vplay','afterHide',function() {theWebUI.fManager.player.Stop();}); 
+		theDialogManager.setHandler('fMan_Vplay','afterHide',function() {if(theWebUI.fManager.player.hasOwnProperty('GetVersion')) {theWebUI.fManager.player.Stop();}}); 
 
 
 /* 	
