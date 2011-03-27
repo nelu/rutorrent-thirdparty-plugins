@@ -1042,18 +1042,18 @@ theWebUI.fManager.flmSelect = function(e, id) {
 					theContextMenu.add([CMENU_SEP]);
 				}
 
-				theContextMenu.add([theUILang.fCopy, flm.actionCheck('fMan_Copy') ? "theWebUI.fManager.doSel('fMan_Copy')" : null ]);
-				theContextMenu.add([theUILang.fMove, flm.actionCheck('fMan_Move') ? "theWebUI.fManager.doSel('fMan_Move')" : null ]);
-				theContextMenu.add([theUILang.fDelete, flm.actionCheck('fMan_Delete') ? "theWebUI.fManager.doSel('fMan_Delete')" : null ]);
+				theContextMenu.add([theUILang.fCopy, flm.actionCheck('Copy') ? "theWebUI.fManager.doSel('fMan_Copy')" : null ]);
+				theContextMenu.add([theUILang.fMove, flm.actionCheck('Move') ? "theWebUI.fManager.doSel('fMan_Move')" : null ]);
+				theContextMenu.add([theUILang.fDelete, flm.actionCheck('Delete') ? "theWebUI.fManager.doSel('fMan_Delete')" : null ]);
 
-				theContextMenu.add([theUILang.fRename, ((table.selCount > 1) && !flm.actionCheck('fMan_Rename')) ? null : function() {flm.rename(target);}]);
+				theContextMenu.add([theUILang.fRename, ((table.selCount > 1) && !flm.actionCheck('Rename')) ? null : function() {flm.rename(target);}]);
 
 				theContextMenu.add([CMENU_SEP]);
 
 				if((fext == 'rar') || (fext == 'zip') && !(table.selCount > 1)) {
 
-					theContextMenu.add([theUILang.fExtracta, function() {flm.extract(target, false);}]);
-					theContextMenu.add([theUILang.fExtracth, function() {flm.extract(target, true);}]);
+					theContextMenu.add([theUILang.fExtracta, flm.actionCheck('Extract') ? function() {flm.extract(target, false);} : null ]);
+					theContextMenu.add([theUILang.fExtracth, flm.actionCheck('Extract') ? function() {flm.extract(target, true);} : null ]);
 
 					theContextMenu.add([CMENU_SEP]);
 				}
@@ -1063,15 +1063,15 @@ theWebUI.fManager.flmSelect = function(e, id) {
 				create_sub.push([theUILang.fcNewTor, thePlugins.isInstalled('create') && (table.selCount == 1) ? function () {flm.createT(target);} : null]);
 				create_sub.push([CMENU_SEP]);
 				create_sub.push([theUILang.fcNewDir, "theWebUI.fManager.createDir()"]);
-				create_sub.push([theUILang.fcNewRar, function() {flm.Archive(target, 0);}]);
-				create_sub.push([theUILang.fcNewZip, function() {flm.Archive(target, 1);}]);
+				create_sub.push([theUILang.fcNewRar, flm.actionCheck('CArchive') ? function() {flm.Archive(target, 0);} : null ]);
+				create_sub.push([theUILang.fcNewZip, flm.actionCheck('CArchive') ? function() {flm.Archive(target, 1);} : null ]);
 				create_sub.push([CMENU_SEP]);
-				create_sub.push([theUILang.fcSFV, (!targetIsDir && flm.actionCheck('fMan_CreateSFV')) ? function() {flm.sfvCreate(target);} : null]);
+				create_sub.push([theUILang.fcSFV, (!targetIsDir && flm.actionCheck('CreateSFV')) ? function() {flm.sfvCreate(target);} : null]);
 
 				theContextMenu.add([CMENU_CHILD, theUILang.fcreate, create_sub]);
 
-				theContextMenu.add([theUILang.fcheckSFV, (flm.actionCheck('fMan_CheckSFV') && (fext == 'sfv')) ? function () {flm.sfvCheck(target);} : null]);
-				theContextMenu.add([theUILang.fMediaI, thePlugins.isInstalled('mediainfo') ? function() {flm.mediainfo(target); } : null]);
+				theContextMenu.add([theUILang.fcheckSFV, (flm.actionCheck('CheckSFV') && (fext == 'sfv')) ? function () {flm.sfvCheck(target);} : null]);
+				theContextMenu.add([theUILang.fMediaI, (thePlugins.isInstalled('mediainfo') && !targetIsDir) ? function() {flm.mediainfo(target); } : null]);
 
 			} else { theContextMenu.add([theUILang.fcNewDir, "theWebUI.fManager.createDir()"]); }
 
@@ -1557,12 +1557,11 @@ theWebUI.resizeBottom = function( w, h ) {
 plugin.onShow = theTabs.onShow;
 theTabs.onShow = function(id) {
 
-	var cl = $('#fMan_showconsole');
 	if(id == "FileManager") {
 			theWebUI.getTable('flm').refreshRows();
 			theWebUI.resize();
-			cl.show();
-	} else {cl.hide(); plugin.onShow.call(this,id);}
+			$('#fMan_showconsole').show();
+	} else {$('#fMan_showconsole').hide(); plugin.onShow.call(this,id);}
 
 }
 
