@@ -495,20 +495,6 @@ class FLM {
 							escapeshellarg($this->temp['dir'])." ".escapeshellarg($this->userdir.$file)));
 	}
 
-	public function stream($file) {
-
-		$this->shout = FALSE;
-
-		if (!preg_match('/^(avi|divx|mpeg|mp4|mkv)$/i', $this->fext($file))) {$this->sdie('404 Invalid format');}
-
-		if (!is_file($this->workdir.$file)) {$this->sdie('404 File not found');}
-
-		header('Content-Type: video/divx');
-		header('Content-Disposition: inline; filename="'.$file.'"');
-
-		$this->get_file($this->workdir.$file);
-	}
-
 
 	public function sdie($args = '') {
 

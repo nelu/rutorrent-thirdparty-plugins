@@ -79,10 +79,6 @@ div#fMan_CArchive div.dlg-header {
 }
 
 
-div#fMan_Vplay div.dlg-header {
-	background-image: url(images/vplay.png);
-}
-
 div#fMan_Nfo div.dlg-header {
 	background-image: url(images/nfo.gif)
 }

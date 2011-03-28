@@ -34,7 +34,6 @@ theWebUI.fManager = {
 	actionlp: 0,
 	activediag: '',
 	homedir: '',
-	streamer: 'plugins/filemanager/view.php',
 
 	action: {
 			
@@ -822,19 +821,6 @@ theWebUI.fManager = {
 	},
 
 
-	playfile: function(target) {
-
-		this.action.request('action=sess', function (data) { 
-				if(theWebUI.fManager.isErr(data.errcode)) {log('Play failed'); return false;}
-				theWebUI.fManager.makeVisbile('fMan_Vplay');
-
-				if(theWebUI.fManager.player.hasOwnProperty('GetVersion')) {
-					theWebUI.fManager.player.Open(theWebUI.fManager.streamer+'?ses='+encodeURIComponent(data.sess)+'&action=view&dir='+encodeURIComponent(theWebUI.fManager.curpath)+'&target='+encodeURIComponent(target));
-				}
-		});
-	},
-
-
 	Refresh: function() {this.action.getlisting(this.curpath);},
 
 
@@ -1034,13 +1020,12 @@ theWebUI.fManager.flmSelect = function(e, id) {
 
 				var fext = flm.getExt(target);
 
-				if(fext.match(/^(nfo|mp4|avi|divx|mkv)$/i)) {
+				if(fext == 'nfo') {
 					theContextMenu.add([CMENU_SEP]);
-					if(fext == 'nfo') {theContextMenu.add([theUILang.fView, function() {flm.viewNFO(target, 1);}]); } else {
-						theContextMenu.add([theUILang.fView, function() {flm.playfile(target);}]); 
-					}
+					theContextMenu.add([theUILang.fView, function() {flm.viewNFO(target, 1);}]); 
 					theContextMenu.add([CMENU_SEP]);
-				}
+				} 
+
 
 				theContextMenu.add([theUILang.fCopy, flm.actionCheck('Copy') ? "theWebUI.fManager.doSel('fMan_Copy')" : null ]);
 				theContextMenu.add([theUILang.fMove, flm.actionCheck('Move') ? "theWebUI.fManager.doSel('fMan_Move')" : null ]);
@@ -1280,20 +1265,6 @@ var dialogs = {
 			'<fieldset><legend>'+theUILang.fDiagRenameTo+'</legend>'+
 				'<input type="text" name="fMan-RenameTo" id="fMan-RenameTo" style="width:200px;" />'+
 			'</fieldset>'
-	},
-
-
-	Vplay: {
-		title: 'fDiagVplay',
-		modal: false,
-		content: 
-			'<object id="ie_plugin" classid="clsid:67DABFBF-D0AB-41fa-9C46-CC0F21721616" width="300" height="245" codebase="http://go.divx.com/plugin/DivXBrowserPlugin.cab">'+
- 				'<param name="custommode" value="none" />'+
- 				'<param name="previewImage" value="" />'+
- 				'<param name="autoPlay" value="false" />'+
-    				'<param name="src" value="" />'+
-				'<embed id="np_plugin" type="video/divx" src="" custommode="none" width="300" height="245" autoPlay="false"  previewImage="" pluginspage="http://go.divx.com/plugin/download/"></embed>'+
-			'</object>'
 	}
 }
 
@@ -1325,7 +1296,7 @@ var dialogs = {
 
 			var dcontent = dialogs[i].content;
 
-			if($type(browsediags[i]) && (i != 'Vplay')) { 
+			if($type(browsediags[i])) { 
 
 				if (i != 'Extract') {dcontent = $(dialogs[i].content).append('<div id="fMan_'+i+'list" class="checklist"><ul></ul></div>');}
 
@@ -1337,15 +1308,11 @@ var dialogs = {
 			else {pathbrowse = '';}
 
 
-			var fcontent = $('<div>').html($('<div>').addClass('cont fxcaret').html(dcontent).append(pathbrowse)).append(((i != 'Vplay') && (i != 'Nfo')) ? ((i == 'Console') ? consbut : buttons) : '').get(0);
+			var fcontent = $('<div>').html($('<div>').addClass('cont fxcaret').html(dcontent).append(pathbrowse)).append((i != 'Nfo') ? ((i == 'Console') ? consbut : buttons) : '').get(0);
 			theDialogManager.make('fMan_'+i, theUILang[dialogs[i].title], fcontent, dialogs[i].modal);
 		}
 
 		var dialogs = null;
-
-		theWebUI.fManager.player = (browser.isIE) ? document.getElementById('ie_plugin') : document.getElementById('np_plugin');
-		theDialogManager.setHandler('fMan_Vplay','afterHide',function() {if(theWebUI.fManager.player.hasOwnProperty('GetVersion')) {theWebUI.fManager.player.Stop();}}); 
-
 
 /* 	
 Dialogs button binds bellow:

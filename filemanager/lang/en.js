@@ -119,8 +119,6 @@ theUILang.fDiagCompression	= 'Compression:';
 theUILang.fDiagExtDo		= 'Extract';
 theUILang.fDiagArchempty	= 'Please name an archive file';
 
-theUILang.fDiagVplay		= 'Video player';
-
 theUILang.fStarts = { 
 	Delete: 	'File removal started',
 	Extract:	'Archive extraction started',
@@ -140,6 +138,3 @@ theUILang.fStops = {
 	Move:		'File relocation stopped',
 	Copy:		'File duplication stopped'
 }
-
-
-

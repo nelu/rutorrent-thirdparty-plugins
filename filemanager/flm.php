@@ -64,9 +64,6 @@ switch($e->postlist['action']) {
 	case 'sess':
 		$e->get_session();
 		break;
-	case 'view':
-		$e->stream($e->postlist['target']);
-		break;
 	default:	
 		$e->sdie('Invalid action');
 }
