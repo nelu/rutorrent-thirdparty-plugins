@@ -11,3 +11,4 @@ theUILang.FSadd		= 'Add';
 theUILang.FSedit		= 'Edit';
 theUILang.FSshare		= 'Share...';
 theUILang.FSlinkcreate	= 'Download link created';
+theUILang.FScopylink		= 'Copy link';

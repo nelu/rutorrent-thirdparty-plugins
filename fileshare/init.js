@@ -8,6 +8,7 @@ plugin.attachPageToTabs($('<div>').attr("id","FileShare").addClass('table_tab').
 theWebUI.FS = {
 
 	downlink: '',
+	clip: {},
 
 	add: function (button) {
 
@@ -25,6 +26,12 @@ theWebUI.FS = {
 		});
 	},
 
+
+	copy: function(id) {
+		var link = theWebUI.getTable("fsh").getValueById('_fsh_'+id, 'link');
+
+
+	},
 
 	edit: function (button) {
 
@@ -185,14 +192,23 @@ theWebUI.FS = {
 
 			var table = theWebUI.getTable("fsh");
 			var target = id.split('_fsh_')[1];
+			if(table.selCount == 1) {
+				var link = theWebUI.getTable("fsh").getValueById('_fsh_'+target, 'link');
+				theWebUI.FS.clip.destroy(); 
+				theWebUI.FS.clip = new ZeroClipboard.Client();
+				theWebUI.FS.clip.setText(link);
+			}
 
 			var target = id.split('_fsh_')[1];
-			theContextMenu.add(['Delete', function() {askYesNo(theUILang.FSdel, theUILang.FSdelmsg, "theWebUI.FS.del()" );}]);
-			theContextMenu.add(['Edit', (table.selCount > 1) ? null : function() {theWebUI.FS.show(target, 'edit');}]);
+			theContextMenu.add([theUILang.fDelete, function() {askYesNo(theUILang.FSdel, theUILang.FSdelmsg, "theWebUI.FS.del()" );}]);
+			theContextMenu.add([theUILang.FSedit, (table.selCount > 1) ? null : function() {theWebUI.FS.show(target, 'edit');}]);
 			theContextMenu.add([CMENU_SEP]);
-			theContextMenu.add([theUILang.fRefresh, "theWebUI.FS.refresh()"]);
+			theContextMenu.add([theUILang.FScopylink,(table.selCount > 1) ? null : function() {theWebUI.FS.clip.destroy(); }]);
 
 	   		theContextMenu.show();
+			
+			if(table.selCount == 1) {theWebUI.FS.clip.glue(theContextMenu.get(theUILang.FScopylink)[0]); }
+
 			return(true);
 		}
 		return(false);
@@ -273,11 +289,16 @@ theWebUI.fManager.flmSelect = function( e, id ) {
 
 plugin.onLangLoaded = function() {
 
-	injectScript('plugins/fileshare/settings.js.php');	
+	injectScript('plugins/fileshare/settings.js.php');
+	injectScript('plugins/fileshare/clip/clip.js', function() {
+								ZeroClipboard.setMoviePath('plugins/fileshare/clip/ZeroClipboard.swf');
+								theWebUI.FS.clip = new ZeroClipboard.Client();
+								theWebUI.FS.refresh();
+							});
 
 	if(this.enabled) {
 		plugin.renameTab('FileShare', theUILang.FSshow);
-		$('#tab_lcont').append('<input type="button" id="FS_refresh" class="Button" value="Refresh" style="display: none;">');
+		$('#tab_lcont').append('<input type="button" id="FS_refresh" class="Button" value="'+theUILang.fRefresh+'" style="display: none;">');
 
 
 		var add = '<div class="cont fxcaret"><fieldset><legend>Options:</legend>'+
@@ -302,8 +323,8 @@ plugin.onLangLoaded = function() {
 		$('#FS_editbut').click(function() {theWebUI.FS.edit(this);});
 		$('#FS_refresh').click(function() {theWebUI.FS.refresh();});
 
-		
-		theWebUI.FS.refresh();
+
+
 	}
 };
 
