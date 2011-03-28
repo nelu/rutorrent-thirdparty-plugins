@@ -187,8 +187,6 @@ theWebUI.FS = {
 			var target = id.split('_fsh_')[1];
 			if(table.selCount == 1) {
 				var link = theWebUI.getTable("fsh").getValueById('_fsh_'+target, 'link');
-				theWebUI.FS.clip.destroy(); 
-				theWebUI.FS.clip = new ZeroClipboard.Client();
 				theWebUI.FS.clip.setText(link);
 			}
 
@@ -196,11 +194,21 @@ theWebUI.FS = {
 			theContextMenu.add([theUILang.fDelete, function() {askYesNo(theUILang.FSdel, theUILang.FSdelmsg, "theWebUI.FS.del()" );}]);
 			theContextMenu.add([theUILang.FSedit, (table.selCount > 1) ? null : function() {theWebUI.FS.show(target, 'edit');}]);
 			theContextMenu.add([CMENU_SEP]);
-			theContextMenu.add([theUILang.FScopylink,(table.selCount > 1) ? null : function() {theWebUI.FS.clip.destroy(); }]);
+			theContextMenu.add([theUILang.FScopylink,(table.selCount > 1) ? null : function() {}]);
 
 	   		theContextMenu.show();
 			
-			if(table.selCount == 1) {theWebUI.FS.clip.glue(theContextMenu.get(theUILang.FScopylink)[0]); }
+			if(table.selCount == 1) {
+				var lie = theContextMenu.get(theUILang.FScopylink)[0];
+
+				if(!theWebUI.FS.clip.ready) {
+					theWebUI.FS.clip.glue(lie); 
+					theWebUI.FS.clip.addEventListener( 'onComplete', function() {theWebUI.FS.clip.hide();} );
+				}
+				theWebUI.FS.clip.reposition(lie);
+       			theWebUI.FS.clip.show(lie);
+			}
+			
 
 			return(true);
 		}
