@@ -26,13 +26,6 @@ theWebUI.FS = {
 		});
 	},
 
-
-	copy: function(id) {
-		var link = theWebUI.getTable("fsh").getValueById('_fsh_'+id, 'link');
-
-
-	},
-
 	edit: function (button) {
 
 		var duration = $('#FS_duration').val();
@@ -289,11 +282,10 @@ theWebUI.fManager.flmSelect = function( e, id ) {
 
 plugin.onLangLoaded = function() {
 
-	injectScript('plugins/fileshare/settings.js.php');
+	injectScript('plugins/fileshare/settings.js.php', function() {theWebUI.FS.refresh();});
 	injectScript('plugins/fileshare/clip/clip.js', function() {
 								ZeroClipboard.setMoviePath('plugins/fileshare/clip/ZeroClipboard.swf');
 								theWebUI.FS.clip = new ZeroClipboard.Client();
-								theWebUI.FS.refresh();
 							});
 
 	if(this.enabled) {
