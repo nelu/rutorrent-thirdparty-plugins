@@ -17,6 +17,7 @@ theWebUI.FS = {
 		var password = $('#FS_password').val();
 
 		if(!duration.match(/^\d+$/) || (duration < 1)) {alert(theUILang.FSvdur); return false;}
+		if(this.islimited(this.maxdur, duration)) {alert(theUILang.FSmaxdur+' '+this.maxdur); return false}
 		
 		$(button).attr('disabled',true);
 
@@ -32,7 +33,10 @@ theWebUI.FS = {
 		var password = $('#FS_password').val();
 		var linkid = $('#FS_lid').val();
 
-		if(($.trim(duration) != '') && (!duration.match(/^\d+$/) || (duration < 1))) {alert(theUILang.FSvdur); return false;}		
+		if($.trim(duration) != '') {
+			if (!duration.match(/^\d+$/) || (duration < 1)) {alert(theUILang.FSvdur); return false;}	
+			if(this.islimited(this.maxdur, duration)) {alert(theUILang.FSmaxdur+' '+this.maxdur); return false}
+		}	
 
 		$(button).attr('disabled',true);
 
@@ -53,6 +57,8 @@ theWebUI.FS = {
 		this.query('action=del&target='+encodeURIComponent(json_encode(list)));
 
 	},
+
+	islimited: function (max, cur) {return (max > 0) ? ((cur <= max) ? false : true) : false;},
 
 	show: function (what, how) { 
 
@@ -280,7 +286,7 @@ theWebUI.fManager.flmSelect = function( e, id ) {
 			var el = theContextMenu.get( theUILang.fMediaI );
 			if(el) {
 				var item = id.split('_flm_')[1];
-				theContextMenu.add( el, [theUILang.FSshare, (!theWebUI.fManager.isDir(item) && !(theWebUI.getTable("flm").selCount > 1)) ? function() {theWebUI.FS.show(item, 'add');} : null]);
+				theContextMenu.add( el, [theUILang.FSshare, (!theWebUI.fManager.isDir(item) && !(theWebUI.getTable("flm").selCount > 1) && !theWebUI.FS.islimited(theWebUI.FS.maxlinks, theWebUI.getTable("fsh").rows)) ? function() {theWebUI.FS.show(item, 'add');} : null]);
 			}
 		}
 		

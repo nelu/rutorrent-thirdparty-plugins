@@ -12,3 +12,4 @@ theUILang.FSedit		= 'Edit';
 theUILang.FSshare		= 'Share...';
 theUILang.FSlinkcreate	= 'Download link created';
 theUILang.FScopylink		= 'Copy link';
+theUILang.FSmaxdur		= 'Maximum allowed duration is:';
