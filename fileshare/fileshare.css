@@ -5,3 +5,9 @@ div#FS_main div.dlg-header {background-image: url(images/icon.png);}
 padding-top: 3px;
 padding-bottom: 3px;
 }
+
+
+ul.CMenu li.hover {background-color: #CFDEEF;}
+ul.CMenu li.hover a {color: #000000}
+
+
