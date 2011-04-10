@@ -34,7 +34,7 @@ case "$type" in
 			"$1" -xzvf "$3" -C "$4" | sed -u 's/^/0: Extracting /' >> "$2/log"
 			echo "1: Done " >> "$2/log"
                       ;;
-  bzip)             [ ! -d "$4" ] && mkdir -p "$4"
+  bzip2)             [ ! -d "$4" ] && mkdir -p "$4"
 			"$1" -xjvf "$3" -C "$4" | sed -u 's/^/0: Extracting /' >> "$2/log"
 			echo "1: Done " >> "$2/log"
                       ;;
