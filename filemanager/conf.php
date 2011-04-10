@@ -7,14 +7,16 @@ $fm['mkdperm'] = 755; 		// default permission to set to new created directories
 $pathToExternals['rar'] = '/usr/local/bin/rar';
 $pathToExternals['zip'] = '/usr/bin/zip';
 $pathToExternals['unzip'] = '';
+$pathToExternals['tar'] = '';
 
 
 // archive mangling, see archiver man page before editing
 
-$fm['archive']['types'] = array('rar', 'zip');
+$fm['archive']['types'] = array('rar', 'zip', 'tar', 'gzip', 'bzip');
 
 $fm['archive']['compress'][0] = range(0, 5);
 $fm['archive']['compress'][1] = array('-0', '-1', '-9');
+$fm['archive']['compress'][2] = $fm['archive']['compress'][3] = $fm['archive']['compress'][4] = array(0);
 
 
 

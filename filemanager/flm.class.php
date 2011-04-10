@@ -58,7 +58,20 @@ class FLM {
 		$a['volume'] = (intval($this->postlist['to'])*1024);
 		$a['multif'] = (($a['type'] == 'rar') && ($this->postlist['format'] == 'old')) ? '-vn' : '';
 
-		$this->batch_exec(array("sh", "-c", escapeshellarg($this->fman_path.'/scripts/archive')." ".escapeshellarg(getExternal($a['type']))." ".
+		
+		switch($a['type']) {
+				
+				case 'gzip': 
+					$bin = 'tar';
+					break;
+				case 'bzip': 
+					$bin = 'tar';
+					break;
+				default: 
+					$bin = $a['type'];
+		}
+
+		$this->batch_exec(array("sh", "-c", escapeshellarg($this->fman_path.'/scripts/archive')." ".escapeshellarg(getExternal($bin))." ".
 							escapeshellarg($this->temp['dir'])." ".escapeshellarg($a['file'])." ".
 							escapeshellarg($a['type'])." ".escapeshellarg($a['comp'])." ".
 							escapeshellarg($a['volume'])." ".escapeshellarg($a['multif'])));
@@ -223,6 +236,11 @@ class FLM {
 			case 'zip':
 				$bin = 'unzip';
 				break;
+			case 'tar':
+			case 'bz2':
+			case 'gz':
+				$bin = 'tar';
+				break;
 			default:
 				$this->output['errcode'] = 18; return false; 
 		}
@@ -241,6 +259,7 @@ class FLM {
 
 		$this->shout = FALSE;
 		set_time_limit(0);
+		error_reporting (0);
 
 		if ($large) {
 			passthru('cat '.escapeshellarg($file), $err); 
@@ -249,6 +268,8 @@ class FLM {
 			$seek_start=0;
 			$seek_end=-1;
 			$fs = filesize($file);
+
+			if (ob_get_length() === false) {ob_start();}
 
 			if(isset($_SERVER['HTTP_RANGE']) || isset($HTTP_SERVER_VARS['HTTP_RANGE'])) { 
  
@@ -280,8 +301,8 @@ class FLM {
        		while(!feof($fo)){
                		set_time_limit(0);
         			print(fread($fo, 1024*8));
-        			flush();
         			ob_flush();
+        			flush();
     			}
 
     			fclose($fo);
@@ -443,11 +464,7 @@ class FLM {
 
 		if(($file === FALSE) || (($finfo = LFS::stat($fpath)) === FALSE)) {cachedEcho('log(theUILang.fErrMsg[6]+" - '.$fpath.'");',"text/html");}
 
-
-		if(($finfo['size'] <= 2147483647) && !ini_get("zlib.output_compression")) {header("Content-Length: ".$finfo['size']);}
-
 		$etag = sprintf('"%x-%x-%x"', $finfo['ino'], $finfo['size'], $finfo['mtime'] * 1000000);
-
 
 		if( 	(isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] == $etag) ||
                         	(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $finfo['mtime'])) {
@@ -466,8 +483,6 @@ class FLM {
 		header('Content-Disposition: attachment; filename="'.end(explode('/',$file)).'"');
 		header('Content-Transfer-Encoding: binary');
 		header('Content-Description: File Transfer');
-
-		ob_end_flush();
 
 		$this->get_file($fpath, ($finfo['size'] >= 2147483647));
 

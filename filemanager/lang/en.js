@@ -97,20 +97,15 @@ theUILang.fDiagCArchType	= 'Type:';
 theUILang.fDiagCArchVsize	= 'Volume size (mb):';
 
 theUILang.fManArComp = []; 
-theUILang.fManArComp[0] = theUILang.fManArComp[1] = [];
 
 // rar
-theUILang.fManArComp[0][0]	= 'Store';
-theUILang.fManArComp[0][1]	= 'Fastest';
-theUILang.fManArComp[0][2]	= 'Fast';
-theUILang.fManArComp[0][3]	= 'Normal';
-theUILang.fManArComp[0][4]	= 'Good';
-theUILang.fManArComp[0][5]	= 'Best';
+theUILang.fManArComp[0] = ['Store', 'Fastest', 'Fast', 'Normal', 'Good', 'Best']
 
 // zip
-theUILang.fManArComp[1][0]	= 'Store';
-theUILang.fManArComp[1][1]	= 'Fast';
-theUILang.fManArComp[1][2]	= 'Better';
+theUILang.fManArComp[1] = ['Store', 'Fast', 'Better'];
+
+// tar
+theUILang.fManArComp[2]	= theUILang.fManArComp[3] = theUILang.fManArComp[4] = ['Default'];
 
 theUILang.fDiagCArchiveSel	= 'Add to archive:';
 theUILang.fDiagExtract	= 'Extract Archive';

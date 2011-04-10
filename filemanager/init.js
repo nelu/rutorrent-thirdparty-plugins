@@ -20,6 +20,7 @@ theWebUI.fManager = {
 			permf: 1,
 			histpath: 5,
 			stripdirs: true,
+			showhidden: true,
 			cleanlog: false,
 			arcnscheme: 'new'
 	},
@@ -131,14 +132,44 @@ theWebUI.fManager = {
 
 	},
 
-	actionCheck: function (diag) {
+	sayhello: function(arg1, arg2) {
 
-		if(this.actiontimeout < 1) {return true;} else 
-		if(this.activediag == diag) {return true;}
-
-		return false;
+		alert(arg1);
+		alert(arg2);
 
 	},
+
+	actionCheck: function (diag) {
+
+		if((this.actiontimeout > 0) && (this.activediag != diag)) {return null;}
+
+		if(!this.dialogs[diag].hasOwnProperty('funct')) {return null;}
+
+ 		var args = "";
+
+		var i = (arguments.length > 1) ? 1 : 0;
+
+  		for (i = i; i < arguments.length; i++) {
+			
+			var rg;
+
+			switch($type(arguments[i])) { 
+				case 'string':
+					rg = '"'+this.addslashes(arguments[i])+'"';
+					break;
+				default:
+					rg = arguments[i];
+			}
+
+			args +=  rg + ($type(arguments[i+1]) ? ',' : '');
+
+		}
+
+			return 'theWebUI.fManager.'+this.dialogs[diag].funct+'('+args+')';
+		
+
+	},
+
 
 	addslashes: function (str) {
 	// http://phpjs.org/functions/addslashes:303
@@ -175,9 +206,9 @@ theWebUI.fManager = {
 
 		if(!(theWebUI.fManager.actiontoken.length > 1)) {
 
-			this.doSel('fMan_CArchive');
+			this.doSel('CArchive');
 
-			$('#fMan_CArchivebpath').val(this.homedir+this.curpath+this.recname(this.trimslashes(name))+'.'+this.archives.types[ext]);
+			$('#fMan_CArchivebpath').val(this.homedir+this.curpath+this.recname(name)+'.'+this.archives.types[ext]);
 
 			var type = $('#fMan_archtype').empty();
 
@@ -323,6 +354,8 @@ theWebUI.fManager = {
 
 
 	doSel: function(diag) {
+
+		diag = 'fMan_'+diag
 
 		var forcedirs = (diag == 'fMan_CreateSFV') ? true : false;
 
@@ -720,6 +753,11 @@ theWebUI.fManager = {
 				case 'zip':
       					iko = 'Icon_Zip';
       					break;
+				case 'tar':
+				case 'gz':
+				case 'bz2':
+					iko = 'Icon_gnuARCH';
+      					break;
 				case 'torrent':
       					iko = 'Icon_Torrent';
       					break;
@@ -871,6 +909,9 @@ theWebUI.fManager = {
 
 	recname: function (what) {
 
+
+			if(this.isDir(what)) { return this.trimslashes(what);}
+
 			var ext = this.getExt(what);
 			var recf = what.split(ext);
 
@@ -889,8 +930,9 @@ theWebUI.fManager = {
 
 	sfvCreate: function(what) {
 
-			$('#fMan_CreateSFVbpath').val(this.homedir+this.curpath+this.recname(what)+'.sfv');
-			theWebUI.fManager.doSel('fMan_CreateSFV');
+		$('#fMan_CreateSFVbpath').val(this.homedir+this.curpath+this.recname(what)+'.sfv');
+		theWebUI.fManager.doSel('CreateSFV');
+
 	},
 
 	sfvCheck: function(what) {
@@ -940,6 +982,7 @@ theWebUI.fManager = {
 					type: ftype+file.name,
 					perm: file.perm
 				}, "_flm_"+file.name, theWebUI.fManager.getICO(file.name));
+				if(!theWebUI.fManager.settings.showhidden && (file.name.charAt(0) == '.')) {table.hideRow("_flm_"+file.name);}
 		});
 		
 		table.refreshRows();
@@ -1026,36 +1069,35 @@ theWebUI.fManager.flmSelect = function(e, id) {
 					theContextMenu.add([CMENU_SEP]);
 				} 
 
+				theContextMenu.add([theUILang.fCopy, flm.actionCheck('Copy')]);
+				theContextMenu.add([theUILang.fMove, flm.actionCheck('Move')]);
+				theContextMenu.add([theUILang.fDelete, flm.actionCheck('Delete')]);
 
-				theContextMenu.add([theUILang.fCopy, flm.actionCheck('Copy') ? "theWebUI.fManager.doSel('fMan_Copy')" : null ]);
-				theContextMenu.add([theUILang.fMove, flm.actionCheck('Move') ? "theWebUI.fManager.doSel('fMan_Move')" : null ]);
-				theContextMenu.add([theUILang.fDelete, flm.actionCheck('Delete') ? "theWebUI.fManager.doSel('fMan_Delete')" : null ]);
-
-				theContextMenu.add([theUILang.fRename, ((table.selCount > 1) && !flm.actionCheck('Rename')) ? null : function() {flm.rename(target);}]);
+				theContextMenu.add([theUILang.fRename, !(table.selCount > 1) ? flm.actionCheck('Rename', target) : null]);
 
 				theContextMenu.add([CMENU_SEP]);
 
-				if((fext == 'rar') || (fext == 'zip') && !(table.selCount > 1)) {
 
-					theContextMenu.add([theUILang.fExtracta, flm.actionCheck('Extract') ? function() {flm.extract(target, false);} : null ]);
-					theContextMenu.add([theUILang.fExtracth, flm.actionCheck('Extract') ? function() {flm.extract(target, true);} : null ]);
-
+				if(fext.match(/^(zip|rar|tar|gz|bz2)$/i) && !(table.selCount > 1)) {
+					theContextMenu.add([theUILang.fExtracta, flm.actionCheck('Extract', target, false)]);
+					theContextMenu.add([theUILang.fExtracth, flm.actionCheck('Extract', target, true)]);
 					theContextMenu.add([CMENU_SEP]);
 				}
 
+
 				var create_sub = [];
 
-				create_sub.push([theUILang.fcNewTor, thePlugins.isInstalled('create') && (table.selCount == 1) ? function () {flm.createT(target);} : null]);
+				create_sub.push([theUILang.fcNewTor, thePlugins.isInstalled('create') && !(table.selCount > 1) ? function () {flm.createT(target);} : null]);
 				create_sub.push([CMENU_SEP]);
 				create_sub.push([theUILang.fcNewDir, "theWebUI.fManager.createDir()"]);
-				create_sub.push([theUILang.fcNewRar, flm.actionCheck('CArchive') ? function() {flm.Archive(target, 0);} : null ]);
-				create_sub.push([theUILang.fcNewZip, flm.actionCheck('CArchive') ? function() {flm.Archive(target, 1);} : null ]);
+				create_sub.push([theUILang.fcNewRar, flm.actionCheck('CArchive', target, 0)]);
+				create_sub.push([theUILang.fcNewZip, flm.actionCheck('CArchive', target, 1)]);
 				create_sub.push([CMENU_SEP]);
-				create_sub.push([theUILang.fcSFV, (!targetIsDir && flm.actionCheck('CreateSFV')) ? function() {flm.sfvCreate(target);} : null]);
+				create_sub.push([theUILang.fcSFV, !targetIsDir ? flm.actionCheck('CreateSFV', target) : null]);
 
 				theContextMenu.add([CMENU_CHILD, theUILang.fcreate, create_sub]);
 
-				theContextMenu.add([theUILang.fcheckSFV, (flm.actionCheck('CheckSFV') && (fext == 'sfv')) ? function () {flm.sfvCheck(target);} : null]);
+				theContextMenu.add([theUILang.fcheckSFV, (fext == 'sfv') ? flm.actionCheck('CheckSFV', target) : null]);
 				theContextMenu.add([theUILang.fMediaI, (thePlugins.isInstalled('mediainfo') && !targetIsDir) ? function() {flm.mediainfo(target); } : null]);
 
 			} else { theContextMenu.add([theUILang.fcNewDir, "theWebUI.fManager.createDir()"]); }
@@ -1073,9 +1115,12 @@ theWebUI.fManager.flmSelect = function(e, id) {
 
 
 
+
+
 theWebUI.fManager.createDialogs = function () {
 
-var dialogs = {
+
+theWebUI.fManager.dialogs = {
 
 
 	optPan: {
@@ -1090,6 +1135,10 @@ var dialogs = {
 		'  <tr>'+
 		'    <td>Strip trailing slashes from directory names:</td>'+
 		'    <td><input type="checkbox" name="fMan_Optstripdirs" id="fMan_Optstripdirs" value="true" /></td>'+
+		'  </tr>'+
+		'  <tr>'+
+		'    <td>Show hidden files:</td>'+
+		'    <td><input type="checkbox" name="fMan_Optshowhidden" id="fMan_Optshowhidden" value="true" /></td>'+
 		'  </tr>'+
 		'  <tr>'+
 		'    <td>Clean console log automatically:</td>'+
@@ -1152,6 +1201,7 @@ var dialogs = {
 	CArchive: {
 		title: 'fDiagCArchive',
 		modal: true,
+		funct: "Archive",
 		content: 
 			'<fieldset><legend>'+theUILang.fDiagCArchiveSel+'</legend>'+
 				'<div id="fMan_CArchivelist" class="checklist"><ul></ul></div>'+
@@ -1177,6 +1227,7 @@ var dialogs = {
 	CheckSFV: {
 		title: 'fDiagSFVCheck',
 		modal: false,
+		funct: 'sfvCheck',
 		content: 
 			'<fieldset><legend>'+theUILang.fDiagSFVCheckf+'</legend>'+
 				'<div id="fMang_ChSFVfile" style="width:440px;"></div>'+
@@ -1197,6 +1248,7 @@ var dialogs = {
 	Copy: {
 		title: 'fDiagCopy',
 		modal: true,
+		funct: 'doSel',
 		content: '<fieldset><legend>'+theUILang.fDiagCopySel+'</legend></fieldset>'
 	},
 
@@ -1204,6 +1256,7 @@ var dialogs = {
 	CreateSFV: {
 		title: 'fDiagSFVCreate',
 		modal: true,
+		funct: 'sfvCreate',
 		content: '<fieldset><legend>'+theUILang.fDiagSFVCreateSel+'</legend></fieldset>'
 	},
 
@@ -1211,6 +1264,7 @@ var dialogs = {
 	Delete: {
 		title: 'fDiagDelete',
 		modal: true,
+		funct: 'doSel',
 		content: '<fieldset><legend>'+theUILang.fDiagDeleteSel+'</legend></fieldset>'
 	},
 
@@ -1218,6 +1272,7 @@ var dialogs = {
 	Extract: {
 		title: 'fDiagExtract',
 		modal: true,
+		funct: "extract",
 		content: 
 			'<fieldset><legend>'+theUILang.fDiagArchive+'</legend>'+
 				'<div id="fMang_Archfile" style="width:460px;"></div>'+
@@ -1240,6 +1295,7 @@ var dialogs = {
 	Move: {
 		title: 'fDiagMove',
 		modal: true,
+		funct: 'doSel',
 		content: '<fieldset><legend>'+theUILang.fDiagMoveSel+'</legend></fieldset>'
 	},
 
@@ -1259,6 +1315,7 @@ var dialogs = {
 	Rename: {
 		title: 'fDiagRename',
 		modal: false,
+		funct: 'rename',
 		content: 
 			'<div id="fMan-RenameType"><strong></strong></div>'+
 			'<div id="fMan-RenameWhat" style="padding-top:3px; padding-bottom:4px; width:200px;"></div>'+
@@ -1268,8 +1325,9 @@ var dialogs = {
 	}
 }
 
-		plugin.attachPageToOptions($("<div>").attr("id",'fMan_optPan').html(dialogs.optPan.content).get(0),theUILang[dialogs.optPan.title]);
-		delete dialogs.optPan;
+
+		plugin.attachPageToOptions($("<div>").attr("id",'fMan_optPan').html(this.dialogs.optPan.content).get(0),theUILang[this.dialogs.optPan.title]);
+		delete this.dialogs.optPan;
 
 
 		var buttons = '<div class="aright buttons-list">'+
@@ -1292,27 +1350,25 @@ var dialogs = {
 		
 		var pathbrowse;
 		
-		for (i in dialogs) {
+		for (i in this.dialogs) {
 
-			var dcontent = dialogs[i].content;
+			var dcontent = this.dialogs[i].content;
 
 			if($type(browsediags[i])) { 
 
-				if (i != 'Extract') {dcontent = $(dialogs[i].content).append('<div id="fMan_'+i+'list" class="checklist"><ul></ul></div>');}
+				if (i != 'Extract') {dcontent = $(this.dialogs[i].content).append('<div id="fMan_'+i+'list" class="checklist"><ul></ul></div>');}
 
 				pathbrowse = $('<fieldset>').html($('<legend>').text(browsediags[i])).
 						append($('<input type="text" style="width:350px;" autocomplete="off" />').attr('id', 'fMan_'+i+'bpath').addClass('TextboxLarge')).
 						append($('<input type="button" value="..." style="float: right;" />').attr('id', 'fMan_'+i+'bbut').addClass('Button aright'));
 			} else 
-			if ( i == 'Delete') {dcontent = $(dialogs[i].content).append('<div id="fMan_'+i+'list" class="checklist"><ul></ul></div>'); pathbrowse = ''}
+			if ( i == 'Delete') {dcontent = $(this.dialogs[i].content).append('<div id="fMan_'+i+'list" class="checklist"><ul></ul></div>'); pathbrowse = ''}
 			else {pathbrowse = '';}
 
 
 			var fcontent = $('<div>').html($('<div>').addClass('cont fxcaret').html(dcontent).append(pathbrowse)).append((i != 'Nfo') ? ((i == 'Console') ? consbut : buttons) : '').get(0);
-			theDialogManager.make('fMan_'+i, theUILang[dialogs[i].title], fcontent, dialogs[i].modal);
+			theDialogManager.make('fMan_'+i, theUILang[this.dialogs[i].title], fcontent, this.dialogs[i].modal);
 		}
-
-		var dialogs = null;
 
 /* 	
 Dialogs button binds bellow:
@@ -1398,14 +1454,28 @@ Dialogs button binds bellow:
 				var type = $(this).val();
 				var comp = $("#fMan_archcompr");
 
-				$('#fMan_CArchivebpath').val(theWebUI.fManager.recname($('#fMan_CArchivebpath').val())+'.'+theWebUI.fManager.archives.types[type]);
+				var ext;
+
+				switch(theWebUI.fManager.archives.types[type]) {
+					case 'gzip':
+						ext = 'tar.gz';
+						break;
+					case 'bzip':
+						ext = 'tar.bz2';
+						break;
+					default:
+						ext = theWebUI.fManager.archives.types[type];
+				}
+
+				$('#fMan_CArchivebpath').val(theWebUI.fManager.recname($('#fMan_CArchivebpath').val())+'.'+ext);
 				$("#fMan_vsize").attr("disabled", (!$("#fMan_multiv").attr("disabled", (type != 0)).is(':checked') || (type != 0)));
 
 				comp.empty();
-		
-				$.each(theWebUI.fManager.archives.compress[type], function(index, value) { 
-  						comp.append('<option value="'+index+'">'+theUILang.fManArComp[type][index]+'</option>');
-				});
+
+				for(var i = 0; i < theWebUI.fManager.archives.compress[type].length; i++) {
+					  comp.append('<option value="'+i+'">'+theUILang.fManArComp[type][i]+'</option>');
+				}
+
 		});
 
 

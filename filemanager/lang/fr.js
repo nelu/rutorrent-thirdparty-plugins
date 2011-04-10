@@ -1,19 +1,19 @@
-ï»¿theUILang.fManager 		= "File Manager";
+theUILang.fManager 		= "File Manager";
 theUILang.fTime		= "Heure";
 theUILang.fType 		= "Type";
 theUILang.fPerm		= "Permissions";
 theUILang.fOpen		= "Ouvrir";
 theUILang.fCopy		= "Copier...";
-theUILang.fMove		= "DÃ©placer...";
+theUILang.fMove		= "Déplacer...";
 theUILang.fRename		= "Renommer...";
 theUILang.fDelete		= "Supprimer";
 theUILang.fExtracta		= "Extraire tout...";
 theUILang.fExtracth		= "Extraire ici";
-theUILang.fcheckSFV		= "VÃ©rifier le SFV";
+theUILang.fcheckSFV		= "Vérifier le SFV";
 theUILang.fMediaI		= "Media info";
 theUILang.fView		= "Voir";
-theUILang.fcreate		= "CrÃ©er";
-theUILang.fcNewDir		= "un rÃ©pertoire";
+theUILang.fcreate		= "Créer";
+theUILang.fcNewDir		= "un répertoire";
 theUILang.fcNewRar		= "une archive .rar";
 theUILang.fcNewZip		= "une archive .zip";
 theUILang.fcNewTor		= "un .torrent";
@@ -21,34 +21,34 @@ theUILang.fcSFV		= "un fichier SFV...";
 theUILang.fRefresh		= "Rafraichir";
 
 theUILang.fErrMsg = [];
-theUILang.fErrMsg[1]		= "Ã‰chec du changement de rÃ©pertoire.";
-theUILang.fErrMsg[2]		= "Le rÃ©pertoire n'existe pas.";
-theUILang.fErrMsg[3]		= "Permission refusÃ©e.";
-theUILang.fErrMsg[4]		= "Ã‰chec de la crÃ©ation du rÃ©pertoire.";
-theUILang.fErrMsg[5]		= "Fichier trop gros pour Ãªtre manipulÃ©.";
-theUILang.fErrMsg[6]		= "Aucun fichier/rÃ©pertoire de ce type.";
-theUILang.fErrMsg[7]		= "Ã‰chec du renommage - Existe dÃ©jÃ .";
-theUILang.fErrMsg[8]		= "Ã‰chec du renommage - RefusÃ©e.";
-theUILang.fErrMsg[9]		= "RÃ©cupÃ©ration de la liste des rÃ©pertoires hors dÃ©lais.";
-theUILang.fErrMsg[10]	= "Ã‰chec de la rÃ©cupÃ©ration du contenu du dossier.";
-theUILang.fErrMsg[11]	= "Action hors dÃ©lais.";
-theUILang.fErrMsg[12]	= "Quelque chose s'est mal passÃ©.";
-theUILang.fErrMsg[13]	= "Erreur d'accÃ¨s au fichier.";
+theUILang.fErrMsg[1]		= "Échec du changement de répertoire.";
+theUILang.fErrMsg[2]		= "Le répertoire n'existe pas.";
+theUILang.fErrMsg[3]		= "Permission refusée.";
+theUILang.fErrMsg[4]		= "Échec de la création du répertoire.";
+theUILang.fErrMsg[5]		= "Fichier trop gros pour ?tre manipulé.";
+theUILang.fErrMsg[6]		= "Aucun fichier/répertoire de ce type.";
+theUILang.fErrMsg[7]		= "Échec du renommage - Existe déj?.";
+theUILang.fErrMsg[8]		= "Échec du renommage - Refusée.";
+theUILang.fErrMsg[9]		= "Récupération de la liste des répertoires hors délais.";
+theUILang.fErrMsg[10]	= "Échec de la récupération du contenu du dossier.";
+theUILang.fErrMsg[11]	= "Action hors délais.";
+theUILang.fErrMsg[12]	= "Quelque chose s'est mal passé.";
+theUILang.fErrMsg[13]	= "Erreur d'acc?s au fichier.";
 theUILang.fErrMsg[14]	= "Erreur avec Mediainfo.";
-theUILang.fErrMsg[15]	= "Les binaire de Mediainfon'ont pas Ã©tÃ© trouvÃ©s, modifier votre config.php.";
-theUILang.fErrMsg[16]	= "LE fichier existe dÃ©jÃ .";
-theUILang.fErrMsg[17]	= "Le dossier temporaire n'est pas configurÃ©, modifier votre config.php.";
+theUILang.fErrMsg[15]	= "Les binaire de Mediainfon'ont pas été trouvés, modifier votre config.php.";
+theUILang.fErrMsg[16]	= "LE fichier existe déj?.";
+theUILang.fErrMsg[17]	= "Le dossier temporaire n'est pas configuré, modifier votre config.php.";
 theUILang.fErrMsg[18]	= "Fichier non valide.";
-theUILang.fErrMsg[19]	= "Commande dÃ©jÃ  terminÃ©e.";
-theUILang.fErrMsg[20]	= "Ã‰chec de l'arrÃªt du processus.";
-theUILang.fErrMsg[21]	= "L'action est terminÃ©e.";
+theUILang.fErrMsg[19]	= "Commande déj? terminée.";
+theUILang.fErrMsg[20]	= "Échec de l'arr?t du processus.";
+theUILang.fErrMsg[21]	= "L'action est terminée.";
 theUILang.fErrMsg[22]	= "Rien de marche avec.";
-theUILang.fErrMsg[23]	= "Ã‰chec de l'action.";
+theUILang.fErrMsg[23]	= "Échec de l'action.";
 
 
 
 
-theUILang.fDiagmkdir		= "CrÃ©er un nouveau dossier";
+theUILang.fDiagmkdir		= "Créer un nouveau dossier";
 theUILang.fDiagndirname	= "Nom du dossier";
 theUILang.fDiagnodirname 	= "Veuillez entrer un nom de dossier.";
 theUILang.fDiagRename 	= "Renommer un fichier / dossier";
@@ -57,9 +57,9 @@ theUILang.fDiagRenameBut	= "Renommer";
 theUILang.fDiagRenameEmpty	= "Veuillez entrer un nouveau nom.";
 theUILang.fDiagInvalidname	= "Nom invalide.";
 
-theUILang.fDiagAexist	= "Le fichier / dossier existe dÃ©jÃ .";
+theUILang.fDiagAexist	= "Le fichier / dossier existe déj?.";
 
-theUILang.fDiagStart		= "DÃ©marrer";
+theUILang.fDiagStart		= "Démarrer";
 theUILang.fDiagStop		= "Stop";
 theUILang.fDiagClose		= "Fermer";
 theUILang.fDiagTo		= "Vers :";
@@ -67,52 +67,47 @@ theUILang.fDiagNoPath	= "Destination non permise";
 
 
 theUILang.fDiagDelete	= "Supprimer des dossiers / fichiers";
-theUILang.fDiagDeleteSel	= "Fichiers marquÃ©s Ã  supprimer :";
+theUILang.fDiagDeleteSel	= "Fichiers marqués ? supprimer :";
 theUILang.fDiagDeleteBut	= "Supprimer";
 
 theUILang.fDiagConsole	= "Console";
 
-theUILang.fDiagMove		= "DÃ©placer des dossiers / fichiers";
-theUILang.fDiagMoveSel	= "Fichiers marquÃ©s Ã  dÃ©placer:";
-theUILang.fDiagMoveTo	= "DÃ©placer les fichiers vers :";
-theUILang.fDiagMoveEmpty	= "Veuillez sÃ©lectionne le chemin oÃ¹ doit Ãªtre dÃ©placÃ©s les fichiers.";
+theUILang.fDiagMove		= "Déplacer des dossiers / fichiers";
+theUILang.fDiagMoveSel	= "Fichiers marqués ? déplacer:";
+theUILang.fDiagMoveTo	= "Déplacer les fichiers vers :";
+theUILang.fDiagMoveEmpty	= "Veuillez sélectionne le chemin o? doit ?tre déplacés les fichiers.";
 theUILang.fDiagMoveFalse	= "Chemin non permis";
 
 theUILang.fDiagCopy		= "Copier des dossiers / fichiers";
-theUILang.fDiagCopySel	= "Fichiers marquÃ©s pour le copiage:";
+theUILang.fDiagCopySel	= "Fichiers marqués pour le copiage:";
 theUILang.fDiagCopyTo	= "Copier vers :";
 
 theUILang.fDiagNFO		= "Lecteur de .NFO";
 theUILang.fDiagSFVCheck	= "Simple File Verification";
 theUILang.fDiagSFVCheckf	= "Fichier checksum :";
 
-theUILang.fDiagSFVCreate	= "CrÃ©er un fichier SFV";
-theUILang.fDiagSFVCreateSel	= "Fichiers marquÃ©s pour le hashage :";
+theUILang.fDiagSFVCreate	= "Créer un fichier SFV";
+theUILang.fDiagSFVCreateSel	= "Fichiers marqués pour le hashage :";
 theUILang.fDiagSFVHashfile	= "Enregister le fichier vers :";
 
 theUILang.fDiagSFVempty	= "Veuillez nommer le fichier de hash.";
 
-theUILang.fDiagCArchive	= "CrÃ©er une archive";
+theUILang.fDiagCArchive	= "Créer une archive";
 theUILang.fDiagCArchType	= "Type:";
 theUILang.fDiagCArchVsize	= "Taille des volumes (Mo):";
 
 theUILang.fManArComp = []; 
-theUILang.fManArComp[0] = theUILang.fManArComp[1] = [];
 
 // rar
-theUILang.fManArComp[0][0]	= "Stocker";
-theUILang.fManArComp[0][1]	= "TrÃ¨s rapide";
-theUILang.fManArComp[0][2]	= "Rapide";
-theUILang.fManArComp[0][3]	= "Normal";
-theUILang.fManArComp[0][4]	= "Bon";
-theUILang.fManArComp[0][5]	= "Meilleur";
+theUILang.fManArComp[0]	= ["Stocker", "Tr?s rapide", "Rapide", "Normal", "Bon", "Meilleur"];
 
 // zip
-theUILang.fManArComp[1][0]	= "Stocker";
-theUILang.fManArComp[1][1]	= "Rapide";
-theUILang.fManArComp[1][2]	= "Meilleur";
+theUILang.fManArComp[1]	= ["Stocker", "Rapide", Meilleur"];
 
-theUILang.fDiagCArchiveSel	= "Ajouter Ã  l'archive :";
+// tar
+theUILang.fManArComp[2]	= theUILang.fManArComp[3] = theUILang.fManArComp[4] = ['Par défaut'];
+
+theUILang.fDiagCArchiveSel	= "Ajouter ? l'archive :";
 theUILang.fDiagExtract	= "Extraire une archive";
 theUILang.fDiagArchive	= "Archive :";
 theUILang.fDiagCompression	= "Compression :";
@@ -122,21 +117,21 @@ theUILang.fDiagArchempty	= "Veuillez entrer un nom d'archive.";
 theUILang.fDiagVplay		= "Video player";
 
 theUILang.fStarts = { 
-	Delete: 	"Suppression des fichiers dÃ©marrÃ©e.",
-	Extract:	"Extraction de l'archive dÃ©marrÃ©e.",
-	CArchive: 	"Mise en archive dÃ©marrÃ©e.",
-	CheckSFV: 	"VÃ©rification du hash dÃ©marrÃ©e.",
-	CreateSFV:	"Calcul du hash dÃ©marrÃ©.",
-	Move:		"DÃ©placement des fichiers dÃ©marrÃ©.",
-	Copy:		"Copiage des fichiers dÃ©marrÃ©."
+	Delete: 	"Suppression des fichiers démarrée.",
+	Extract:	"Extraction de l'archive démarrée.",
+	CArchive: 	"Mise en archive démarrée.",
+	CheckSFV: 	"Vérification du hash démarrée.",
+	CreateSFV:	"Calcul du hash démarré.",
+	Move:		"Déplacement des fichiers démarré.",
+	Copy:		"Copiage des fichiers démarré."
 }
 
 theUILang.fStops = { 
-	Delete: 	"Suppression des fichiers arrÃªtÃ©e.",
-	Extract:	"Extraction de l'archive arrÃªtÃ©e.",
-	CArchive: 	"Mise en archive arrÃªtÃ©e.",
-	CheckSFV: 	"VÃ©rification du hash arrÃªtÃ©e.",
-	CreateSFV:	"Calcul du hash arrÃªtÃ©.",
-	Move:		"DÃ©placement des fichiers arrÃªtÃ©.",
-	Copy:		"Copiage des fichiers arrÃªtÃ©."
+	Delete: 	"Suppression des fichiers arr?tée.",
+	Extract:	"Extraction de l'archive arr?tée.",
+	CArchive: 	"Mise en archive arr?tée.",
+	CheckSFV: 	"Vérification du hash arr?tée.",
+	CreateSFV:	"Calcul du hash arr?té.",
+	Move:		"Déplacement des fichiers arr?té.",
+	Copy:		"Copiage des fichiers arr?té."
 }

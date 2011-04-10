@@ -31,12 +31,26 @@ case "$type" in
 	printf "\n1: " >> "$tempdir/log"
        ;;
 
+  tar)
+	shift 7;   
+	"$binary" -C "${1%/*}" -cvf "$archive" "${@##*/}" | sed -u 's/^/0: Adding /' >> "$tempdir/log"
+	echo "1: Done" >> "$tempdir/log"
+       ;;
+  gzip)
+	shift 7;       
+	"$binary" -C "${1%/*}" -czvf "$archive" "${@##*/}" | sed -u 's/^/0: Adding /' >> "$tempdir/log"
+	echo "1: Done" >> "$tempdir/log"
+       ;;
+  bzip)
+	shift 7;       
+	"$binary" -C "${1%/*}" -cjvf "$archive" "${@##*/}" | sed -u 's/^/0: Adding /' >> "$tempdir/log"
+	echo "1: Done" >> "$tempdir/log"
+       ;;
   zip) 
  
 	cd "${8%/*}"         
 	shift 7;
 
-	echo "${@##*/}";
 	"$binary" -r "$compression" -y "$archive" "${@##*/}" | sed -u 's/^/0: /' >> "$tempdir/log"
 	echo "1: Done" >> "$tempdir/log"
         ;;
