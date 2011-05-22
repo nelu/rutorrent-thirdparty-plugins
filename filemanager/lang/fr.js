@@ -102,7 +102,7 @@ theUILang.fManArComp = [];
 theUILang.fManArComp[0]	= ["Stocker", "Très rapide", "Rapide", "Normal", "Bon", "Meilleur"];
 
 // zip
-theUILang.fManArComp[1]	= ["Stocker", "Rapide", Meilleur"];
+theUILang.fManArComp[1]	= ["Stocker", "Rapide", "Meilleur"];
 
 // tar
 theUILang.fManArComp[2]	= theUILang.fManArComp[3] = theUILang.fManArComp[4] = ['Par défaut'];
