@@ -22,19 +22,32 @@ class FLM {
 
 
 	public function __construct() {
+		/*
+		 * Construct function - initialises the objects properties 
+		 * 
+		 * $userdir - current user home directory (jail)
+		 * $workdir - the directory where filemanager is working at the time of call
+		 * $filelist - the current file-list sent for processing (archive,move,copy,delete, etc)
+		 * $settings - array with filemager current configuration
+		 * $fman_path - string flm.class.php directory location
+		 * $xmlrpc - xml-rpc fixxed request class initialization for internal object calls
+		 * 
+		 */
 		global $topDirectory, $fm;
 
 		$this->check_post($this->postlist);
 		$this->userdir = addslash($topDirectory);
-		$this->workdir = $this->userdir.$this->postlist['dir'];
 
-		if(($this->postlist['dir'] === FALSE) || !is_dir($this->workdir)) { $this->output['errcode'] = 2; die();}
+		$this->workdir = $this->userdir.$this->postlist['dir'];
+		$this->xmlrpc = new rxmlrpcfix();
+
+		if(($this->postlist['dir'] === FALSE) || !$this->remote_test($this->workdir, 'd')) { $this->output['errcode'] = 2; die();}
 		elseif ($this->postlist['action'] === FALSE) { $this->sdie('No action defined');}
 
 		$this->workdir = addslash($this->workdir);
 		$this->fman_path = dirname(__FILE__);
 
-		$this->xmlrpc = new rxmlrpcfix();
+
 
 		$this->settings = $fm;
 		$this->filelist = ($this->postlist['fls'] !== FALSE) ? $this->get_filelist($this->postlist['fls']) : '';
@@ -86,6 +99,20 @@ class FLM {
 
 		$this->xmlrpc->addCommand(new rXMLRPCCommand("execute", $what));
 		if($this->xmlrpc->success()) {$this->output['tmpdir'] = $this->temp['tok'];} else {$this->output['errcode'] = 23;}
+	}
+	
+	public function remote_test($dirname, $o) {
+		/*
+		 * Test's to check if $arg1 exists from rtorrent userid
+		 * 
+		 *	@param string target - full path
+		 * 	@param string option to use with test
+		 * 
+		 * 	Example: $this->remote_test('/tmp', 'd');
+		 * 	For test command options see: http://linux.about.com/library/cmd/blcmdl1_test.htm
+		 */
+		$this->xmlrpc->addCommand( new rXMLRPCCommand('execute', array('test','-'.$o, $dirname)));
+		return (bool)$this->xmlrpc->success();
 	}
 
 
@@ -197,16 +224,16 @@ class FLM {
 
 		if ($swedishmagic){
 			$s = str_replace("\345","\206",$s); // Code windows "?" to dos.
-			$s = str_replace("\344","\204",$s); // Code windows "ä" to dos.
-			$s = str_replace("\366","\224",$s); // Code windows "ö" to dos.
+			$s = str_replace("\344","\204",$s); // Code windows "ï¿½" to dos.
+			$s = str_replace("\366","\224",$s); // Code windows "ï¿½" to dos.
 
 
 			$s = ereg_replace("([ -~])\305([ -~])", "\\1\217\\2", $s); // ?
-			$s = ereg_replace("([ -~])\304([ -~])", "\\1\216\\2", $s); // Ä
-			$s = ereg_replace("([ -~])\326([ -~])", "\\1\231\\2", $s); // Ö
+			$s = ereg_replace("([ -~])\304([ -~])", "\\1\216\\2", $s); // ï¿½
+			$s = ereg_replace("([ -~])\326([ -~])", "\\1\231\\2", $s); // ï¿½
 
-			$s = str_replace("\311", "\220", $s); // É
-			$s = str_replace("\351", "\202", $s); // é
+			$s = str_replace("\311", "\220", $s); // ï¿½
+			$s = str_replace("\351", "\202", $s); // ï¿½
 		}
 
 		$s = str_replace($table437, $tablehtml, $s);
