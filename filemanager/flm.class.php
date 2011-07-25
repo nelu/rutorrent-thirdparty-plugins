@@ -16,7 +16,7 @@ class FLM {
 	protected $temp = array();
 	protected $filelist;
 	
-	private $settings;
+	protected $settings = array();
 
 	protected $shout = TRUE;
 
