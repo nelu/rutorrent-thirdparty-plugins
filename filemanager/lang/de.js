@@ -1,135 +1,136 @@
 theUILang.fManager 		= "File Manager";
-theUILang.fTime		= 'Time';
-theUILang.fType 		= "Type";
-theUILang.fPerm		= 'Permissions';
-theUILang.fOpen		= 'Open';
-theUILang.fCopy		= 'Copy...';
-theUILang.fMove		= 'Move...';
-theUILang.fRename		= 'Rename...';
-theUILang.fDelete		= 'Delete';
-theUILang.fExtracta		= 'Extract all...';
-theUILang.fExtracth		= 'Extract here';
-theUILang.fcheckSFV		= 'Check SFV';
+theUILang.fTime		= 'Zeit';
+theUILang.fType 		= "Typ";
+theUILang.fPerm		= 'Berechtigung';
+theUILang.fOpen		= 'Öffnen';
+theUILang.fCopy		= 'Kopieren...';
+theUILang.fMove		= 'Verschieben...';
+theUILang.fRename		= 'Umbenennen...';
+theUILang.fDelete		= 'Löschen';
+theUILang.fExtracta		= 'Alle entpacken...';
+theUILang.fExtracth		= 'Hierher entpacken';
+theUILang.fcheckSFV		= 'Prüfe SFV';
 theUILang.fMediaI		= 'Media info';
-theUILang.fView		= 'View';
-theUILang.fcreate		= 'Create';
-theUILang.fcNewDir		= 'New Directory';
-theUILang.fcNewRar		= '.rar archive';
-theUILang.fcNewZip		= '.zip archive';
-theUILang.fcNewTor		= 'New .torrent';
-theUILang.fcSFV		= 'SFV file...';
-theUILang.fRefresh		= 'Refresh';
+theUILang.fView		= 'Betrachte';
+theUILang.fcreate		= 'Erstelle';
+theUILang.fcNewDir		= 'Neues Verzeichnis';
+theUILang.fcNewRar		= '.rar Archiv';
+theUILang.fcNewZip		= '.zip Archiv';
+theUILang.fcNewTor		= '.torrent Datei';
+theUILang.fcSFV		= 'SFV erstellen...';
+theUILang.fRefresh		= 'Aktualisieren';
 
 theUILang.fErrMsg = [];
-theUILang.fErrMsg[1]		= 'Failed to change directory';
-theUILang.fErrMsg[2]		= 'Directory does not exist';
-theUILang.fErrMsg[3]		= 'Permission Denied';
-theUILang.fErrMsg[4]		= 'Directory creation failed';
-theUILang.fErrMsg[5]		= 'File is too large to handle';
-theUILang.fErrMsg[6]		= 'No such file/dir';
-theUILang.fErrMsg[7]		= 'Rename failed - already exists';
-theUILang.fErrMsg[8]		= 'Rename failed - Denied';
-theUILang.fErrMsg[9]		= 'Directory listing timed out';
-theUILang.fErrMsg[10]	= 'Failed to get directory contents';
-theUILang.fErrMsg[11]	= 'Action timed out';
-theUILang.fErrMsg[12]	= 'Something went wrong';
-theUILang.fErrMsg[13]	= 'File access error';
-theUILang.fErrMsg[14]	= 'Mediainfo error';
-theUILang.fErrMsg[15]	= 'Mediainfo binary not found, see config.php';
-theUILang.fErrMsg[16]	= 'File already exists';
-theUILang.fErrMsg[17]	= 'Temporary dir is not set, see config.php';
-theUILang.fErrMsg[18]	= 'Invalid file';
-theUILang.fErrMsg[19]	= 'Command finished already';
-theUILang.fErrMsg[20]	= 'Command kill failed';
-theUILang.fErrMsg[21]	= 'Action has finished';
-theUILang.fErrMsg[22]	= 'Nothing to work with';
-theUILang.fErrMsg[23]	= 'Action failed';
+theUILang.fErrMsg[1]		= 'Verzeichnis ändern fehlgeschlagen';
+theUILang.fErrMsg[2]		= 'Verzeichnis existiert nicht';
+theUILang.fErrMsg[3]		= 'keine Berechtigung';
+theUILang.fErrMsg[4]		= 'Verzeichnis erstellen fehlgeschlagen';
+theUILang.fErrMsg[5]		= 'Datei zu groß';
+theUILang.fErrMsg[6]		= 'Kein/e solche/s Datei/Verzeichnis';
+theUILang.fErrMsg[7]		= 'Umbenennen fehlgeschlagen – existiert bereits';
+theUILang.fErrMsg[8]		= 'Umbenennen fehlgeschlagen - verweigert';
+theUILang.fErrMsg[9]		= 'Verzeichnis auflisten dauerte zu lange';
+theUILang.fErrMsg[10]	= 'Auflisten Verzeichnisinhalt fehlgeschlagen';
+theUILang.fErrMsg[11]	= 'Aktion dauert zu lange';
+theUILang.fErrMsg[12]	= 'Irgendetwas schlug fehl';
+theUILang.fErrMsg[13]	= 'Datei Zugriffsfehler';
+theUILang.fErrMsg[14]	= 'Mediainfo Fehler';
+theUILang.fErrMsg[15]	= 'Mediainfo nicht gefunden, überprüfe config.php';
+theUILang.fErrMsg[16]	= 'Datei existiert bereits';
+theUILang.fErrMsg[17]	= 'Temporäres Verzeichnis nicht gesetzt, überprüfe config.php';
+theUILang.fErrMsg[18]	= 'Ungültige Datei';
+theUILang.fErrMsg[19]	= 'Kommando bereits beendet';
+theUILang.fErrMsg[20]	= 'Kommando töten fehlgeschlagen';
+theUILang.fErrMsg[21]	= 'Aktion beendet';
+theUILang.fErrMsg[22]	= 'Nichts um damit zu arbeiten';
+theUILang.fErrMsg[23]	= 'Aktion fehlgeschlagen';
 
 
 
 
-theUILang.fDiagmkdir		= 'Create new directory';
-theUILang.fDiagndirname	= 'Directory name';
-theUILang.fDiagnodirname 	= 'Please enter a directory name!';
-theUILang.fDiagRename 	= 'Rename file / directory';
-theUILang.fDiagRenameTo 	= 'Rename to:';
-theUILang.fDiagRenameBut	= 'Rename';
-theUILang.fDiagRenameEmpty	= 'Enter a new name';
-theUILang.fDiagInvalidname	= 'Invalid name';
+theUILang.fDiagmkdir		= 'Erstelle neues Verzeichnis';
+theUILang.fDiagndirname	= 'Verzeichnis Name';
+theUILang.fDiagnodirname 	= 'Bitte Namen des Verzeichnisses eingeben!';
+theUILang.fDiagRename 	= 'datei/Verzeichnis umbenennen';
+theUILang.fDiagRenameTo 	= 'Umbenennen zu:';
+theUILang.fDiagRenameBut	= 'Umbenennen';
+theUILang.fDiagRenameEmpty	= 'Neuen Namen eingeben';
+theUILang.fDiagInvalidname	= 'Ungültiger Name';
 
-theUILang.fDiagAexist	= 'File / directory already exists';
+theUILang.fDiagAexist	= 'Datei/Verzeichnis existiert bereits';
 
 theUILang.fDiagStart		= 'Start';
 theUILang.fDiagStop		= 'Stop';
-theUILang.fDiagClose		= 'Close';
-theUILang.fDiagTo		= 'To:';
-theUILang.fDiagNoPath	= 'Destination not permitted';
+theUILang.fDiagClose		= 'Schließen';
+theUILang.fDiagTo		= 'Zu:';
+theUILang.fDiagNoPath	= 'Zielverzeichnis nicht gestattet';
 
 
-theUILang.fDiagDelete	= 'Delete files and folders';
-theUILang.fDiagDeleteSel	= 'Files marked for removal:';
-theUILang.fDiagDeleteBut	= 'Delete';
+theUILang.fDiagDelete	= 'Lösche Datei und Verzeichnis';
+theUILang.fDiagDeleteSel	= 'Dateien markiert zum Löschen:';
+theUILang.fDiagDeleteBut	= 'Löschen';
 
-theUILang.fDiagConsole	= 'Console';
+theUILang.fDiagConsole	= 'Konsole';
 
-theUILang.fDiagMove		= 'Move files and folders';
-theUILang.fDiagMoveSel	= 'Files marked for relocation:';
-theUILang.fDiagMoveTo	= 'Move files to:';
-theUILang.fDiagMoveEmpty	= 'Please select the path where to move the files to';
-theUILang.fDiagMoveFalse	= 'Path not permitted';
+theUILang.fDiagMove		= 'Verschiebe Datein und Verzeichnis';
+theUILang.fDiagMoveSel	= 'Dateien markiert zum Verschieben:';
+theUILang.fDiagMoveTo	= 'Verschieben Dateien nach:';
+theUILang.fDiagMoveEmpty	= 'Bitte wählen Sie das Zielverzeichnis';
+theUILang.fDiagMoveFalse	= 'Pfad nicht gestattet';
 
-theUILang.fDiagCopy		= 'Copy files and folders';
-theUILang.fDiagCopySel	= 'Files marked for duplication:';
-theUILang.fDiagCopyTo	= 'Copy files to:';
+theUILang.fDiagCopy		= 'Kopiere Dateien und Ordner';
+theUILang.fDiagCopySel	= 'Dateien markiert zum Kopieren:';
+theUILang.fDiagCopyTo	= 'Kopiere Dateien nach:';
 
 theUILang.fDiagNFO		= '.NFO Viewer';
-theUILang.fDiagSFVCheck	= 'Simple File Verification';
-theUILang.fDiagSFVCheckf	= 'Checksum file:';
+theUILang.fDiagSFVCheck	= 'Datei überprüfen';
+theUILang.fDiagSFVCheckf	= 'Prüfsumme der Datei:';
 
-theUILang.fDiagSFVCreate	= 'Create SFV file';
-theUILang.fDiagSFVCreateSel	= 'Files marked for hashing:';
-theUILang.fDiagSFVHashfile	= 'Save hash file to:';
+theUILang.fDiagSFVCreate	= 'Erstelle SFV-Datei';
+theUILang.fDiagSFVCreateSel	= 'Datei markiert zum Prüfen:';
+theUILang.fDiagSFVHashfile	= 'Speichere SFV-Datei nach:';
 
-theUILang.fDiagSFVempty	= 'Please name a sfv file';
+theUILang.fDiagSFVempty	= 'Benenne die SFV-Datei';
 
-theUILang.fDiagCArchive	= 'Create Archive';
-theUILang.fDiagCArchType	= 'Type:';
-theUILang.fDiagCArchVsize	= 'Volume size (mb):';
+theUILang.fDiagCArchive	= 'Erstelle Archiv';
+theUILang.fDiagCArchType	= 'Typ:';
+theUILang.fDiagCArchVsize	= 'Dateigröße (mb):';
 
 theUILang.fManArComp = []; 
 
 // rar
-theUILang.fManArComp[0] = ['Store', 'Fastest', 'Fast', 'Normal', 'Good', 'Best']
+theUILang.fManArComp[0] = ['Speichern', 'Schnellste', 'Schnell', 'Normal', 'Gut', 'Beste']
 
 // zip
-theUILang.fManArComp[1] = ['Store', 'Fast', 'Better'];
+theUILang.fManArComp[1] = ['Speichern', 'Schnell', 'Besser'];
 
 // tar
-theUILang.fManArComp[2]	= theUILang.fManArComp[3] = theUILang.fManArComp[4] = ['Default'];
+theUILang.fManArComp[2]	= theUILang.fManArComp[3] = theUILang.fManArComp[4] = ['Normal'];
 
-theUILang.fDiagCArchiveSel	= 'Add to archive:';
-theUILang.fDiagExtract	= 'Extract Archive';
-theUILang.fDiagArchive	= 'Archive:';
-theUILang.fDiagCompression	= 'Compression:';
-theUILang.fDiagExtDo		= 'Extract';
-theUILang.fDiagArchempty	= 'Please name an archive file';
+theUILang.fDiagCArchiveSel	= 'Zum Archiv hinzufügen:';
+theUILang.fDiagExtract	= 'Entpacke Archive';
+theUILang.fDiagArchive	= 'Archiv:';
+theUILang.fDiagCompression	= 'Kompression:';
+theUILang.fDiagExtDo		= 'Entpacke';
+theUILang.fDiagArchempty	= 'Bitte Namen des Archives eingeben!';
 
 theUILang.fStarts = { 
-	Delete: 	'File removal started',
-	Extract:	'Archive extraction started',
-	CArchive: 	'File archiving started',
-	CheckSFV: 	'File checking started',
-	CreateSFV:	'File hashing started',
-	Move:		'File relocation started',
-	Copy:		'File duplication started'
+	Delete: 	'Datei löschen gestartet',
+	Extract:	'Archive entpacken gestartet',
+	CArchive: 	'Datei archivieren gestartet',
+	CheckSFV: 	'SFV überprüfen gestartet',
+	CreateSFV:	'SFV prüfen gestartet',
+	Move:		'Datei verschieben gestartet',
+	Copy:		'Datei kopieren gestartet'
 }
 
 theUILang.fStops = { 
-	Delete: 	'File removal stopped',
-	Extract:	'Extraction stopped',
-	CArchive: 	'Archive creation stopped',
-	CheckSFV: 	'SFV check stopped',
-	CreateSFV:	'SFV creation stopped',
-	Move:		'File relocation stopped',
-	Copy:		'File duplication stopped'
+	Delete: 	'Datei löschen gestoppt',
+	Extract:	'Archive entpacken gestoppt',
+	CArchive: 	'Datei archivieren gestoppt',
+	CheckSFV: 	'SFV überprüfen gestoppt',
+	CreateSFV:	'SFV prüfen gestoppt',
+	Move:		'Datei verschieben gestoppt',
+	Copy:		'Datei kopieren gestoppt'
 }
+
