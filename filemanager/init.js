@@ -1186,7 +1186,7 @@ theWebUI.fManager.dialogs = {
 		'  </table>'+
 		'</fieldset><fieldset>'+
 		'  <legend>Archive Settings</legend>'+
-		'  <table width="100%" border="0" cellspacing="0" cellpadding="0">'+
+		'  <table width="100%" border="0" cellspacing="0" cellpadding="0"><tr>'+
 		'    <td>Multi-volume format:</td>'+
 		'    <td><select name="fMan_Optarcnscheme" id="fMan_Optarcnscheme">'+
 		'      <option value="new" selected="selected">NEW - .part1.rar</option>'+

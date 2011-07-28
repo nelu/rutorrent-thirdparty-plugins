@@ -12,7 +12,7 @@ class FLM {
 	public	$userdir;
 	public $fman_path;
 
-	private $output = array('errcode' => 0);
+	protected $output = array('errcode' => 0);
 	protected $temp = array();
 	protected $filelist;
 	
@@ -96,6 +96,11 @@ class FLM {
 		$lk = array_pop(array_keys($what));
 
 		$what[$lk] .= ' '.$this->filelist.' &';
+		
+		if(!is_dir ($this->temp['dir'])) {
+				umask(000);
+				mkdir($this->temp['dir'], 0777, true);
+		}
 
 		$this->xmlrpc->addCommand(new rXMLRPCCommand("execute", $what));
 		if($this->xmlrpc->success()) {$this->output['tmpdir'] = $this->temp['tok'];} else {$this->output['errcode'] = 23;}
