@@ -90,7 +90,7 @@ class FLM {
 		$this->batch_exec(array("sh", "-c", escapeshellarg($this->fman_path.'/scripts/archive')." ".escapeshellarg(getExternal($bin))." ".
 							escapeshellarg($this->temp['dir'])." ".escapeshellarg($a['file'])." ".
 							escapeshellarg($a['type'])." ".escapeshellarg($a['comp'])." ".
-							escapeshellarg($a['volume'])." ".escapeshellarg($a['multif'])." ".$a['password']));
+							escapeshellarg($a['volume'])." ".escapeshellarg($a['multif']).(($a['type'] == 'rar') ? " ".$a['password'] : '')));
 	}
 
 

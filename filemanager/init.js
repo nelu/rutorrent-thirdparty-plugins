@@ -132,13 +132,6 @@ theWebUI.fManager = {
 
 	},
 
-	sayhello: function(arg1, arg2) {
-
-		alert(arg1);
-		alert(arg2);
-
-	},
-
 	actionCheck: function (diag) {
 
 		if((this.actiontimeout > 0) && (this.activediag != diag)) {return null;}
@@ -1480,7 +1473,7 @@ Dialogs button binds bellow:
 
 				$('#fMan_CArchivebpath').val(theWebUI.fManager.recname($('#fMan_CArchivebpath').val())+'.'+ext);
 				$("#fMan_vsize").attr("disabled", (!$("#fMan_multiv").attr("disabled", (type != 0)).is(':checked') || (type != 0)));
-
+				$('#fMan_apassword').attr("disabled", (type != 0))
 				comp.empty();
 
 				for(var i = 0; i < theWebUI.fManager.archives.compress[type].length; i++) {
