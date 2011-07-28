@@ -7,6 +7,7 @@ type="$4"
 compression="$5"
 volume="$6"
 vformat="$7"
+password="$8"
 
 
 if [ ! -d "$tempdir" ]; then
@@ -26,8 +27,12 @@ else
 case "$type" in
 
 
-  rar)          
-	"$1" a -ep1 -m"$5" -ol "$vformat" -v"$6"- "$3" "${@:8}" | awk -F '[\b[:blank:]]+' 'BEGIN {OFS=", "} {for (i=1;i<=NF;i++) { if ((i-1)%10==0) printf "\n0: "; printf "%s ",$i} fflush()}' >> "$2/log"
+  rar)  
+	args="";
+	if [ "$password" != "" ]; then
+		args="-p$password" 
+	fi       
+	"$1" a -ep1 -m"$5" -ol "$vformat" "$args" -v"$6"- "$3" "${@:9}" | awk -F '[\b[:blank:]]+' 'BEGIN {OFS=", "} {for (i=1;i<=NF;i++) { if ((i-1)%10==0) printf "\n0: "; printf "%s ",$i} fflush()}' >> "$2/log"
 	printf "\n1: " >> "$tempdir/log"
        ;;
 

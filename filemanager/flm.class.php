@@ -64,12 +64,15 @@ class FLM {
 		$a['file'] = $this->userdir.$this->postlist['target'];
 
 		if (($this->postlist['target'] === FALSE) || LFS::test($a['file'],'e')) {$this->output['errcode'] = 16; return false;}
-		if(($this->postlist['mode'] === FALSE) || !isset($this->settings['archive']['types'][$this->postlist['mode']])) { $this->sdie('Invalid archive type');}
+		if(($this->postlist['mode'] === FALSE) || (($options = json_decode($this->postlist['mode'], true)) === FALSE)){$this->sdie('Invalid archive type');}
 
-		$a['type'] = $this->settings['archive']['types'][$this->postlist['mode']];
-		$a['comp'] = $this->settings['archive']['compress'][$this->postlist['mode']][$this->postlist['file']];
-		$a['volume'] = (intval($this->postlist['to'])*1024);
-		$a['multif'] = (($a['type'] == 'rar') && ($this->postlist['format'] == 'old')) ? '-vn' : '';
+ 		if(!isset($this->settings['archive']['types'][$options['type']])) { $this->sdie('Invalid archive type');}
+
+		$a['type'] = $this->settings['archive']['types'][$options['type']];
+		$a['comp'] = $this->settings['archive']['compress'][$options['type']][$options['compression']];
+		$a['volume'] = (intval($options['vsize'])*1024);
+		$a['multif'] = (($a['type'] == 'rar') && ($options['format'] == 'old')) ? '-vn' : '';
+		$a['password'] = ($options['password'] != '') ? escapeshellarg($options['password']) : '';
 
 		
 		switch($a['type']) {
@@ -87,7 +90,7 @@ class FLM {
 		$this->batch_exec(array("sh", "-c", escapeshellarg($this->fman_path.'/scripts/archive')." ".escapeshellarg(getExternal($bin))." ".
 							escapeshellarg($this->temp['dir'])." ".escapeshellarg($a['file'])." ".
 							escapeshellarg($a['type'])." ".escapeshellarg($a['comp'])." ".
-							escapeshellarg($a['volume'])." ".escapeshellarg($a['multif'])));
+							escapeshellarg($a['volume'])." ".escapeshellarg($a['multif'])." ".$a['password']));
 	}
 
 

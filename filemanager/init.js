@@ -379,12 +379,21 @@ theWebUI.fManager = {
 		var type = $("#fMan_archtype").val();
 		var vsize = ((this.archives.types[type] != 'zip') && $("#fMan_multiv").is(':checked') && $("#fMan_vsize").val().match(/^\d+$/)) ? $("#fMan_vsize").val() : 0;
 		var compression = $('#fMan_archcompr').val();
+		var password = $('#fMan_apassword').val();
+
+		var self = this;
+
+		var options = {	format: self.settings.arcnscheme,
+					type: type,
+					compression: compression,
+					vsize: vsize, 
+					password: password};
 	
 		$(button).attr('disabled',true);
 		this.actStart(diag);
 
 
-		this.action.request('action=archive&target='+encodeURIComponent(archive)+'&format='+this.settings.arcnscheme+'&mode='+type+'&file='+compression+'&to='+vsize+'&fls='+encodeURIComponent(json_encode(theWebUI.fManager.actionlist)));
+		this.action.request('action=archive&target='+encodeURIComponent(archive)+'&mode='+encodeURIComponent(json_encode(options))+'&fls='+encodeURIComponent(json_encode(theWebUI.fManager.actionlist)));
 
 	},
 
@@ -1218,6 +1227,8 @@ theWebUI.fManager.dialogs = {
   				'</label>'+
 				'<label style="float: right;">'+theUILang.fDiagCArchVsize+'<input name="fMan_vsize" class="fMan_CArchiveRAR Textbox num1" type="text" value="" id="fMan_vsize" disabled="true" /></label>'+
 				'<label style="float: right;"><input name="fMan_multiv" type="checkbox" value="1" class="fMan_CArchiveRAR" id="fMan_multiv" style="margin-right: 5px; margin-top:8px;"/></label>'+
+				'<label style="clear:both; float: left;">Password: <input name="fMan_apassword" class="TextboxLarge fMan_CArchiveRAR" type="text" value="" id="fMan_apassword" /></label>'+
+
 			'</fieldset>'+
 			'<div style="clear:both;"></div>'
 
