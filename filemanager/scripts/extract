@@ -38,6 +38,9 @@ case "$type" in
 			"$1" -xjvf "$3" -C "$4" | sed -u 's/^/0: Extracting /' >> "$2/log"
 			echo "1: Done " >> "$2/log"
                       ;;
+  iso9660|stream)       "$1" x -bd -y -o"$4/" "$3" | sed -u 's/^/0: /' >> "$2/log"
+			echo "1: Done" >> "$2/log"
+			;;
   *)               echo "Unknown archive type"
 			;;
 esac
