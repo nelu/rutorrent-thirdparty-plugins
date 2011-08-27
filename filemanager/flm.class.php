@@ -72,7 +72,6 @@ class FLM {
 		$a['comp'] = $this->settings['archive']['compress'][$options['type']][$options['compression']];
 		$a['volume'] = (intval($options['vsize'])*1024);
 		$a['multif'] = (($a['type'] == 'rar') && ($options['format'] == 'old')) ? '-vn' : '';
-		$a['password'] = ($options['password'] != '') ? escapeshellarg($options['password']) : '';
 
 		
 		switch($a['type']) {
@@ -87,10 +86,15 @@ class FLM {
 					$bin = $a['type'];
 		}
 
+		if(($options['password'] != '') && ($a['type'] == 'rar')) { 
+			$this->filelist = escapeshellarg('-p'.$options['password']).' '.$this->filelist; 
+		}
+
+
 		$this->batch_exec(array("sh", "-c", escapeshellarg($this->fman_path.'/scripts/archive')." ".escapeshellarg(getExternal($bin))." ".
 							escapeshellarg($this->temp['dir'])." ".escapeshellarg($a['file'])." ".
 							escapeshellarg($a['type'])." ".escapeshellarg($a['comp'])." ".
-							escapeshellarg($a['volume'])." ".escapeshellarg($a['multif']).(($a['type'] == 'rar') ? " ".$a['password'] : '')));
+							escapeshellarg($a['volume'])." ".escapeshellarg($a['multif'])));
 	}
 
 
