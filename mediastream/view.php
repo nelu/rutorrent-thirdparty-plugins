@@ -14,11 +14,13 @@ $_SERVER['REMOTE_USER'] = $_SESSION['uname'];
 unset($_POST); $_POST = $_GET;
 
 
-require_once( dirname(__FILE__)."/../../php/util.php" );
+require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
 require_once( dirname(__FILE__)."/../filemanager/flm.class.php" );
+require_once( dirname(__FILE__)."/../filemanager/xmlfix.php" );
+
 
 eval(getPluginConf('filemanager'));
-class rxmlrpcfix { }
+
 class vs extends FLM {
 
 	public function stream($file) {
