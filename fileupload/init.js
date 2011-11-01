@@ -113,7 +113,7 @@ theWebUI.fileup.has_login = function(service) {
 
 
 theWebUI.fileup.save = function() {
-		this.query('action=save&fls='+encodeURIComponent(json_encode(this.services)));
+		this.query('action=save&fls='+theWebUI.fManager.encode_string(this.services));
 }
 
 theWebUI.fileup.start_up = function (button) {

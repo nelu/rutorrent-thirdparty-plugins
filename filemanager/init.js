@@ -149,6 +149,8 @@ theWebUI.fManager = {
 			switch($type(arguments[i])) { 
 				case 'string':
 					rg = '"'+this.addslashes(arguments[i])+'"';
+			
+
 					break;
 				default:
 					rg = arguments[i];
@@ -175,7 +177,11 @@ theWebUI.fManager = {
 
 
 			this.makeVisbile('fMan_Console');
-			$('#fMan_Console .buttons-list').css( "background", "transparent url(./plugins/create/images/ajax-loader.gif) no-repeat 15px 2px" );
+			var loader = './images/ajax-loader.gif';
+			if(thePlugins.isInstalled('create')) {
+				loader = './plugins/create/images/ajax-loader.gif';
+			}
+			$('#fMan_Console .buttons-list').css( "background", "transparent url("+loader+") no-repeat 15px 2px" );
 			$(".fMan_Stop").attr('disabled',false);
 			this.activediag = diag;
 			if (this.settings.cleanlog) {$('#fMan_ClearConsole').click();} else { this.cmdlog("-------\n");}
@@ -235,6 +241,7 @@ theWebUI.fManager = {
 			
 			checks.each(function(index, val) {
 				theWebUI.fManager.actionlist[index] = theWebUI.fManager.addslashes(decodeURIComponent(val.value));
+
 			});
 
 			return true;
@@ -386,7 +393,7 @@ theWebUI.fManager = {
 		this.actStart(diag);
 
 
-		this.action.request('action=archive&target='+encodeURIComponent(archive)+'&mode='+encodeURIComponent(json_encode(options))+'&fls='+encodeURIComponent(json_encode(theWebUI.fManager.actionlist)));
+		this.action.request('action=archive&target='+encodeURIComponent(archive)+'&mode='+this.encode_string(options)+'&fls='+this.encode_string(theWebUI.fManager.actionlist));
 
 	},
 
@@ -427,7 +434,7 @@ theWebUI.fManager = {
 			$(button).attr('disabled',true);
 			this.actStart(diag);
 
-			this.action.request('action=sfvcr&target='+encodeURIComponent(file)+'&fls='+encodeURIComponent(json_encode(theWebUI.fManager.actionlist)));
+			this.action.request('action=sfvcr&target='+encodeURIComponent(file)+'&fls='+this.encode_string(theWebUI.fManager.actionlist));
 	},
 
 
@@ -439,7 +446,7 @@ theWebUI.fManager = {
 
 			this.actStart(diag);
 
-			this.action.request('action=rm&fls='+encodeURIComponent(json_encode(theWebUI.fManager.actionlist)));
+			this.action.request('action=rm&fls='+this.encode_string(theWebUI.fManager.actionlist));
 
 	},
 
@@ -454,7 +461,7 @@ theWebUI.fManager = {
 			$(button).attr('disabled',true);
 
 			this.actStart(diag);
-			this.action.request('action=mv&to='+encodeURIComponent(path)+'&fls='+encodeURIComponent(json_encode(theWebUI.fManager.actionlist)));
+			this.action.request('action=mv&to='+encodeURIComponent(path)+'&fls='+this.encode_string(theWebUI.fManager.actionlist));
 
 	},
 
@@ -470,7 +477,7 @@ theWebUI.fManager = {
 			$(button).attr('disabled',true);
 
 			this.actStart(diag);
-			this.action.request('action=cp&to='+encodeURIComponent(path)+'&fls='+encodeURIComponent(json_encode(theWebUI.fManager.actionlist)));
+			this.action.request('action=cp&to='+encodeURIComponent(path)+'&fls='+this.encode_string(theWebUI.fManager.actionlist));
 	},
 
 
@@ -527,6 +534,11 @@ theWebUI.fManager = {
 
 	},
 
+	encode_string: function(str) {
+
+		return encodeURIComponent(this.json_encode(str));
+
+	},
 
 	extract: function(what, here) {
 		if(!(theWebUI.fManager.actiontoken.length > 1)) {
@@ -797,6 +809,40 @@ theWebUI.fManager = {
 		return false;
 	},
 
+	json_encode: function (obj) {
+	switch($type(obj))
+	{
+		case "number":
+			return(String(obj));
+		case "boolean":
+			return(obj ? "1" : "0");
+		case "string":
+			return('"'+obj+'"');
+		case "array":
+		{
+		        var s = '';
+		        $.each(obj,function(key,item)
+		        {
+		                if(s.length)
+                			s+=",";
+		        	s += theWebUI.fManager.json_encode(item);
+		        });
+			return("["+s+"]");
+		}
+		case "object":
+		{
+		        var s = '';
+		        $.each(obj,function(key,item)
+		        {
+		                if(s.length)
+                			s+=",";
+		        	s += ('"'+key+'":'+theWebUI.fManager.json_encode(item));
+		        });
+			return("{"+s+"}");
+		}
+	}
+	return("null");
+	},
 
 	loaderHide: function () {
 
@@ -1493,6 +1539,23 @@ Dialogs button binds bellow:
 
 		$('#fMan_ClearConsole').click(function() {$('#fMan_ConsoleLog pre').empty(); });
 		$('#fMan_navbut').click(function() {theWebUI.fManager.Refresh();});
+
+
+
+
+
+		if(!thePlugins.isInstalled('data')) {
+
+
+			$(document.body).append($("<iframe name='datafrm'/>").css({visibility: "hidden"}).attr( { name: "datafrm", id: "datafrm" } ).width(0).height(0).load(function()
+			 {
+			 var d = (this.contentDocument || this.contentWindow.document);
+			 if(d.location.href != "about:blank")
+				try { eval(d.body.innerHTML); } catch(e) {}
+		         }));
+		}
+
+
 
 		$(document.body).append(
 			$('<form action="'+theWebUI.fManager.action.requrl+'" id="fManager_getdata" method="post" target="datafrm">'+

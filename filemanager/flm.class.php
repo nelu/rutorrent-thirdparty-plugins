@@ -18,7 +18,7 @@ class FLM {
 	
 	protected $settings = array();
 
-	protected $shout = TRUE;
+	public $shout = TRUE;
 
 
 	public function __construct() {

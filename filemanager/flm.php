@@ -20,7 +20,12 @@ switch($e->postlist['action']) {
 		$e->copy($e->userdir.$e->postlist['to']);
 		break;
 	case 'dl':
-		$e->send_file($e->postlist['target']);
+		$e->shout = FALSE;
+		$sf = $e->workdir.$e->postlist['target'];
+		if(!sendFile($sf, null, null, false)) {
+			cachedEcho('log(theUILang.fErrMsg[6]+" - '.$sf.' / "+theUILang.fErrMsg[3]);',"text/html");
+		}
+		exit;
 		break;
 	case 'extract':
 		$e->extract($e->postlist['target'], $e->postlist['to']);

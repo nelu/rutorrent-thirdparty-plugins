@@ -54,7 +54,7 @@ theWebUI.FS = {
 			if (sr[i]) {list[x] = id; x++;}
 		}
 
-		this.query('action=del&target='+encodeURIComponent(json_encode(list)));
+		this.query('action=del&target='+theWebUI.fManager.encode_string(list));
 
 	},
 
