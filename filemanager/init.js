@@ -1196,7 +1196,7 @@ theWebUI.fManager.flmSelect = function(e, id) {
 
 				var vid_re = new RegExp("^("+thePlugins.get('screenshots').extensions.join('|')+")$", "i");
 
-				create_sub.push([theUILang.fcScreens, (thePlugins.isInstalled('screenshots') && !targetIsDir && flm.getExt(target).match(vid_re)) ? flm.actionCheck('Screenshots', target) : null]);
+				create_sub.push([theUILang.fcScreens, (thePlugins.isInstalled('screenshots') && !targetIsDir && flm.getExt(target).match(vid_re) && !(this.actiontimeout > 0)) ? flm.actionCheck('Screenshots', target) : null]);
 
 				theContextMenu.add([CMENU_CHILD, theUILang.fcreate, create_sub]);
 

@@ -522,8 +522,8 @@ class FLM {
 		$file = $this->userdir.$file;
 		$output = $this->userdir.$output;
 
-		if(($archive === FALSE) || !LFS::is_file($file))  {$this->output['errcode'] = 6; return false; }
-		if(($target === FALSE) || LFS::is_file($output))  {$this->output['errcode'] = 16; return false; }
+		if(($file === FALSE) || !LFS::is_file($file))  {$this->output['errcode'] = 6; return false; }
+		if(($output === FALSE) || LFS::is_file($output))  {$this->output['errcode'] = 16; return false; }
 
 		$vinfo = $this->video_info($file);
 
