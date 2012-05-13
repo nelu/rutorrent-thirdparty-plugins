@@ -1,8 +1,5 @@
 #!/bin/bash
 
-
-umask 000
-
 if [ ! -d "$1" ]; then
 mkdir --mode=0777 -p "$1" || { echo "FATAL ERROR: temp dir creation failed"; exit; }
 fi

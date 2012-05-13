@@ -383,9 +383,9 @@ class FLM {
 
 		$pid = file($k['pid']);
 		$pid = trim($pid[0]);
-		
 
-		$this->xmlrpc->addCommand(new rXMLRPCCommand( "execute", array('sh', '-c', 'kill -15 -- '.$pid.' `pgrep -P '.$pid.'`')));
+
+		$this->xmlrpc->addCommand(new rXMLRPCCommand( "execute", array('sh', '-c', 'kill -15 '.$pid.' `pgrep -P '.$pid.'`')));
 		$this->xmlrpc->addCommand(new rXMLRPCCommand( "execute", array("rm", "-rf", $k['tmp'])));
 	
 		if(!$this->xmlrpc->success()) {$this->output['errcode'] = 20;}
@@ -407,11 +407,13 @@ class FLM {
 
 		if(($file === FALSE) || !LFS::is_file($this->workdir.$file))  {$this->output['errcode'] = 6; return false; }
 
-		exec(getExternal("mediainfo").' --Output=HTML '.escapeshellarg($this->workdir.$file), $out, $failure);
+		//exec(getExternal("mediainfo").' --Output=HTML '.escapeshellarg($this->workdir.$file), $out, $failure);
+		exec(getExternal("mediainfo").' '.escapeshellarg($this->workdir.$file), $out, $failure);
 
         	if($failure) {$this->output['errcode'] = 14; return false;}
 
-		$this->output['minfo'] = preg_replace("/.*<body[^>]*>|<\/body>.*/si", "", implode('', $out));
+		//$this->output['minfo'] = preg_replace("/.*<body[^>]*>|<\/body>.*/si", "", implode('', $out));
+		$this->output['minfo'] = implode("\n", $out);
 	}
 
 	public function move($to) {
@@ -494,6 +496,47 @@ class FLM {
 
 		if(empty($this->filelist)) {$this->output['errcode'] = 22; return false;}
 		$this->batch_exec(array("sh", "-c", escapeshellarg($this->fman_path.'/scripts/rm')." ".escapeshellarg($this->temp['dir'])));
+	}
+
+
+	public function video_info($video_file) {
+		exec(getExternal('ffprobe').' -v 0 -show_streams -print_format json '.escapeshellarg($video_file), $out, $failure);
+
+		$vinfo = json_decode(implode("\n", $out), true);
+
+		if(!isset($vinfo['streams'][0]['nb_frames'])) {
+			exec(getExternal('ffprobe').' -v 0 -show_streams -print_format json -count_packets '.escapeshellarg($video_file), $out, $failure);
+			$vinfo = json_decode(implode("\n", $out), true);
+
+		}
+
+		return $vinfo['streams'][0];
+
+	}
+
+
+
+
+	public function screenshots($file, $output) {
+
+		$file = $this->userdir.$file;
+		$output = $this->userdir.$output;
+
+		if(($archive === FALSE) || !LFS::is_file($file))  {$this->output['errcode'] = 6; return false; }
+		if(($target === FALSE) || LFS::is_file($output))  {$this->output['errcode'] = 16; return false; }
+
+		$vinfo = $this->video_info($file);
+
+		$frame_step = floor($vinfo['nb_frames'] / 48);	
+
+
+
+		$this->batch_exec(array("sh", "-c", escapeshellarg($this->fman_path.'/scripts/screens')." ".escapeshellarg(getExternal('ffmpeg'))." ".
+							escapeshellarg($this->temp['dir'])." ".escapeshellarg($file)." ".escapeshellarg($output)." ".$frame_step));
+
+
+
+
 	}
 
 	public function send_file($file) {

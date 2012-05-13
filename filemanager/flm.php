@@ -60,6 +60,9 @@ switch($e->postlist['action']) {
 	case 'rename':
 		$e->rename();
 		break;
+	case 'scrn':
+		$e->screenshots($e->postlist['target'], $e->postlist['to']);
+		break;
 	case 'sfvch':
 		$e->sfv_check($e->postlist['target']);
 		break;

@@ -283,6 +283,11 @@ theWebUI.fManager = {
 		theWebUI.fManager.actionlp = 0;
 	},
 
+	cleanlog: function() {
+
+		$('#fMan_ConsoleLog pre').empty();
+	},
+
 	cmdlog: function (text) {
 
 		var console = $('#fMan_ConsoleLog');
@@ -292,6 +297,8 @@ theWebUI.fManager = {
 
 		console[0].scrollTop = console[0].scrollHeight;
 	},
+
+
 
 	changedir: function (target) {
 	
@@ -311,6 +318,19 @@ theWebUI.fManager = {
 
 			$('#fMan-NewDirPath').text(theWebUI.fManager.curpath);
 			this.makeVisbile('fMan_mkdir');
+	},
+
+
+	createScreenshots: function (target) {
+
+		if(!(theWebUI.fManager.actiontoken.length > 1)) {
+
+				$('#fMan_Screenshotslist').html(theWebUI.fManager.curpath+'<strong>'+target+'</strong>');
+				$('#fMan_Screenshotsbpath').val(this.homedir+this.curpath+'screens_'+this.recname(target)+'.png');
+				$('#fMan_Screenshots .fMan_Start').attr('disabled',false); 
+		}
+
+		this.makeVisbile('fMan_Screenshots');
 	},
 
 
@@ -531,6 +551,22 @@ theWebUI.fManager = {
 								function () {log(theUILang.fErrMsg[11]);},
 								function () {log(theUILang.fErrMsg[12]+' - Rename: '+on);}
 			);
+
+	},
+
+	doScreenshots: function (button, diag) {
+
+
+			var screen_file = this.checkInputs(diag);
+			if(screen_file === false) {return false;}
+
+			var video = $('#fMan_Screenshotslist').text();
+
+			$(button).attr('disabled',true);
+
+			this.actStart(diag);
+
+			this.action.request('action=scrn&target='+encodeURIComponent(video)+'&to='+encodeURIComponent(screen_file));
 
 	},
 
@@ -858,17 +894,33 @@ theWebUI.fManager = {
 	
 	mediainfo: function(what) {
 
-			cont = $("#media_info").html("Fetching...");
-			this.makeVisbile("dlg_info");
+
+
+			this.cleanlog();
+			this.cmdlog("Fetching...");
+
+			var self = this;
+
+			this.makeVisbile('fMan_Console');
+			var loader = './images/ajax-loader.gif';
+			if(thePlugins.isInstalled('create')) {
+				loader = './plugins/create/images/ajax-loader.gif';
+			}
+			$('#fMan_Console .buttons-list').css( "background", "transparent url("+loader+") no-repeat 15px 2px" );
+			$(".fMan_Stop").attr('disabled',true);
+
 
 			this.action.request('action=minfo&target='+encodeURIComponent(what), 
 								function (data) { if(theWebUI.fManager.isErr(data.errcode, what)) {
-											cont.text('Failed fetching data');
+											self.cmdlog('Failed fetching data');
 											return false;
 											}
-									cont.html(data.minfo);
+									self.cleanlog();
+									self.cmdlog(data.minfo);
 								}
 			);
+
+			this.loaderHide();
 
 
 	},
@@ -1138,15 +1190,18 @@ theWebUI.fManager.flmSelect = function(e, id) {
 				create_sub.push([theUILang.fcNewTor, thePlugins.isInstalled('create') && !(table.selCount > 1) ? function () {flm.createT(target);} : null]);
 				create_sub.push([CMENU_SEP]);
 				create_sub.push([theUILang.fcNewDir, "theWebUI.fManager.createDir()"]);
-				create_sub.push([theUILang.fcNewRar, flm.actionCheck('CArchive', target, 0)]);
-				create_sub.push([theUILang.fcNewZip, flm.actionCheck('CArchive', target, 1)]);
+				create_sub.push([theUILang.fcNewArchive, flm.actionCheck('CArchive', target, 0)]);
 				create_sub.push([CMENU_SEP]);
 				create_sub.push([theUILang.fcSFV, !targetIsDir ? flm.actionCheck('CreateSFV', target) : null]);
+
+				var vid_re = new RegExp("^("+thePlugins.get('screenshots').extensions.join('|')+")$", "i");
+
+				create_sub.push([theUILang.fcScreens, (thePlugins.isInstalled('screenshots') && !targetIsDir && flm.getExt(target).match(vid_re)) ? flm.actionCheck('Screenshots', target) : null]);
 
 				theContextMenu.add([CMENU_CHILD, theUILang.fcreate, create_sub]);
 
 				theContextMenu.add([theUILang.fcheckSFV, (fext == 'sfv') ? flm.actionCheck('CheckSFV', target) : null]);
-				theContextMenu.add([theUILang.fMediaI, (thePlugins.isInstalled('mediainfo') && !targetIsDir) ? function() {flm.mediainfo(target); } : null]);
+				theContextMenu.add([theUILang.fMediaI, (thePlugins.isInstalled('mediainfo') && !targetIsDir && !(this.actiontimeout > 0)) ? function() {flm.mediainfo(target); } : null]);
 
 			} else { theContextMenu.add([theUILang.fcNewDir, "theWebUI.fManager.createDir()"]); }
 
@@ -1372,6 +1427,14 @@ theWebUI.fManager.dialogs = {
 			'<fieldset><legend>'+theUILang.fDiagRenameTo+'</legend>'+
 				'<input type="text" name="fMan-RenameTo" id="fMan-RenameTo" style="width:200px;" />'+
 			'</fieldset>'
+	},
+
+	Screenshots: {
+		title: 'fcScreens',
+		modal: true,
+		funct: 'createScreenshots',
+		content: '<fieldset><legend>Video file:</legend>'+	
+			'</fieldset>'
 	}
 }
 
@@ -1395,7 +1458,8 @@ theWebUI.fManager.dialogs = {
 			CreateSFV: theUILang.fDiagSFVHashfile,
 			Move: theUILang.fDiagMoveTo, 
 			Copy: theUILang.fDiagCopyTo,
-			Extract: theUILang.fDiagTo
+			Extract: theUILang.fDiagTo,
+			Screenshots: 'Screens image:'
 		}
 		
 		var pathbrowse;
@@ -1406,7 +1470,7 @@ theWebUI.fManager.dialogs = {
 
 			if($type(browsediags[i])) { 
 
-				if (i != 'Extract') {dcontent = $(this.dialogs[i].content).append('<div id="fMan_'+i+'list" class="checklist"><ul></ul></div>');}
+				if ((i != 'Extract') || (i != 'Screenshots')) {dcontent = $(this.dialogs[i].content).append('<div id="fMan_'+i+'list" class="checklist"><ul></ul></div>');}
 
 				pathbrowse = $('<fieldset>').html($('<legend>').text(browsediags[i])).
 						append($('<input type="text" style="width:350px;" autocomplete="off" />').attr('id', 'fMan_'+i+'bpath').addClass('TextboxLarge')).
@@ -1457,6 +1521,9 @@ Dialogs button binds bellow:
 					break;	
 				case 'Rename':
 					theWebUI.fManager.doRename();
+					break;	
+				case 'Screenshots':
+					theWebUI.fManager.doScreenshots(this, diagid[1]);
 					break;	
 			}
 
@@ -1537,7 +1604,7 @@ Dialogs button binds bellow:
 				theWebUI.fManager.viewNFO(nfofile, mode)
 		});
 
-		$('#fMan_ClearConsole').click(function() {$('#fMan_ConsoleLog pre').empty(); });
+		$('#fMan_ClearConsole').click(function() {theWebUI.fManager.cleanlog();});
 		$('#fMan_navbut').click(function() {theWebUI.fManager.Refresh();});
 
 
