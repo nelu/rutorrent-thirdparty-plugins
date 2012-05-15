@@ -120,27 +120,12 @@ class FILEUP extends FLM {
 			$arguments .= escapeshellarg('--auth='.$this->services[$this->postlist['target']]['login'].':'.$this->services[$this->postlist['target']]['password']);
 		}
 		
-		switch($this->postlist['target']) {
-			
-			case 'zshare':
-			case '1fichier':
-			case 'sendspace':
-				if($this->postlist['mode'] !== FALSE) {
+
+		if($this->postlist['mode'] !== FALSE) {
 					$arguments .= ' '.escapeshellarg('--description='.$this->postlist['mode']);
-				}
-				break;
-			case  'megaupload':
-				if (!empty($this->services[$this->postlist['target']]['email'])) {
-					$arguments .= ' '.escapeshellarg('--email-from='.$this->services[$this->postlist['target']]['email']);
-				}
-				if($this->postlist['mode'] !== FALSE) {
-					$arguments .= ' '.escapeshellarg('--description='.$this->postlist['mode']);
-				}
-				if($this->postlist['to'] !== FALSE) {
+		}
+		if($this->postlist['to'] !== FALSE) {
 					$arguments .= ' '.escapeshellarg('--email-to='.$this->postlist['to']);
-				}
-				break;
-			
 		}
 		
 		$arguments .= ' '.escapeshellarg('/'.$this->postlist['file']);

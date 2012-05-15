@@ -23,6 +23,9 @@ theWebUI.fileup.add_options = function () {
 						case 'account':
 							continue;
 							break;
+						case 'email':
+							continue;
+							break;
 						default:
 							field = $('<input type="text" />');
 					}
@@ -198,19 +201,21 @@ theWebUI.fileup.prepare = function(provider) {
 	
 		if(!this.running) {
 			var opt = $('#fileUP_upoptions');
-			var desc = $('#fileUP_recipient').hide();
-			
+			var desc = $('#fileUP_description').hide();
+			var email = $('#fileUP_recipient').hide();
+
 			$('#fileUP_recipient').find('input').val('');
 			$('#fileUP_description').find('input').val('');
-			switch(provider) {
-				case 'megaupload':
-					desc.show();
-				case 'sendspace':
-				case 'zshare':
-					opt.show();
-					break;
-				default: opt.hide();
-			}
+
+
+if(	this.services[provider].hasOwnProperty('email') ) {
+
+	opt.show();
+	email.show();
+
+}
+		
+
 
 			$('#fileUP_filelog pre').append('<strong>'+theUILang.fileUP.file+' </strong>'+this.selectedfile+"\n");
 			this.selectedservice = provider;
