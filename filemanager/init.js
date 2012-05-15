@@ -314,6 +314,12 @@ theWebUI.fManager = {
 	},
 
 
+	Copy: function(diag) {
+		$('#fMan_'+diag+'bpath').val(this.homedir+this.curpath);
+		this.doSel(diag);
+
+	},
+
 	createDir: function (dirname) {
 
 			$('#fMan-NewDirPath').text(theWebUI.fManager.curpath);
@@ -1351,7 +1357,7 @@ theWebUI.fManager.dialogs = {
 	Copy: {
 		title: 'fDiagCopy',
 		modal: true,
-		funct: 'doSel',
+		funct: 'Copy',
 		content: '<fieldset><legend>'+theUILang.fDiagCopySel+'</legend></fieldset>'
 	},
 
@@ -1575,14 +1581,14 @@ Dialogs button binds bellow:
 					case 'gzip':
 						ext = 'tar.gz';
 						break;
-					case 'bzip':
+					case 'bzip2':
 						ext = 'tar.bz2';
 						break;
 					default:
 						ext = theWebUI.fManager.archives.types[type];
 				}
 
-				$('#fMan_CArchivebpath').val(theWebUI.fManager.recname($('#fMan_CArchivebpath').val())+'.'+ext);
+				$('#fMan_CArchivebpath').val(theWebUI.fManager.recname(theWebUI.fManager.recname($('#fMan_CArchivebpath').val()))+'.'+ext);
 				$("#fMan_vsize").attr("disabled", (!$("#fMan_multiv").attr("disabled", (type != 0)).is(':checked') || (type != 0)));
 				$('#fMan_apassword').attr("disabled", (type != 0))
 				comp.empty();

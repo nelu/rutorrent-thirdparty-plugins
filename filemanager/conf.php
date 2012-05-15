@@ -12,7 +12,7 @@ $pathToExternals['tar'] = '';
 
 // archive mangling, see archiver man page before editing
 
-$fm['archive']['types'] = array('rar', 'zip', 'tar', 'gzip', 'bzip');
+$fm['archive']['types'] = array('rar', 'zip', 'tar', 'gzip', 'bzip2');
 
 
 

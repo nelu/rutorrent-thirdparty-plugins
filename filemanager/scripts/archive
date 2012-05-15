@@ -41,8 +41,8 @@ case "$type" in
 	"$binary" -C "${1%/*}" -czvf "$archive" "${@##*/}" | sed -u 's/^/0: Adding /' >> "$tempdir/log"
 	echo "1: Done" >> "$tempdir/log"
        ;;
-  bzip)
-	shift 7;       
+  bzip2)
+	shift 7;  
 	"$binary" -C "${1%/*}" -cjvf "$archive" "${@##*/}" | sed -u 's/^/0: Adding /' >> "$tempdir/log"
 	echo "1: Done" >> "$tempdir/log"
        ;;

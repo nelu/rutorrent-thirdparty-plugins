@@ -77,9 +77,7 @@ class FLM {
 		switch($a['type']) {
 				
 				case 'gzip': 
-					$bin = 'tar';
-					break;
-				case 'bzip': 
+				case 'bzip2': 
 					$bin = 'tar';
 					break;
 				default: 
