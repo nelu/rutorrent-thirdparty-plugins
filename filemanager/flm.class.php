@@ -500,14 +500,20 @@ class FLM {
 
 
 	public function video_info($video_file) {
-		exec(getExternal('ffprobe').' -v 0 -show_streams -print_format json '.escapeshellarg($video_file), $out, $failure);
 
-		$vinfo = json_decode(implode("\n", $out), true);
+		$this->xmlrpc->addCommand( new rXMLRPCCommand('execute_capture', 
+					array(getExternal("ffprobe"), '-v', 0, '-show_streams', '-print_format', 'json' , $video_file)));
+		$this->xmlrpc->success();
+
+		$vinfo = json_decode(stripslashes($this->xmlrpc->val[0]), true);
 
 		if(!isset($vinfo['streams'][0]['nb_frames'])) {
-			exec(getExternal('ffprobe').' -v 0 -show_streams -print_format json -count_packets '.escapeshellarg($video_file), $out, $failure);
-			$vinfo = json_decode(implode("\n", $out), true);
 
+			$this->xmlrpc->addCommand( new rXMLRPCCommand('execute_capture', 
+					array(getExternal("ffprobe"), '-v', 0, '-show_streams', '-print_format', 'json', '-count_packets', $video_file)));
+
+			if(!$this->xmlrpc->success()) {$this->sdie('Current ffmpeg/ffprobe not supported. Please compile a newer version.'); }
+			$vinfo = json_decode(stripslashes($this->xmlrpc->val[0]), true);
 		}
 
 		return $vinfo['streams'][0];
@@ -528,8 +534,6 @@ class FLM {
 		$vinfo = $this->video_info($file);
 
 		$frame_step = floor($vinfo['nb_frames'] / 48);	
-
-
 
 		$this->batch_exec(array("sh", "-c", escapeshellarg($this->fman_path.'/scripts/screens')." ".escapeshellarg(getExternal('ffmpeg'))." ".
 							escapeshellarg($this->temp['dir'])." ".escapeshellarg($file)." ".escapeshellarg($output)." ".$frame_step));
