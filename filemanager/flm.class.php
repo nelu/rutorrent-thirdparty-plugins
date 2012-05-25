@@ -401,17 +401,19 @@ class FLM {
 
 
 	public function mediainfo ($file) {
+
 		eval(getPluginConf('mediainfo'));
 
 		if(($file === FALSE) || !LFS::is_file($this->workdir.$file))  {$this->output['errcode'] = 6; return false; }
 
-		//exec(getExternal("mediainfo").' --Output=HTML '.escapeshellarg($this->workdir.$file), $out, $failure);
-		exec(getExternal("mediainfo").' '.escapeshellarg($this->workdir.$file), $out, $failure);
+		$this->xmlrpc->addCommand( new rXMLRPCCommand('execute_capture', 
+					array(getExternal("mediainfo"), $this->workdir.$file)));
 
-        	if($failure) {$this->output['errcode'] = 14; return false;}
+		if(!$this->xmlrpc->success()) {$this->output['errcode'] = 14; return false;}
 
-		//$this->output['minfo'] = preg_replace("/.*<body[^>]*>|<\/body>.*/si", "", implode('', $out));
-		$this->output['minfo'] = implode("\n", $out);
+
+		$this->output['minfo'] = $this->xmlrpc->val[0];
+
 	}
 
 	public function move($to) {
