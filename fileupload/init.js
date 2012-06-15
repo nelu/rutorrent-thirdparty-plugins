@@ -262,6 +262,7 @@ theWebUI.fileup.query = function(action, complete) {
 }
 
 theWebUI.fileup.valid_mail = function(str) {
+		console.log(str);
 		return str.match(/^([\w-]+(?:\.[\w-]+)*)\@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$|(\[?(\d{1,3}\.){3}\d{1,3}\]?)$/i);
 }
 
@@ -299,7 +300,7 @@ theWebUI.setSettings = function() {
 				if(obj && (fields.length > 0)) {
 					for (var x in obj) {
 						var ele = $('#fileUP_'+i+'_'+x).val();
-						if(ele != obj[x]) {
+						if(ele && (ele != obj[x])) {
 							if(x == 'email' && !theWebUI.fileup.valid_mail(ele)) {continue;}
 							theWebUI.fileup.services[i][x] = ele; 
 							needsave = true;

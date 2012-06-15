@@ -15,6 +15,8 @@ class FLM {
 	protected $output = array('errcode' => 0);
 	protected $temp = array();
 	protected $filelist;
+
+	protected $uisettings;
 	
 	protected $settings = array();
 
@@ -38,7 +40,7 @@ class FLM {
 		$this->check_post($this->postlist);
 		$this->userdir = addslash($topDirectory);
 
-		$this->workdir = $this->userdir.$this->postlist['dir'];
+		$this->workdir = $this->userdir.(($this->postlist['dir'] !== false) ? $this->postlist['dir']: '');
 		$this->xmlrpc = new rxmlrpcfix();
 
 		if(($this->postlist['dir'] === FALSE) || !$this->remote_test($this->workdir, 'd')) { $this->output['errcode'] = 2; die();}
@@ -47,7 +49,8 @@ class FLM {
 		$this->workdir = addslash($this->workdir);
 		$this->fman_path = dirname(__FILE__);
 
-
+	//	$uisettings = new stdClass():
+	//	$uisettings->hash = 'sex';
 
 		$this->settings = $fm;
 		$this->filelist = ($this->postlist['fls'] !== FALSE) ? $this->get_filelist($this->postlist['fls']) : '';
@@ -502,21 +505,42 @@ class FLM {
 	public function video_info($video_file) {
 
 		$this->xmlrpc->addCommand( new rXMLRPCCommand('execute_capture', 
-					array(getExternal("ffprobe"), '-v', 0, '-show_streams', '-print_format', 'json' , $video_file)));
-		$this->xmlrpc->success();
+					array(getExternal("ffprobe"), '-v', 0, '-show_format', '-show_streams', '-print_format', 'json' ,'-i', $video_file)));
+		//$this->xmlrpc->success();
+
+
+		if(!$this->xmlrpc->success()) {$this->sdie('Current ffmpeg/ffprobe not supported. Please compile a newer version.'); }
 
 		$vinfo = json_decode(stripslashes($this->xmlrpc->val[0]), true);
 
-		if(!isset($vinfo['streams'][0]['nb_frames'])) {
+		$video_stream = false;
+		$video['stream_id'] = 0;
 
-			$this->xmlrpc->addCommand( new rXMLRPCCommand('execute_capture', 
-					array(getExternal("ffprobe"), '-v', 0, '-show_streams', '-print_format', 'json', '-count_packets', $video_file)));
+		foreach($vinfo['streams'] as $sk => $stream) {
 
-			if(!$this->xmlrpc->success()) {$this->sdie('Current ffmpeg/ffprobe not supported. Please compile a newer version.'); }
-			$vinfo = json_decode(stripslashes($this->xmlrpc->val[0]), true);
+			if(array_search('video', $stream, true) !== false) {
+				$video['stream_id'] = $sk;
+				$video_stream = $stream;
+			}
 		}
 
-		return $vinfo['streams'][0];
+		if($video_stream === false) {$this->sdie('Invalid video!');}
+
+		$video['duration'] = floor(isset($vinfo['format']['duration']) ? $vinfo['format']['duration'] : (isset($video_stream['duration']) ? $video_stream['duration'] : 0));
+		$video['frame_rate'] = floor(isset($video_stream['r_frame_rate']) ? eval("return (".$video_stream['r_frame_rate'].");") : 0);
+		$video['total_frames'] = $video['duration']*$video['frame_rate'];
+
+		if($video['total_frames'] < 1) {
+
+			$this->xmlrpc->addCommand( new rXMLRPCCommand('execute_capture', 
+					array(getExternal("ffprobe"), '-v', 0, '-show_streams', '-print_format', 'json', '-count_frames', '-i', $video_file)));
+
+			$vinfo = json_decode(stripslashes($this->xmlrpc->val[0]), true);
+			$video['total_frames'] = $vinfo['streams'][$video['stream_id']]['nb_read_frames'];
+
+		}
+
+		return $video; 
 
 	}
 
@@ -525,18 +549,28 @@ class FLM {
 
 	public function screenshots($file, $output) {
 
-		$file = $this->userdir.$file;
-		$output = $this->userdir.$output;
 
-		if(($file === FALSE) || !LFS::is_file($file))  {$this->output['errcode'] = 6; return false; }
-		if(($output === FALSE) || LFS::is_file($output))  {$this->output['errcode'] = 16; return false; }
+		if(($file === FALSE) || !LFS::is_file(($file = $this->userdir.$file)))  {$this->output['errcode'] = 6; return false; }
+		if(($output === FALSE) || LFS::is_file(($output = $this->userdir.$output)))  {$this->output['errcode'] = 16; return false; }
+
+		$defaults = array('scrows' => '12', 'sccols' => 4, 'scwidth' => 300 );
+
+		$uisettings = json_decode(file_get_contents(getSettingsPath().'/uisettings.json'), true);
+		$settings = array();
+
+		foreach($defaults as $k => $value) {
+			$settings[$k] = (isset($uisettings['webui.fManager.'.$k]) && ($uisettings['webui.fManager.'.$k] > 1)) ? $uisettings['webui.fManager.'.$k] : $value;
+		}
+
+
 
 		$vinfo = $this->video_info($file);
 
-		$frame_step = floor($vinfo['nb_frames'] / 48);	
+		$frame_step = floor($vinfo['total_frames'] / ($settings['scrows'] * $settings['sccols']));	
 
 		$this->batch_exec(array("sh", "-c", escapeshellarg($this->fman_path.'/scripts/screens')." ".escapeshellarg(getExternal('ffmpeg'))." ".
-							escapeshellarg($this->temp['dir'])." ".escapeshellarg($file)." ".escapeshellarg($output)." ".$frame_step));
+							escapeshellarg($this->temp['dir'])." ".escapeshellarg($file)." ".escapeshellarg($output)." ".
+							$frame_step." ".$settings['scwidth']." ".$settings['scrows']." ".$settings['sccols']));
 
 
 

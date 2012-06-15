@@ -77,7 +77,9 @@ div#fMan_CArchive div.dlg-header {
 
 
 }
-
+div#fMan_optPan {
+    overflow: auto;
+}
 
 div#fMan_Nfo div.dlg-header {
 	background-image: url(images/nfo.gif)

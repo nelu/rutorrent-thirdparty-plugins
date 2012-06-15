@@ -22,7 +22,10 @@ theWebUI.fManager = {
 			stripdirs: true,
 			showhidden: true,
 			cleanlog: false,
-			arcnscheme: 'new'
+			arcnscheme: 'new',
+			scrows: 12,
+			sccols: 4,
+			scwidth: 300
 	},
 	pathlists: 5,
 	permf: 0,
@@ -168,7 +171,6 @@ theWebUI.fManager = {
 
 	addslashes: function (str) {
 	// http://phpjs.org/functions/addslashes:303
-
    		 return (str + '').replace(/[\\"\/]/g, '\\$&').replace(/\u0000/g, '\\0');
 	},
 
@@ -436,6 +438,7 @@ theWebUI.fManager = {
 
 			this.action.request('action=extract&target='+encodeURIComponent(archive)+'&to='+encodeURIComponent(path));
 	},
+
 
 
 	doSFVcheck: function(button, diag) {
@@ -1301,9 +1304,23 @@ theWebUI.fManager.dialogs = {
 		'    </select></td>'+
 		'  </tr>'+
 		'  </table>'+
+		'</fieldset><fieldset>'+
+		'  <legend>Screenshot Settings</legend>'+
+		'  <table width="100%" border="0" cellspacing="0" cellpadding="0"><tr>'+
+		'    <td>Screens rows:</td>'+
+		'    <td><input type="text" name="textfield" class="Textbox num1" id="fMan_Optscrows" value="" /></td>'+
+		'  </tr>'+
+		'<tr>'+
+		'    <td>Screens columns:</td>'+
+		'    <td><input type="text" name="textfield" class="Textbox num1" id="fMan_Optsccols" value="" /></td>'+
+		'  </tr>'+
+		'<tr>'+
+		'    <td>Thumbnail width:</td>'+
+		'    <td><input type="text" name="textfield" class="Textbox num1" id="fMan_Optscwidth" value="" /></td>'+
+		'  </tr>'+
+		'  </table>'+
 		'</fieldset>'
 	},
-
 
 	CArchive: {
 		title: 'fDiagCArchive',
@@ -1654,7 +1671,6 @@ theWebUI.setSettings = function() {
 					else { inval = $(ele).val(); }
 
 					if(inval != theWebUI.settings["webui.fManager."+inid[1]]) {
-						console.log(inid+" - "+inval);
 						theWebUI.settings["webui.fManager."+inid[1]] = theWebUI.fManager.settings[inid[1]] = inval;
 						needsave = true;
 					}
