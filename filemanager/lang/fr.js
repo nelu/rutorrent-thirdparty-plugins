@@ -14,10 +14,10 @@ theUILang.fMediaI		= "Media info";
 theUILang.fView		= "Voir";
 theUILang.fcreate		= "Créer";
 theUILang.fcNewDir		= "un répertoire";
-theUILang.fcNewRar		= "une archive .rar";
-theUILang.fcNewZip		= "une archive .zip";
+theUILang.fcNewArchive		= 'une archive';
 theUILang.fcNewTor		= "un .torrent";
 theUILang.fcSFV		= "un fichier SFV...";
+theUILang.fcScreens		= 'une capture vidéo';
 theUILang.fRefresh		= "Rafraichir";
 
 theUILang.fErrMsg = [];
@@ -44,6 +44,7 @@ theUILang.fErrMsg[20]	= "Échec de l'arrêt du processus.";
 theUILang.fErrMsg[21]	= "L'action est terminée.";
 theUILang.fErrMsg[22]	= "Rien de marche avec.";
 theUILang.fErrMsg[23]	= "Échec de l'action.";
+theUILang.fErrMsg[24]	= 'Manipulation des archives désactivée (applications introuvables)';
 
 
 
@@ -121,7 +122,8 @@ theUILang.fStarts = {
 	CheckSFV: 	"Vérification du hash démarrée.",
 	CreateSFV:	"Calcul du hash démarré.",
 	Move:		"Déplacement des fichiers démarré.",
-	Copy:		"Copiage des fichiers démarré."
+	Copy:		"Copiage des fichiers démarré.",
+	Screenshots:	'Création de la capture vidéo démarrée. Veuillez patienter, cela peut être long.'
 }
 
 theUILang.fStops = { 
@@ -131,5 +133,6 @@ theUILang.fStops = {
 	CheckSFV: 	"Vérification du hash arrêtée.",
 	CreateSFV:	"Calcul du hash arrêté.",
 	Move:		"Déplacement des fichiers arrêté.",
-	Copy:		"Copiage des fichiers arrêté."
+	Copy:		"Copiage des fichiers arrêté.",
+	Screenshots:		'Création de la capture vidéo arrêtée.'
 }
