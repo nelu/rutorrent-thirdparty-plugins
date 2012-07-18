@@ -14,10 +14,10 @@ theUILang.fMediaI		= 'Media info';
 theUILang.fView		= 'View';
 theUILang.fcreate		= 'Create';
 theUILang.fcNewDir		= 'New Directory';
-theUILang.fcNewRar		= '.rar archive';
-theUILang.fcNewZip		= '.zip archive';
+theUILang.fcNewArchive		= 'New Archive';
 theUILang.fcNewTor		= 'New .torrent';
 theUILang.fcSFV		= 'SFV file...';
+theUILang.fcScreens		= 'Screenshots';
 theUILang.fRefresh		= 'Refresh';
 
 theUILang.fErrMsg = [];
@@ -44,6 +44,7 @@ theUILang.fErrMsg[20]	= 'Command kill failed';
 theUILang.fErrMsg[21]	= 'Action has finished';
 theUILang.fErrMsg[22]	= 'Nothing to work with';
 theUILang.fErrMsg[23]	= 'Action failed';
+theUILang.fErrMsg[24]	= 'archive manipulation disabled (application not found)';
 
 
 
@@ -121,7 +122,8 @@ theUILang.fStarts = {
 	CheckSFV: 	'File checking started',
 	CreateSFV:	'File hashing started',
 	Move:		'File relocation started',
-	Copy:		'File duplication started'
+	Copy:		'File duplication started',
+	Screenshots:	'Video screenshots creation started. Please wait this could take some time'
 }
 
 theUILang.fStops = { 
@@ -131,5 +133,6 @@ theUILang.fStops = {
 	CheckSFV: 	'SFV check stopped',
 	CreateSFV:	'SFV creation stopped',
 	Move:		'File relocation stopped',
-	Copy:		'File duplication stopped'
+	Copy:		'File duplication stopped',
+	Screenshots:		'Video screenshots creation stopped'
 }

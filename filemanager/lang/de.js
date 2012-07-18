@@ -10,14 +10,15 @@ theUILang.fDelete		= 'Löschen';
 theUILang.fExtracta		= 'Alle entpacken...';
 theUILang.fExtracth		= 'Hierher entpacken';
 theUILang.fcheckSFV		= 'Prüfe SFV';
-theUILang.fMediaI		= 'Media info';
-theUILang.fView		= 'Betrachte';
+theUILang.fMediaI		= 'MediaInfo';
+theUILang.fView		= 'Betrachten';
 theUILang.fcreate		= 'Erstelle';
 theUILang.fcNewDir		= 'Neues Verzeichnis';
 theUILang.fcNewRar		= '.rar Archiv';
 theUILang.fcNewZip		= '.zip Archiv';
 theUILang.fcNewTor		= '.torrent Datei';
 theUILang.fcSFV		= 'SFV erstellen...';
+theUILang.fcScreens 		= 'Screenshots';
 theUILang.fRefresh		= 'Aktualisieren';
 
 theUILang.fErrMsg = [];
@@ -32,12 +33,12 @@ theUILang.fErrMsg[8]		= 'Umbenennen fehlgeschlagen - verweigert';
 theUILang.fErrMsg[9]		= 'Verzeichnis auflisten dauerte zu lange';
 theUILang.fErrMsg[10]	= 'Auflisten Verzeichnisinhalt fehlgeschlagen';
 theUILang.fErrMsg[11]	= 'Aktion dauert zu lange';
-theUILang.fErrMsg[12]	= 'Irgendetwas schlug fehl';
+theUILang.fErrMsg[12]	= 'Irgendetwas ist fehlgeschlagen';
 theUILang.fErrMsg[13]	= 'Datei Zugriffsfehler';
-theUILang.fErrMsg[14]	= 'Mediainfo Fehler';
-theUILang.fErrMsg[15]	= 'Mediainfo nicht gefunden, überprüfe config.php';
+theUILang.fErrMsg[14]	= 'MediaInfo Fehler';
+theUILang.fErrMsg[15]	= 'MediaInfo nicht gefunden, überprüfen Sie config.php';
 theUILang.fErrMsg[16]	= 'Datei existiert bereits';
-theUILang.fErrMsg[17]	= 'Temporäres Verzeichnis nicht gesetzt, überprüfe config.php';
+theUILang.fErrMsg[17]	= 'Temporäres Verzeichnis nicht gesetzt, überprüfen Sie config.php';
 theUILang.fErrMsg[18]	= 'Ungültige Datei';
 theUILang.fErrMsg[19]	= 'Kommando bereits beendet';
 theUILang.fErrMsg[20]	= 'Kommando töten fehlgeschlagen';
@@ -51,7 +52,7 @@ theUILang.fErrMsg[23]	= 'Aktion fehlgeschlagen';
 theUILang.fDiagmkdir		= 'Erstelle neues Verzeichnis';
 theUILang.fDiagndirname	= 'Verzeichnis Name';
 theUILang.fDiagnodirname 	= 'Bitte Namen des Verzeichnisses eingeben!';
-theUILang.fDiagRename 	= 'datei/Verzeichnis umbenennen';
+theUILang.fDiagRename 	= 'Datei/Verzeichnis umbenennen';
 theUILang.fDiagRenameTo 	= 'Umbenennen zu:';
 theUILang.fDiagRenameBut	= 'Umbenennen';
 theUILang.fDiagRenameEmpty	= 'Neuen Namen eingeben';
@@ -121,7 +122,8 @@ theUILang.fStarts = {
 	CheckSFV: 	'SFV überprüfen gestartet',
 	CreateSFV:	'SFV prüfen gestartet',
 	Move:		'Datei verschieben gestartet',
-	Copy:		'Datei kopieren gestartet'
+	Copy:		'Datei kopieren gestartet',
+	Screenshots: 	'Video screenshots creation started. Please wait this could take some time'
 }
 
 theUILang.fStops = { 
@@ -131,6 +133,7 @@ theUILang.fStops = {
 	CheckSFV: 	'SFV überprüfen gestoppt',
 	CreateSFV:	'SFV prüfen gestoppt',
 	Move:		'Datei verschieben gestoppt',
-	Copy:		'Datei kopieren gestoppt'
+	Copy:		'Datei kopieren gestoppt',
+	Screenshots: 	'Video screenshots creation stopped'
 }
 
