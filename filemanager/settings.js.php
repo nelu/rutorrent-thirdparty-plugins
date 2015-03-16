@@ -15,5 +15,3 @@ foreach(array_merge($fm['archive']['types'], array('unzip')) as $kid => $externa
 echo 'theWebUI.fManager.homedir = "', rtrim($topDirectory, '/'), '";',"\n";
 echo 'theWebUI.fManager.mkdefmask = "', $fm['mkdperm'], '";',"\n";
 echo 'theWebUI.fManager.archives = '.json_encode($fm['archive']).';',"\n";
-
-?>
