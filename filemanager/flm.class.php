@@ -3,32 +3,22 @@ use Flm\RemoteShell as Remote;
 use Flm\Filesystem as Fs;
 use Flm\Archive;
 use Flm\Helper;
+use Flm\mediainfoSettings;
 
 class FLM {
 
-	public $hash = 'flm.dat';
-
-	protected $xmlrpc;
-
-	public $postlist = array('dir', 'action', 'file', 'fls', 'target', 'mode', 'to', 'format');
 
 	public $workdir;
 	public	$userdir;
-	public $fman_path;
 
-	protected $output = array('errcode' => 0);
+
 	protected $temp = array();
-	protected $filelist;
 
 	protected $uisettings;
 	
 	protected $settings = array();
-
-	public $shout = TRUE;
-    
     
     public $config;
-
 
 	public function __construct( $directory) {
 		/*
@@ -36,9 +26,7 @@ class FLM {
 		 * 
 		 * $userdir - current user home directory (jail)
 		 * $workdir - the directory where filemanager is working at the time of call
-		 * $filelist - the current file-list sent for processing (archive,move,copy,delete, etc)
 		 * $settings - array with filemager current configuration
-		 * $fman_path - string flm.class.php directory location
 		 * 
 		 */
 		global $topDirectory, $fm;
@@ -72,8 +60,9 @@ class FLM {
 
 	}
 
-    public function getFullPath($relative_path) {
-            return fullpath(trim($relative_path, DIRECTORY_SEPARATOR), $this->workdir);
+    
+    public function getWorkDir($relative_path) {
+        return fullpath(trim($relative_path, DIRECTORY_SEPARATOR), $this->workdir);
     }
     
     public function getDirPath($path) {
@@ -119,7 +108,7 @@ class FLM {
            
        }
 
-        $files = array_map(array($this, 'getFullPath'), (array)$paths->fls);
+        $files = array_map(array($this, 'getWorkDir'), (array)$paths->fls);
         
         $fs = Fs::get();  
 
@@ -139,7 +128,7 @@ class FLM {
 	public function copy($paths) {
 	    
         
-        $files = array_map(array($this, 'getFullPath'), (array)$paths->fls);
+        $files = array_map(array($this, 'getWorkDir'), (array)$paths->fls);
         
         $to = $this->getUserDir($paths->to);
        // var_dump($paths, $to, $files);
@@ -160,7 +149,7 @@ class FLM {
 	public function dirlist($paths) {
 
 
-        $dirpath = $this->getFullPath($paths->dir);
+        $dirpath = $this->getWorkDir($paths->dir);
         
         //var_dump($dirpath);
         
@@ -193,10 +182,6 @@ class FLM {
        $archive = new Archive($archive_file);  
                 
        return   $archive->extract($to);
-	}
-
-	public function fext($file) {
-		return (pathinfo($file, PATHINFO_EXTENSION));
 	}
 
 	public function get_session() {
@@ -233,26 +218,44 @@ class FLM {
 
 
 
-	public function mediainfo ($file) {
+	public function mediainfo ($paths) {
+        
+        $filename = $this->getWorkDir($paths->target);
 
-		eval(getPluginConf('mediainfo'));
+		if(!Fs::get()->isFile($filename))  {
+		    throw new Exception("Error Processing Request", 6);
+        }
+        
+        
+        $commands = array();
+        $flags = '';
+        $st = mediainfoSettings::load();
+        $task = new rTask( array
+        ( 
+            'arg'=>call_user_func('end',explode('/',$filename)),                    
+            'requester'=>'mediainfo',
+            'name'=>'mediainfo', 
+           // 'hash'=>$_REQUEST['hash'], 
+            'no'=> 0 
+        ) );                    
+        if($st && !empty($st->data["mediainfousetemplate"]))
+        {
+            $randName = $task->makeDirectory()."/opts";
+            file_put_contents( $randName, $st->data["mediainfotemplate"] );
+            $flags = "--Inform=file://".escapeshellarg($randName);
+        }
+        $commands[] = getExternal("mediainfo")." ".$flags." ".Helper::mb_escapeshellarg($filename);
+        $ret = $task->start($commands, rTask::FLG_WAIT);
 
-		if(($file === FALSE) || !LFS::is_file($this->workdir.$file))  {$this->output['errcode'] = 6; return false; }
 
-		Remote::get()->addCommand( new rXMLRPCCommand('execute_capture', 
-					array(getExternal("mediainfo"), $this->workdir.$file)));
-
-		if(!Remote::get()->success()) {$this->output['errcode'] = 14; return false;}
-
-
-		$this->output['minfo'] = Remote::get()->val[0];
+        return $ret;
 
 	}
 
 	public function move($paths) {
 	    
         
-        $files = array_map(array($this, 'getFullPath'), (array)$paths->fls);
+        $files = array_map(array($this, 'getWorkDir'), (array)$paths->fls);
         
         // destination dir requires ending /
         $to = addslash($this->getUserDir($paths->to));
@@ -272,13 +275,13 @@ class FLM {
 
 	public function mkdir($dirpath) {
         
-        return Fs::get()->mkdir($this->getFullPath($dirpath), true );
+        return Fs::get()->mkdir($this->getWorkDir($dirpath), true );
 
 	}
 
 	public function nfo_get($nfofile, $dos = TRUE) {
 
-        $nfofile = $this->getFullPath($nfofile);
+        $nfofile = $this->getWorkDir($nfofile);
      //   var_dump($nfofile);
         
 		if (!is_file($nfofile)) 	{
@@ -342,7 +345,7 @@ class FLM {
 
 	public function remove($paths) {
 	    
-        $files = array_map(array($this, 'getFullPath'), (array)$paths->fls);
+        $files = array_map(array($this, 'getWorkDir'), (array)$paths->fls);
        // var_dump($paths, $to, $files);
         
         $fs =Fs::get(); 
@@ -452,85 +455,87 @@ class FLM {
         //   var_dump($ret);
            
              return $temp;
-
-
-
-
-return false;
-
-		$this->batch_exec(array("sh", "-c", escapeshellarg($this->fman_path.'/scripts/screens')." ".
-		                  escapeshellarg(getExternal('ffmpeg'))." ". //1
-							escapeshellarg($this->temp['dir'])." ".  // 2
-							escapeshellarg($file)." ".       //3
-							escapeshellarg($output)." ".     //4
-							$frame_step." ".                 //5
-							$settings['scwidth']." ".        //6
-							$settings['scrows']." ".         //7
-							$settings['sccols']));           //8
-
-
-
-
 	}
 
-	public function send_file($file) {
+	public function sfv_check ($paths) {
 
-		$fpath = $this->workdir.$file;
-		$this->shout = FALSE;
+        $sfvfile =  $this->getWorkDir($paths->target);  
 
-		if(($file === FALSE) || (($finfo = LFS::stat($fpath)) === FALSE)) {cachedEcho('log(theUILang.fErrMsg[6]+" - '.$fpath.'");',"text/html");}
+        if (Helper::getExt($sfvfile) != 'sfv')    { throw new Exception("Error Processing Request", 18);}
 
-		$etag = sprintf('"%x-%x-%x"', $finfo['ino'], $finfo['size'], $finfo['mtime'] * 1000000);
+       if (!Fs::get()->isFile($sfvfile) ) {
+           throw new Exception("File does not exists", 6);
+           
+       }
+       
+                            
+        $temp = Helper::getTempDir();
+        
+        
+        $args = array('action' => 'sfvCheck',
+                        'params' => array(
+                            'target' => $sfvfile,
+                            'workdir' => $this->workdir
 
-		if( 	(isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] == $etag) ||
-                        	(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $finfo['mtime'])) {
+                            ),
+                        'temp' => $temp );
+                        
+         $task = $temp['dir'].'task';    
+            
+        file_put_contents($task, json_encode($args));
 
-			header('HTTP/1.0 304 Not Modified');
-		} else {
-			header('Etag: '.$etag);
-			header('Last-Modified: ' . date('r', $finfo['mtime']));
-		}
-
-		header('Cache-Control: ');
-		header('Expires: ');
-		header('Pragma: ');
-		header('Content-Type: application/octet-stream');
-
-		header('Content-Disposition: attachment; filename="'.end(explode('/',$file)).'"');
-		header('Content-Transfer-Encoding: binary');
-		header('Content-Description: File Transfer');
-
-		$this->get_file($fpath, ($finfo['size'] >= 2147483647));
-
-
-	}
-
-	
-	public function sfv_check ($file) {
-
-		if ($this->fext($file) != 'sfv') 	{ $this->output['errcode'] = 18; return false;}
-		elseif (!is_file($this->userdir.$file)) 	{ $this->output['errcode'] = 6; return false;}
-
-		$this->batch_exec(array("sh", "-c", escapeshellarg(getPHP())." ".escapeshellarg($this->fman_path.'/scripts/sfvcheck.php')." ".
-							escapeshellarg($this->temp['dir'])." ".escapeshellarg($this->userdir.$file)));
+            $task_opts = array  ( 'requester'=>'filemanager',
+                            'name'=>'SFV check', 
+                        );
+                        
+             $rtask = new \rTask( $task_opts );
+             $commands = array( Helper::getTaskCmd() ." ". escapeshellarg($task) );
+                    $ret = $rtask->start($commands, 0);    
+             
+           //var_dump($ret);
+           
+             return $temp;
 	}
 
 
 
-	public function sfv_create ($file) {
+	public function sfvCreate ($paths) {
+          
+        $sfvfile =  $this->getUserDir($paths->target);  
+        $files = array_map(array($this, 'getWorkDir'), (array)$paths->fls);
 
-		if (empty($this->filelist)) {$this->output['errcode'] = 22; return false;}
-		if(LFS::test($this->userdir.$file,'e')) {$this->output['errcode'] = 16; return false;}
+       if (Fs::get()->isFile($sfvfile) ) {
+           throw new Exception("File already exists", 16);
+           
+       }
+       
+                            
+        $temp = Helper::getTempDir();
+        
+        
+        $args = array('action' => 'sfvCreate',
+                        'params' => array(
+                            'files' => $files,
+                            'target' => $sfvfile,
 
-		$this->batch_exec(array("sh", "-c", escapeshellarg(getPHP())." ".escapeshellarg($this->fman_path.'/scripts/sfvcreate.php')." ".
-							escapeshellarg($this->temp['dir'])." ".escapeshellarg($this->userdir.$file)));
-	}
+                            ),
+                        'temp' => $temp );
+                        
+         $task = $temp['dir'].'task';    
+            
+        file_put_contents($task, json_encode($args));
 
-
-	public function sdie($args = '') {
-
-		$this->shout = FALSE;
-		die($args);
+            $task_opts = array  ( 'requester'=>'filemanager',
+                            'name'=>'SFV create', 
+                        );
+                        
+             $rtask = new \rTask( $task_opts );
+             $commands = array( Helper::getTaskCmd() ." ". escapeshellarg($task) );
+                    $ret = $rtask->start($commands, 0);    
+             
+           //var_dump($ret);
+           
+             return $temp;
 	}
 
 

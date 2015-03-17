@@ -260,13 +260,123 @@ theWebUI.fManager = {
 		}
 	},
 
+	forms: {},
+	
+	loadForms: function() {
+		this.forms = {
+
+		optPan : {
+			title : 'fManager',
+			content : '<fieldset>' + 
+			'  <legend>Display Settings</legend>' + 
+			'  <table width="100%" border="0" cellspacing="0" cellpadding="0">' + 
+			'  <tr>' + 
+			'    <td>Paths history number of values:</td>' + 
+			'    <td><input type="text" name="textfield" class="Textbox num1" id="fMan_Opthistpath" value="" /></td>' + 
+			'  </tr>' + '  <tr>' + 
+			'    <td>Strip trailing slashes from directory names:</td>' + 
+			'    <td><input type="checkbox" name="fMan_Optstripdirs" id="fMan_Optstripdirs" value="true" /></td>' + 
+			'  </tr>' + '  <tr>' + '    <td>Show hidden files:</td>' + 
+			'    <td><input type="checkbox" name="fMan_Optshowhidden" id="fMan_Optshowhidden" value="true" /></td>' + 
+			'  </tr>' + '  <tr>' + '    <td>Clean console log automatically:</td>' + 
+			'    <td><input type="checkbox" name="fMan_Optcleanlog" id="fMan_Optcleanlog" value="true" /></td>' + 
+			'  </tr>' + '  <tr>' + '    <td>Permissions format:</td>' + '    <td><select name="fMan_Optpermf" id="fMan_Optpermf">' + 
+			'      <option value="1">Octal (0755)</option>' + '      <option value="2">Symbolic (-rw)</option>' + '    </select></td>' + 
+			'  </tr>' + '  <tr>' + '    <td>Date - Time format:</td>' + '    <td><input type="text" name="fMan_Opttimef" class="TextboxLarge" style="width: 160px;" id="fMan_Opttimef" value=""/></td>' + '  </tr>' + '<tr>' + '	<td>' + '<table border="0" cellspacing="0" cellpadding="0">' + '  <tr>' + '    <td><strong>%s</strong> - seconds</td>' + '    <td><strong>%m</strong> - minutes</td>' + '  </tr>' + '  <tr>' + '    <td><strong>%h</strong> - hours</td>' + '    <td><strong>%d</strong> - day</td>' + '  </tr>' + '  <tr>' + '    <td><strong>%M</strong> - month</td>' + '    <td><strong>%y </strong>- year</td>' + '  </tr>' + '</table>' + '	</td>' + '<td>' + '<table width="100%" border="0" align="right" cellpadding="0" cellspacing="0">' + '  <tr>' + '    <td>Format: <strong>%d</strong>.<strong>%M</strong>.<strong>%y</strong> <strong>%h</strong>:<strong>%m</strong>:<strong>%s</strong></td>' + '  </tr>' + '  <tr>' + '    <td>Equals to: <strong>03</strong>.<strong>12</strong>.<strong>2011</strong> <strong>22</strong>:<strong>55</strong>:<strong>47</strong></td>' + '  </tr>' + '</table>' + '</td>' + '</tr>' + '  </table>' + '</fieldset><fieldset>' + '  <legend>Archive Settings</legend>' + '  <table width="100%" border="0" cellspacing="0" cellpadding="0"><tr>' + '    <td>Multi-volume format:</td>' + '    <td><select name="fMan_Optarcnscheme" id="fMan_Optarcnscheme">' + '      <option value="new" selected="selected">NEW - .part1.rar</option>' + '      <option value="old">OLD - .r01</option>' + '    </select></td>' + '  </tr>' + '  </table>' + '</fieldset><fieldset>' + '  <legend>Screenshot Settings</legend>' + '  <table width="100%" border="0" cellspacing="0" cellpadding="0"><tr>' + '    <td>Screens rows:</td>' + '    <td><input type="text" name="textfield" class="Textbox num1" id="fMan_Optscrows" value="" /></td>' + '  </tr>' + '<tr>' + '    <td>Screens columns:</td>' + '    <td><input type="text" name="textfield" class="Textbox num1" id="fMan_Optsccols" value="" /></td>' + '  </tr>' + '<tr>' + '    <td>Thumbnail width:</td>' + '    <td><input type="text" name="textfield" class="Textbox num1" id="fMan_Optscwidth" value="" /></td>' + '  </tr>' + '  </table>' + '</fieldset>'
+		},
+
+		CArchive : {
+			title : 'fDiagCArchive',
+			modal : true,
+			funct : "Archive",
+			content : '<fieldset><legend>' + theUILang.fDiagCArchiveSel + '</legend>' + '<div id="fMan_CArchivelist" class="checklist"><ul></ul></div>' + '</fieldset><fieldset><legend>Options:</legend>' + '<label>' + theUILang.fDiagArchive + '<input type="text" id="fMan_CArchivebpath" name="fMan_CArchivebpath" class="TextboxLarge" style="width:320px;" autocomplete="off"/></label>' + '<input type="button" value="..." id="fMan_CArchivebbut" class="Button aright"><br/>' + ' <label style="float: left;">' + theUILang.fDiagCArchType + '  <select name="fMan_archtype" id="fMan_archtype">' + '</select>' + '</label>' + ' <label style="float: left; margin-left: 10px;">' + theUILang.fDiagCompression + '  <select name="fMan_archcompr" id="fMan_archcompr">' + '</select>' + '</label>' + '<label style="float: right;">' + theUILang.fDiagCArchVsize + '<input name="fMan_vsize" class="fMan_CArchiveRAR Textbox num1" type="text" value="" id="fMan_vsize" disabled="true" /></label>' + '<label style="float: right;"><input name="fMan_multiv" type="checkbox" value="1" class="fMan_CArchiveRAR" id="fMan_multiv" style="margin-right: 5px; margin-top:8px;"/></label>' + '<label style="clear:both; float: left;">Password: <input name="fMan_apassword" class="TextboxLarge fMan_CArchiveRAR" type="text" value="" id="fMan_apassword" /></label>' + '</fieldset>' + '<div style="clear:both;"></div>'
+
+		},
+
+		CheckSFV : {
+			title : 'fDiagSFVCheck',
+			modal : false,
+			funct : 'sfvCheck',
+			content : '<fieldset><legend>' + theUILang.fDiagSFVCheckf + '</legend>' + '<div id="fMang_ChSFVfile" style="width:440px;"></div>' + '</fieldset>'
+		},
+
+		Console : {
+			title : 'fDiagConsole',
+			modal : false,
+			content : '<fieldset><legend>Command log:</legend>' + '<div id="fMan_ConsoleLog" style="width:500px; height:310px;"><pre></pre></div>' + '</fieldset>'
+		},
+
+		Copy : {
+			title : 'fDiagCopy',
+			modal : true,
+			funct : 'Copy',
+			content : '<fieldset><legend>' + theUILang.fDiagCopySel + '</legend></fieldset>'
+		},
+
+		CreateSFV : {
+			title : 'fDiagSFVCreate',
+			modal : true,
+			funct : 'sfvCreate',
+			content : '<fieldset><legend>' + theUILang.fDiagSFVCreateSel + '</legend></fieldset>'
+		},
+
+		Delete : {
+			title : 'fDiagDelete',
+			modal : true,
+			funct : 'doSel',
+			content : '<fieldset><legend>' + theUILang.fDiagDeleteSel + '</legend></fieldset>'
+		},
+
+		Extract : {
+			title : 'fDiagExtract',
+			modal : true,
+			funct : "extract",
+			content : '<fieldset><legend>' + theUILang.fDiagArchive + '</legend>' + '<div id="fMang_Archfile" style="width:460px;"></div>' + '</fieldset>'
+
+		},
+
+		mkdir : {
+			title : 'fDiagmkdir',
+			modal : false,
+			content : '<div><strong>Path of creation: </strong></div>' + '<div id="fMan-NewDirPath" style="padding-top:3px; padding-bottom:4px; width:200px;"></div>' + '<fieldset><legend>' + theUILang.fDiagndirname + '</legend>' + '<input type="text" name="fMan-ndirname" id="fMan-ndirname" style="width:200px;" />' + '</fieldset>'
+		},
+
+		Move : {
+			title : 'fDiagMove',
+			modal : true,
+			funct : 'doSel',
+			content : '<fieldset><legend>' + theUILang.fDiagMoveSel + '</legend></fieldset>'
+		},
+
+		Nfo : {
+			title : 'fDiagNFO',
+			modal : false,
+			content : '<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td width="8%"><strong>Format:</strong></td>' + '<td width="92%"><select id="fMan_nfoformat" name="fMan_nfoformat">' + '<option value="1" selected="selected">DOS</option>' + '<option value="0">WIN</option>' + '</select><input name="fMan_nfofile" type="hidden" id="fMan_nfofile" value="" /></td></tr>' + '</table>' + '<div id="nfo_content" style="width: 549px;"><pre>Loading...</pre></div>'
+		},
+
+		Rename : {
+			title : 'fDiagRename',
+			modal : false,
+			funct : 'rename',
+			content : '<div id="fMan-RenameType"><strong></strong></div>' + '<div id="fMan-RenameWhat" style="padding-top:3px; padding-bottom:4px; width:200px;"></div>' + '<fieldset><legend>' + theUILang.fDiagRenameTo + '</legend>' + '<input type="text" name="fMan-RenameTo" id="fMan-RenameTo" style="width:200px;" />' + '</fieldset>'
+		},
+
+		Screenshots : {
+			title : 'fcScreens',
+			modal : true,
+			funct : 'createScreenshots',
+			content : '<fieldset><legend>Video file:</legend>' + '</fieldset>'
+		}
+	};
+	},
+	
 	actionCheck : function(diag) {
 
 		if ((this.actiontimeout > 0) && (this.activediag != diag)) {
 			return null;
 		}
 
-		if (!this.dialogs[diag].hasOwnProperty('funct')) {
+		if (!this.forms[diag].hasOwnProperty('funct')) {
 			return null;
 		}
 
@@ -291,7 +401,7 @@ theWebUI.fManager = {
 
 		}
 
-		return 'theWebUI.fManager.' + this.dialogs[diag].funct + '(' + args + ')';
+		return 'theWebUI.fManager.' + this.forms[diag].funct + '(' + args + ')';
 
 	},
 
@@ -535,7 +645,7 @@ theWebUI.fManager = {
 				
 		ondelete: theWebUI.fManager.bindDeleteKey,
 	
-			ondblclick : function(obj) {
+		ondblclick : function(obj) {
 				if (theWebUI.fManager.inaction) {
 					return false;
 				}
@@ -644,12 +754,14 @@ theWebUI.fManager = {
 		var sfvfile = $('#fMang_ChSFVfile').text();
 		$(button).attr('disabled', true);
 
+		var fparts = sfvfile.split('/');
+
 		this.actStart(diag);
 
 	
 		var actioncall = {
 			action : 'svfCheck',
-			target : sfvfile
+			target : fparts.pop()
 		};
 
 		
@@ -1093,6 +1205,8 @@ theWebUI.fManager = {
 
 	getFile : function(id) {
 
+	console.log('getting file...');
+
 		$("#fManager_dir").val(theWebUI.fManager.curpath);
 		$("#fManager_getfile").val(id);
 		$("#fManager_getdata").submit();
@@ -1208,30 +1322,43 @@ theWebUI.fManager = {
 	},
 
 	mediainfo : function(what) {
+		
+		
+		var calldata = {
+			'action': 'fileMediaInfo',
+			'target': what,
+			'dir': theWebUI.fManager.curpath
+			
+		};
+		
+		theWebUI.startConsoleTask( "mediainfo", plugin.name, calldata, { noclose: true } );
+		
 
+		/*
 		this.cleanlog();
-		this.cmdlog("Fetching...");
-
-		var self = this;
-
-		this.makeVisbile('fMan_Console');
-		var loader = './images/ajax-loader.gif';
-		if (thePlugins.isInstalled('create')) {
-			loader = './plugins/create/images/ajax-loader.gif';
-		}
-		$('#fMan_Console .buttons-list').css("background", "transparent url(" + loader + ") no-repeat 15px 2px");
-		$(".fMan_Stop").attr('disabled', true);
-
-		this.action.request('action=minfo&target=' + encodeURIComponent(what), function(data) {
-			if (theWebUI.fManager.isErr(data.errcode, what)) {
-				self.cmdlog('Failed fetching data');
-				return false;
-			}
-			self.cleanlog();
-			self.cmdlog(data.minfo);
-		});
-
-		this.loaderHide();
+				this.cmdlog("Fetching...");
+		
+				var self = this;
+		
+				this.makeVisbile('fMan_Console');
+				var loader = './images/ajax-loader.gif';
+				if (thePlugins.isInstalled('create')) {
+					loader = './plugins/create/images/ajax-loader.gif';
+				}
+				$('#fMan_Console .buttons-list').css("background", "transparent url(" + loader + ") no-repeat 15px 2px");
+				$(".fMan_Stop").attr('disabled', true);
+		
+				this.action.request('action=minfo&target=' + encodeURIComponent(what), function(data) {
+					if (theWebUI.fManager.isErr(data.errcode, what)) {
+						self.cmdlog('Failed fetching data');
+						return false;
+					}
+					self.cleanlog();
+					self.cmdlog(data.minfo);
+				});
+		
+				this.loaderHide();*/
+		
 
 	},
 
@@ -1307,7 +1434,7 @@ theWebUI.fManager = {
 			table.renameColumnById('type', theUILang.fType);
 			table.renameColumnById('perm', theUILang.fPerm);
 
-			log('FILE MANAGER ignited');
+		//	log('FILE MANAGER ignited');
 
 		} else {
 			setTimeout(arguments.callee, 500);
@@ -1595,99 +1722,10 @@ theWebUI.fManager.flmSelect = function(e, id) {
 
 theWebUI.fManager.createDialogs = function() {
 
-	theWebUI.fManager.dialogs = {
+	this.loadForms();
 
-		optPan : {
-			title : 'fManager',
-			content : '<fieldset>' + '  <legend>Display Settings</legend>' + '  <table width="100%" border="0" cellspacing="0" cellpadding="0">' + '  <tr>' + '    <td>Paths history number of values:</td>' + '    <td><input type="text" name="textfield" class="Textbox num1" id="fMan_Opthistpath" value="" /></td>' + '  </tr>' + '  <tr>' + '    <td>Strip trailing slashes from directory names:</td>' + '    <td><input type="checkbox" name="fMan_Optstripdirs" id="fMan_Optstripdirs" value="true" /></td>' + '  </tr>' + '  <tr>' + '    <td>Show hidden files:</td>' + '    <td><input type="checkbox" name="fMan_Optshowhidden" id="fMan_Optshowhidden" value="true" /></td>' + '  </tr>' + '  <tr>' + '    <td>Clean console log automatically:</td>' + '    <td><input type="checkbox" name="fMan_Optcleanlog" id="fMan_Optcleanlog" value="true" /></td>' + '  </tr>' + '  <tr>' + '    <td>Permissions format:</td>' + '    <td><select name="fMan_Optpermf" id="fMan_Optpermf">' + '      <option value="1">Octal (0755)</option>' + '      <option value="2">Symbolic (-rw)</option>' + '    </select></td>' + '  </tr>' + '  <tr>' + '    <td>Date - Time format:</td>' + '    <td><input type="text" name="fMan_Opttimef" class="TextboxLarge" style="width: 160px;" id="fMan_Opttimef" value=""/></td>' + '  </tr>' + '<tr>' + '	<td>' + '<table border="0" cellspacing="0" cellpadding="0">' + '  <tr>' + '    <td><strong>%s</strong> - seconds</td>' + '    <td><strong>%m</strong> - minutes</td>' + '  </tr>' + '  <tr>' + '    <td><strong>%h</strong> - hours</td>' + '    <td><strong>%d</strong> - day</td>' + '  </tr>' + '  <tr>' + '    <td><strong>%M</strong> - month</td>' + '    <td><strong>%y </strong>- year</td>' + '  </tr>' + '</table>' + '	</td>' + '<td>' + '<table width="100%" border="0" align="right" cellpadding="0" cellspacing="0">' + '  <tr>' + '    <td>Format: <strong>%d</strong>.<strong>%M</strong>.<strong>%y</strong> <strong>%h</strong>:<strong>%m</strong>:<strong>%s</strong></td>' + '  </tr>' + '  <tr>' + '    <td>Equals to: <strong>03</strong>.<strong>12</strong>.<strong>2011</strong> <strong>22</strong>:<strong>55</strong>:<strong>47</strong></td>' + '  </tr>' + '</table>' + '</td>' + '</tr>' + '  </table>' + '</fieldset><fieldset>' + '  <legend>Archive Settings</legend>' + '  <table width="100%" border="0" cellspacing="0" cellpadding="0"><tr>' + '    <td>Multi-volume format:</td>' + '    <td><select name="fMan_Optarcnscheme" id="fMan_Optarcnscheme">' + '      <option value="new" selected="selected">NEW - .part1.rar</option>' + '      <option value="old">OLD - .r01</option>' + '    </select></td>' + '  </tr>' + '  </table>' + '</fieldset><fieldset>' + '  <legend>Screenshot Settings</legend>' + '  <table width="100%" border="0" cellspacing="0" cellpadding="0"><tr>' + '    <td>Screens rows:</td>' + '    <td><input type="text" name="textfield" class="Textbox num1" id="fMan_Optscrows" value="" /></td>' + '  </tr>' + '<tr>' + '    <td>Screens columns:</td>' + '    <td><input type="text" name="textfield" class="Textbox num1" id="fMan_Optsccols" value="" /></td>' + '  </tr>' + '<tr>' + '    <td>Thumbnail width:</td>' + '    <td><input type="text" name="textfield" class="Textbox num1" id="fMan_Optscwidth" value="" /></td>' + '  </tr>' + '  </table>' + '</fieldset>'
-		},
-
-		CArchive : {
-			title : 'fDiagCArchive',
-			modal : true,
-			funct : "Archive",
-			content : '<fieldset><legend>' + theUILang.fDiagCArchiveSel + '</legend>' + '<div id="fMan_CArchivelist" class="checklist"><ul></ul></div>' + '</fieldset><fieldset><legend>Options:</legend>' + '<label>' + theUILang.fDiagArchive + '<input type="text" id="fMan_CArchivebpath" name="fMan_CArchivebpath" class="TextboxLarge" style="width:320px;" autocomplete="off"/></label>' + '<input type="button" value="..." id="fMan_CArchivebbut" class="Button aright"><br/>' + ' <label style="float: left;">' + theUILang.fDiagCArchType + '  <select name="fMan_archtype" id="fMan_archtype">' + '</select>' + '</label>' + ' <label style="float: left; margin-left: 10px;">' + theUILang.fDiagCompression + '  <select name="fMan_archcompr" id="fMan_archcompr">' + '</select>' + '</label>' + '<label style="float: right;">' + theUILang.fDiagCArchVsize + '<input name="fMan_vsize" class="fMan_CArchiveRAR Textbox num1" type="text" value="" id="fMan_vsize" disabled="true" /></label>' + '<label style="float: right;"><input name="fMan_multiv" type="checkbox" value="1" class="fMan_CArchiveRAR" id="fMan_multiv" style="margin-right: 5px; margin-top:8px;"/></label>' + '<label style="clear:both; float: left;">Password: <input name="fMan_apassword" class="TextboxLarge fMan_CArchiveRAR" type="text" value="" id="fMan_apassword" /></label>' + '</fieldset>' + '<div style="clear:both;"></div>'
-
-		},
-
-		CheckSFV : {
-			title : 'fDiagSFVCheck',
-			modal : false,
-			funct : 'sfvCheck',
-			content : '<fieldset><legend>' + theUILang.fDiagSFVCheckf + '</legend>' + '<div id="fMang_ChSFVfile" style="width:440px;"></div>' + '</fieldset>'
-		},
-
-		Console : {
-			title : 'fDiagConsole',
-			modal : false,
-			content : '<fieldset><legend>Command log:</legend>' + '<div id="fMan_ConsoleLog" style="width:500px; height:310px;"><pre></pre></div>' + '</fieldset>'
-		},
-
-		Copy : {
-			title : 'fDiagCopy',
-			modal : true,
-			funct : 'Copy',
-			content : '<fieldset><legend>' + theUILang.fDiagCopySel + '</legend></fieldset>'
-		},
-
-		CreateSFV : {
-			title : 'fDiagSFVCreate',
-			modal : true,
-			funct : 'sfvCreate',
-			content : '<fieldset><legend>' + theUILang.fDiagSFVCreateSel + '</legend></fieldset>'
-		},
-
-		Delete : {
-			title : 'fDiagDelete',
-			modal : true,
-			funct : 'doSel',
-			content : '<fieldset><legend>' + theUILang.fDiagDeleteSel + '</legend></fieldset>'
-		},
-
-		Extract : {
-			title : 'fDiagExtract',
-			modal : true,
-			funct : "extract",
-			content : '<fieldset><legend>' + theUILang.fDiagArchive + '</legend>' + '<div id="fMang_Archfile" style="width:460px;"></div>' + '</fieldset>'
-
-		},
-
-		mkdir : {
-			title : 'fDiagmkdir',
-			modal : false,
-			content : '<div><strong>Path of creation: </strong></div>' + '<div id="fMan-NewDirPath" style="padding-top:3px; padding-bottom:4px; width:200px;"></div>' + '<fieldset><legend>' + theUILang.fDiagndirname + '</legend>' + '<input type="text" name="fMan-ndirname" id="fMan-ndirname" style="width:200px;" />' + '</fieldset>'
-		},
-
-		Move : {
-			title : 'fDiagMove',
-			modal : true,
-			funct : 'doSel',
-			content : '<fieldset><legend>' + theUILang.fDiagMoveSel + '</legend></fieldset>'
-		},
-
-		Nfo : {
-			title : 'fDiagNFO',
-			modal : false,
-			content : '<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td width="8%"><strong>Format:</strong></td>' + '<td width="92%"><select id="fMan_nfoformat" name="fMan_nfoformat">' + '<option value="1" selected="selected">DOS</option>' + '<option value="0">WIN</option>' + '</select><input name="fMan_nfofile" type="hidden" id="fMan_nfofile" value="" /></td></tr>' + '</table>' + '<div id="nfo_content" style="width: 549px;"><pre>Loading...</pre></div>'
-		},
-
-		Rename : {
-			title : 'fDiagRename',
-			modal : false,
-			funct : 'rename',
-			content : '<div id="fMan-RenameType"><strong></strong></div>' + '<div id="fMan-RenameWhat" style="padding-top:3px; padding-bottom:4px; width:200px;"></div>' + '<fieldset><legend>' + theUILang.fDiagRenameTo + '</legend>' + '<input type="text" name="fMan-RenameTo" id="fMan-RenameTo" style="width:200px;" />' + '</fieldset>'
-		},
-
-		Screenshots : {
-			title : 'fcScreens',
-			modal : true,
-			funct : 'createScreenshots',
-			content : '<fieldset><legend>Video file:</legend>' + '</fieldset>'
-		}
-	};
-
-	plugin.attachPageToOptions($("<div>").attr("id", 'fMan_optPan').html(this.dialogs.optPan.content).get(0), theUILang[this.dialogs.optPan.title]);
-	delete this.dialogs.optPan;
+	plugin.attachPageToOptions($("<div>").attr("id", 'fMan_optPan').html(this.forms.optPan.content).get(0), theUILang[this.forms.optPan.title]);
+	delete this.forms.optPan;
 
 	var buttons = '<div class="aright buttons-list">' + '<input type="button" class="fMan_Start Button" value="' + theUILang.fDiagStart + '" class="Button" />' + '<input type="button" class="Cancel Button" value="' + theUILang.fDiagClose + '"/>' + '</div>';
 	var consbut = '<div class="aright buttons-list">' + '<input type="button" id="fMan_ClearConsole" class="Button" value="Clear" class="Button" />' + '<input type="button" class="fMan_Stop Button" value="' + theUILang.fDiagStop + '" class="Button" disabled="true"/>' + '<input type="button" class="Cancel Button" value="' + theUILang.fDiagClose + '"/>' + '</div>';
@@ -1702,26 +1740,26 @@ theWebUI.fManager.createDialogs = function() {
 
 	var pathbrowse;
 
-	for (i in this.dialogs) {
+	for (i in this.forms) {
 
-		var dcontent = this.dialogs[i].content;
+		var dcontent = this.forms[i].content;
 
 		if ($type(browsediags[i])) {
 
 			if ((i != 'Extract') || (i != 'Screenshots')) {
-				dcontent = $(this.dialogs[i].content).append('<div id="fMan_' + i + 'list" class="checklist"><ul></ul></div>');
+				dcontent = $(this.forms[i].content).append('<div id="fMan_' + i + 'list" class="checklist"><ul></ul></div>');
 			}
 
 			pathbrowse = $('<fieldset>').html($('<legend>').text(browsediags[i])).append($('<input type="text" style="width:350px;" autocomplete="off" />').attr('id', 'fMan_' + i + 'bpath').addClass('TextboxLarge')).append($('<input type="button" value="..." style="float: right;" />').attr('id', 'fMan_' + i + 'bbut').addClass('Button aright'));
 		} else if (i == 'Delete') {
-			dcontent = $(this.dialogs[i].content).append('<div id="fMan_' + i + 'list" class="checklist"><ul></ul></div>');
+			dcontent = $(this.forms[i].content).append('<div id="fMan_' + i + 'list" class="checklist"><ul></ul></div>');
 			pathbrowse = '';
 		} else {
 			pathbrowse = '';
 		}
 
 		var fcontent = $('<div>').html($('<div>').addClass('cont fxcaret').html(dcontent).append(pathbrowse)).append((i != 'Nfo') ? ((i == 'Console') ? consbut : buttons) : '').get(0);
-		theDialogManager.make('fMan_' + i, theUILang[this.dialogs[i].title], fcontent, this.dialogs[i].modal);
+		theDialogManager.make('fMan_' + i, theUILang[this.forms[i].title], fcontent, this.forms[i].modal);
 	};
 
 	/*
