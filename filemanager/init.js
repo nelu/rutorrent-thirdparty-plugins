@@ -88,11 +88,11 @@ theWebUI.fManager = {
 		requrl : 'plugins/filemanager/action.php',
 
 		postRequest : function(data2send, onComplete, onTimeout, onError) {
-
-		if(!data2send.hasOwnProperty('dir')){
-			data2send.dir = theWebUI.fManager.workpath;
-		}
-		$.ajax({
+	
+			if(!data2send.hasOwnProperty('dir')){
+				data2send.dir = theWebUI.fManager.workpath;
+			}
+			$.ajax({
 				type : 'POST',
 				url : theWebUI.fManager.action.requrl,
 				timeout : theWebUI.settings["webui.reqtimeout"],

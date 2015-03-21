@@ -101,6 +101,7 @@ class Helper {
          */
         return RemoteShell::test($dirname, $o);
     }
+
     
     public function readTaskLog($file, $lpos = 0) {
     
@@ -128,6 +129,36 @@ class Helper {
     public static function loadConfig() {
         
             self::$config = require_once(dirname(__FILE__). '/../conf.php');
+    }
+    
+    
+        
+        
+    public static function getTorrentHashFilepath($hash, $fno) {
+        
+            $fno = intval($fno);
+        
+          $req = new \rXMLRPCRequest( new \rXMLRPCCommand( "f.get_frozen_path", array($hash,$fno)) );
+          
+          $filename = '';
+          
+          if($req->success())
+            {
+                $filename = $req->val[0];
+                if($filename=='')
+                {
+                    $req = new \rXMLRPCRequest( array(
+                        new \rXMLRPCCommand( "d.open", $hash ),
+                        new \rXMLRPCCommand( "f.get_frozen_path", array($hash,$fno) ),
+                        new \rXMLRPCCommand( "d.close", $hash ) ) );
+                    if($req->success())
+                        $filename = $req->val[1];
+                }
+        
+                
+            }
+            
+          return $filename;
     }
 }
 

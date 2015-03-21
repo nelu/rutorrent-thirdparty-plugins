@@ -1,8 +1,6 @@
 <?php
 include('conf.php');
 
-echo 'theWebUI.FS.maxlinks = "',$limits['links'], "\";\n";
-echo 'theWebUI.FS.downlink = "',$downloadpath, "\";\n";
-echo 'theWebUI.FS.maxdur = "',$limits['duration'], "\";\n";
-
-?>
+echo 'theWebUI.FS.maxlinks = "',$fs['links'], "\";\n";
+echo 'theWebUI.FS.downlink = "',$fs['downloadpath'], "\";\n";
+echo 'theWebUI.FS.maxdur = "',$fs['duration'], "\";\n";
