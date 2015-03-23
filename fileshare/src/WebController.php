@@ -48,27 +48,6 @@ class WebController {
     }
 
    
-
-    public function svfCheck($params) {
-
-        if (!isset($params->target)) {
-            Helper::jsonError(2);
-        }
-
-        try {
-            $temp = $this->flm->sfv_check($params);
-
-        } catch (\Exception $err) {
-            var_dump($err);
-            Helper::jsonError($err->getCode());
-            return false;
-        }
-
-        Helper::jsonOut(array('error' => 0, 'tmpdir' => $temp['tok']));
-
-    }
-
-   
     public function deleteShare($params) {
 
         if (!isset($params->files) || (count($params->files) < 1)) {
@@ -89,10 +68,6 @@ class WebController {
 
     }
 
-    public function sess() {
-        $e->get_session();
-    }
-
     public function createShare($params) {
         
           if (!isset($params->file) || empty($params->file)) {
@@ -109,7 +84,7 @@ class WebController {
             }
 
         try {
-            $temp = $this->fs->addFile($params->file, $params->expire, $params->password);
+            $token = $this->fs->addFile($params->file, $params->expire, $params->password);
 
         } catch (\Exception $err) {
             var_dump($err);
@@ -117,7 +92,7 @@ class WebController {
             return false;
         }
 
-        Helper::jsonOut(array('error' => 0));
+        Helper::jsonOut(array('error' => 0, 'fid' => $token));
         
         
     }
@@ -242,26 +217,5 @@ class WebController {
         
     }
 
-    public function viewNfo($params) {
-
-        if (!isset($params->mode)) {
-            $params->mode = 0;
-        }
-
-        if (!isset($params->target)) {
-            Helper::jsonError(2);
-        }
-
-        try {
-            $contents = $this->flm->nfo_get($params->target, $params->mode);
-
-        } catch (\Exception $err) {
-            Helper::jsonError($err->getCode());
-            return false;
-        }
-
-        Helper::jsonOut(array('error' => 0, 'nfo' => $contents));
-
-    }
 
 }

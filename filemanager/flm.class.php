@@ -69,6 +69,15 @@ class FLM {
         
         return fullpath($path, $this->userdir);
     }
+
+    public function getJailPath($path) {
+        
+        $f = explode($this->userdir, $path);
+        
+        var_dump('got to find', $f, $path);
+        
+        return fullpath($path, $this->userdir);
+    }
     
     public function getUserDir($relative_path) {
          return fullpath(trim($relative_path, DIRECTORY_SEPARATOR), $this->userdir);
@@ -97,10 +106,9 @@ class FLM {
         $archive_file = $this->getUserDir($paths->target);
       //  var_dump('arch path', $this->workdir.$paths['archive'], $archive_file);
 
-              
-       $options = $paths->mode;
-       $options->workdir = $this->workdir;
-       
+
+        $options = is_null($paths->mode) ? stdClass () : $paths->mode ;
+         
        if(!isset($options->type) 
        || !isset(Helper::$config['archive']['types'][$options->type ]) ) 
        {
@@ -108,14 +116,20 @@ class FLM {
            
        }
 
-        $files = array_map(array($this, 'getWorkDir'), (array)$paths->fls);
+        //$files = array_map(array($this, 'getJailPath'), (array)$paths->fls);
+        $files = (array)$paths->fls;
         
+        //var_dump($paths->fls, $file);
+
         $fs = Fs::get();  
 
         if($fs->isFile($archive_file)) {
            throw new Exception("dest is file", 16);      
         } 
 
+              
+     
+       $options->workdir = $this->workdir;
        
        $archive = new Archive($archive_file);  
        
@@ -144,20 +158,32 @@ class FLM {
 	}
 
 
-	static public function dir_sort($a, $b) {return strcmp($a['name'], $b['name']);}
+	static public function dir_sort($a, $b) {
+	       $a_isdir = ($a['type'] =='d');
+        
+        $b_isdir = ($b['type'] =='d');
+    
+        if( $a_isdir && $b_isdir) {strcmp($a['name'], $b['name']);}
+        elseif ( $a_isdir ) { return -1; }
+        elseif ($b_isdir ) {  return 1; }
+	    
+	   return strcmp($a['name'], $b['name']);
+	    }
 
 	public function dirlist($paths) {
 
 
         $dirpath = $this->getWorkDir($paths->dir);
         
-        //var_dump($dirpath);
-        
         $directory_contents = Fs::get()->listDir( $dirpath );
 
         usort($directory_contents, array($this, 'dir_sort'));
 
-        return $directory_contents;
+            foreach ($directory_contents as $key => $value) {
+                unset($directory_contents[$key]['type']);
+            }
+            
+            return $directory_contents;
 	}
 
 

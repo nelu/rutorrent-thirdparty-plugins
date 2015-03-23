@@ -66,11 +66,11 @@ class TaskController {
     public function compressFiles()
     {
 
-        chdir ($this->info->params->workdir);
+        chdir ($this->info->params->options->workdir);
         
             try {
            $cmd = FsUtils::getArchiveCompressCmd($this->info->params);
-
+            var_dump($cmd);
                 $output =  $this->LogCmdExec($cmd);
             }
             catch (Exception $err) {

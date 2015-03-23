@@ -38,6 +38,11 @@ div#fMan_mkdir div.dlg-header {
 	background-image: url(images/newdir.png);
 }
 
+div#fMan_Rename {
+	
+	width: 350px;
+}
+
 div#fMan_Rename div.dlg-header {
 	background-image: url(images/rename.png);
 }

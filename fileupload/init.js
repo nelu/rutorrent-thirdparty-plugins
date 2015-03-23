@@ -44,12 +44,12 @@ theWebUI.fileup.add_options = function () {
 		plugin.attachPageToOptions(content.get(0),theUILang.fileUP.title);
 
 		
-	}
+};
 	
 	
 theWebUI.fileup.ucfirst =  function (string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
-}
+};
 
 theWebUI.fileup.create_dialog = function() {
 		
@@ -94,7 +94,7 @@ theWebUI.fileup.create_dialog = function() {
 			
 		});
 
-}
+};
 
 
 theWebUI.fileup.has_login = function(service) {
@@ -112,12 +112,12 @@ theWebUI.fileup.has_login = function(service) {
 	}
 	return true;
 	
-}
+};
 
 
 theWebUI.fileup.save = function() {
 		this.query('action=save&fls='+theWebUI.fManager.encode_string(this.services));
-}
+};
 
 theWebUI.fileup.start_up = function (button) {
 	
@@ -131,7 +131,7 @@ theWebUI.fileup.start_up = function (button) {
 			theWebUI.fileup.timer = setInterval(function () {theWebUI.fileup.status(); }, 1000 );
 		}
 
-	}
+	};
 	$(button).attr('disabled', true);
 	$('.fileUP_Stop').attr('disabled', false);
 	
@@ -144,19 +144,19 @@ theWebUI.fileup.start_up = function (button) {
 
 	this.query('action=upload&target='+this.selectedservice+extra+'&file='+encodeURIComponent(this.selectedfile), f);
 
-}
+};
 
 theWebUI.fileup.stop_up = function (button) {
 	
 	var f = function (data) {
 		var fl = $('#fileUP_filelog pre').append("<strong>"+theUILang.fileUP.up_stop+"</strong>\n<hr />\n");
-	}
+	};
 	$(button).attr('disabled', true);
 	var s = this.session;
 	theWebUI.fileup.reset();
 	this.query('action=stop&target='+s, f);
 
-}
+};
 
 
 theWebUI.fileup.status = function () {
@@ -171,25 +171,25 @@ theWebUI.fileup.status = function () {
 
 			if(data.errcode > 0){
 				theWebUI.fileup.reset();
-				fl_con.append("<strong>"+theUILang.fileUP.failed+"</strong>\n<hr />\n")
+				fl_con.append("<strong>"+theUILang.fileUP.failed+"</strong>\n<hr />\n");
 			}
 			
 			if(data.done)  {
 					theWebUI.fileup.reset();
 					fl_con.append('<strong>'+theUILang.fileUP.fileurl+' </strong><a href="'+data.dllink+'" target="_blank">'+data.dllink+"</a>\n");
 					if($type(data.dellink)) {fl_con.append('<strong>'+theUILang.fileUP.deleteurl+' </strong><a href="'+data.dellink+'" target="_blank">'+data.dellink+"</a>\n");}
-					fl_con.append("<hr />\n")
+					fl_con.append("<hr />\n");
 					cw.find('pre').append("\nDone!");
 			}
 			
 			fl[0].scrollTop = fl[0].scrollHeight;
 
 
-	}
+	};
 	
 	
 	this.query('action=status&target='+encodeURIComponent(this.session), f);	
-}
+};
 
 theWebUI.fileup.selectedfile = "";
 theWebUI.fileup.selectedservice = "";
@@ -224,7 +224,7 @@ if(	this.services[provider].hasOwnProperty('email') ) {
 		}
 
 		theWebUI.fManager.makeVisbile('fileUP_Console');
-}
+};
 
 theWebUI.fileup.reset = function() {
 	$('#fileUP_Console .buttons-list').css( "background", "none" );
@@ -234,7 +234,7 @@ theWebUI.fileup.reset = function() {
 	this.session = '';
 	
 	
-}
+};
 
 theWebUI.fileup.query = function(action, complete) {
 
@@ -259,12 +259,12 @@ theWebUI.fileup.query = function(action, complete) {
  		});
 
 
-}
+};
 
 theWebUI.fileup.valid_mail = function(str) {
 		console.log(str);
 		return str.match(/^([\w-]+(?:\.[\w-]+)*)\@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$|(\[?(\d{1,3}\.){3}\d{1,3}\]?)$/i);
-}
+};
 
 
 plugin.addAndShowSettings = theWebUI.addAndShowSettings;
@@ -281,7 +281,7 @@ theWebUI.addAndShowSettings = function(arg) {
 			}
 		}
 	plugin.addAndShowSettings.call(theWebUI,arg);
-}
+};
 
 
 
@@ -314,7 +314,7 @@ theWebUI.setSettings = function() {
 		}
 
 		plugin.setSettings.call(this);
-}
+};
 
 
 plugin.flmMenu = theWebUI.fManager.flmSelect;
@@ -325,7 +325,7 @@ theWebUI.fManager.flmSelect = function( e, id ) {
 			var el = theContextMenu.get( theUILang.fMediaI);
 			if(el) {
 				var item = id.split('_flm_')[1];
-				var services = []
+				var services = [];
 				var flup = theWebUI.fileup;
 				
 				for(var i in flup.services) {
@@ -333,16 +333,16 @@ theWebUI.fManager.flmSelect = function( e, id ) {
 					services.push([i, ff]);
 				}
 				
-				theContextMenu.add( el, (!theWebUI.fManager.isDir(item) && !(theWebUI.getTable("flm").selCount > 1)) ? [CMENU_CHILD, theUILang.fileUP.upto, services] : null);
+				theContextMenu.add( el, (!flmUtil.isDir(item) && !(theWebUI.getTable("flm").selCount > 1)) ? [CMENU_CHILD, theUILang.fileUP.upto, services] : null);
 			}
 		}
 		
-}
+};
 
 plugin.onLangLoaded = function() {
 	
 		theWebUI.fileup.add_options();
 		theWebUI.fileup.create_dialog();
-}
+};
 
 plugin.loadLang(true);

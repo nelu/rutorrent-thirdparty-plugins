@@ -1,6 +1,6 @@
 <?php
 namespace Flm;
-
+use \Exception;
 
 class Archive {
     
@@ -22,6 +22,7 @@ class Archive {
         $a['volume'] = (intval($options['vsize'])*1024);
         $a['multif'] = (($a['type'] == 'rar') && ($options['format'] == 'old')) ? '-vn' : '';
         
+        $a['workdir'] = $options['workdir'];
         
           if(($options['password'] != '') 
                 && ($a['type'] == 'rar'))

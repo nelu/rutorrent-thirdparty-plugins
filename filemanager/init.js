@@ -8,6 +8,23 @@ window.flmUtil = {
 		return (element.charAt(element.length - 1) == '/');
 	},
 	
+	
+	getExt : function(element) {
+
+	
+		if (!$type(element)) {
+			return '';
+		}
+		
+		var ext = element.split('.').pop();
+		var valid = (element.split('.').length > 1 ) && ext.match(/^[A-Za-z0-9]{2,5}$/);
+		
+		ext = valid ? ext : '';
+	
+		
+		return  ext.toLowerCase();
+	},
+	
 	encode_string : function(str) {
 
 		return encodeURIComponent(flmUtil.json_encode(str));
@@ -45,6 +62,15 @@ window.flmUtil = {
 		return ("null");
 	},
 
+
+	sortAlphaNumeric: function(x, y) {
+
+		if (x.key.split('_flm_')[1] == theWebUI.fManager.getLastPath(theWebUI.fManager.curpath)) {
+			return (this.reverse ? 1 : -1);
+		}
+		return (this.oldFilesSortAlphaNumeric(x, y));
+	},
+
 	addslashes : function(str) {
 		// http://phpjs.org/functions/addslashes:303
 		return (str + '').replace(/[\\"\/]/g, '\\$&').replace(/\u0000/g, '\\0');
@@ -54,6 +80,7 @@ window.flmUtil = {
 
 theWebUI.fManager = {
 
+	archives: {},
 	paths : [],
 	curpath : '/',
 	workpath : '/',
@@ -94,7 +121,7 @@ theWebUI.fManager = {
 			}
 			$.ajax({
 				type : 'POST',
-				url : theWebUI.fManager.action.requrl,
+				url : theWebUI.fManager.action.requrl +'?_=' + Math.floor(Date.now() / 1000),
 				timeout : theWebUI.settings["webui.reqtimeout"],
 				async : true,
 				cache : false,
@@ -205,7 +232,7 @@ theWebUI.fManager = {
 			
 			
 			var actioncall = {
-				'action' : 'listDirectory',
+				'method' : 'listDirectory',
 				'dir' : dir,
 			};
 			
@@ -215,7 +242,6 @@ theWebUI.fManager = {
 	
 			};
 			
-			console.log(actioncall);
 			this.postRequest({'action': flmUtil.json_encode(actioncall), 'dir': '/'}, 
 							callback, 
 							function() {
@@ -231,7 +257,7 @@ theWebUI.fManager = {
 		stats : function(diag) {
 
 			var actioncall = {
-				action : 'taskLog',
+				method : 'taskLog',
 				target : theWebUI.fManager.actiontoken,
 				to : theWebUI.fManager.actionlp
 			};
@@ -251,7 +277,7 @@ theWebUI.fManager = {
 				}
 			};
 
-			console.log(actioncall);
+		
 
 			theWebUI.fManager.action.postRequest({
 				action : flmUtil.json_encode(actioncall)
@@ -358,7 +384,9 @@ theWebUI.fManager = {
 			title : 'fDiagRename',
 			modal : false,
 			funct : 'rename',
-			content : '<div id="fMan-RenameType"><strong></strong></div>' + '<div id="fMan-RenameWhat" style="padding-top:3px; padding-bottom:4px; width:200px;"></div>' + '<fieldset><legend>' + theUILang.fDiagRenameTo + '</legend>' + '<input type="text" name="fMan-RenameTo" id="fMan-RenameTo" style="width:200px;" />' + '</fieldset>'
+			content : '<div id="fMan-RenameType"><strong></strong></div>' 
+			+ '<div id="fMan-RenameWhat" style="padding-top:3px; padding-bottom:4px;"></div>' 
+			+ '<fieldset><legend>' + theUILang.fDiagRenameTo + '</legend>' + '<input type="text" name="fMan-RenameTo" id="fMan-RenameTo" style="width:95%;" />' + '</fieldset>'
 		},
 
 		Screenshots : {
@@ -370,6 +398,163 @@ theWebUI.fManager = {
 	};
 	},
 	
+	
+	table: {
+			container_name: 'fManager_data',
+		
+		
+			
+		bindDeleteKey: function (e) {
+		
+			theWebUI.fManager.doSel('Delete');
+
+		},
+
+		format : function(table, arr) {
+				for (var i in arr) {
+					if (arr[i] == null) {
+						arr[i] = '';
+					} else {
+						switch(table.getIdByCol(i)) {
+						case 'name':
+							if (theWebUI.fManager.settings.stripdirs 
+								&& flmUtil.isDir(arr[i])) {
+								arr[i] = theWebUI.fManager.trimslashes(arr[i]);
+							}
+							break;
+						case 'size' :
+							if (arr[i] != '') {
+								arr[i] = theConverter.bytes(arr[i], 2);
+							}
+							break;
+						case 'type' :
+							if (flmUtil.isDir(arr[i])) {
+								arr[i] = '';
+							} else {
+								arr[i] = flmUtil.getExt(arr[i]);
+							}
+							break;
+						case 'time' :
+							arr[i] = theWebUI.fManager.formatDate(arr[i]);
+							break;
+						case 'perm':
+							if (theWebUI.fManager.settings.permf > 1) {
+								arr[i] = theWebUI.fManager.formatPerm(arr[i]);
+							}
+							break;
+						}
+					}
+				}
+				return (arr);
+			},
+			
+			Init : function() {
+				var self = this;
+
+				var table = {
+					obj : new dxSTable(),
+					columns : [{
+						text : theUILang.Name,
+						width : "210px",
+						id : "name",
+						type : TYPE_STRING
+					}, {
+						text : theUILang.Size,
+						width : "60px",
+						id : "size",
+						type : TYPE_NUMBER
+					}, {
+						text : ' ',
+						width : "120px",
+						id : "time",
+						type : TYPE_STRING,
+						"align" : ALIGN_CENTER
+					}, {
+						text: ' ',
+						width: "80px",
+						id: "type",
+						type: TYPE_STRING
+					}, {
+						text : ' ',
+						width : "80px",
+						id : "perm",
+						type : TYPE_NUMBER
+					}],
+					container : self.container_name,
+					format : self.format,
+					onselect : function(e, id) {
+						if (theWebUI.fManager.inaction) {
+							return false;
+						}
+						theWebUI.fManager.flmSelect(e, id);
+					},
+					
+						
+					ondelete: self.bindDeleteKey,
+					ondblclick : self.ondblclick
+				};
+		
+		
+		
+		
+				table.obj.oldFilesSortAlphaNumeric = table.obj.sortAlphaNumeric;
+				table.obj.sortAlphaNumeric = this.sortAlphaNumeric;
+				
+				table.obj.oldFilesSortNumeric = table.obj.sortNumeric;
+				table.obj.sortNumeric = this.sortNumeric;
+				
+				theWebUI.tables.flm = table;
+				
+				this.setColumnNames();
+			
+			},
+			
+			
+			ondblclick: function(obj) {
+						if (theWebUI.fManager.inaction) {
+							return false;
+						}
+						var target = obj.id.slice(5, obj.id.length);
+		
+						if (flmUtil.isDir(target)) {
+							theWebUI.fManager.changedir(target);
+						} else {
+							theWebUI.fManager.getFile(target);
+						}
+		
+						return (false);
+					},
+					
+					
+			setColumnNames: function() {
+
+				var table = theWebUI.getTable("flm");
+
+				if(table.created && plugin.allStuffLoaded) {
+
+					table.renameColumnById('time',theUILang.fTime);
+					table.renameColumnById('type',theUILang.fType);
+					table.renameColumnById('perm',theUILang.fPerm);
+
+				} else { setTimeout(arguments.callee,500);}
+			},
+			
+			sortAlphaNumeric: function(x, y) {
+				
+				if (theWebUI.fManager.isTopDir(x.key.split('_flm_')[1]) ) {
+					return (this.reverse ? 1 : -1);
+				}
+				return (this.oldFilesSortAlphaNumeric(x, y));
+			},
+			
+			sortNumeric: function(x, y) {
+				if (theWebUI.fManager.isTopDir(x.key.split('_flm_')[1]) ) {
+					return (this.reverse ? 1 : -1);
+				}
+				return (this.oldFilesSortNumeric(x, y));
+			}
+		
+	},
 	actionCheck : function(diag) {
 
 		if ((this.actiontimeout > 0) && (this.activediag != diag)) {
@@ -390,7 +575,7 @@ theWebUI.fManager = {
 
 			switch($type(arguments[i])) {
 			case 'string':
-				rg = '"' + this.addslashes(arguments[i]) + '"';
+				rg = '"' + flmUtil.addslashes(arguments[i]) + '"';
 
 				break;
 			default:
@@ -403,11 +588,6 @@ theWebUI.fManager = {
 
 		return 'theWebUI.fManager.' + this.forms[diag].funct + '(' + args + ')';
 
-	},
-
-	addslashes : function(str) {
-		// http://phpjs.org/functions/addslashes:303
-		return (str + '').replace(/[\\"\/]/g, '\\$&').replace(/\u0000/g, '\\0');
 	},
 
 	actStart : function(diag) {
@@ -478,7 +658,7 @@ theWebUI.fManager = {
 		}
 
 		checks.each(function(index, val) {
-			theWebUI.fManager.actionlist[index] = theWebUI.fManager.addslashes(decodeURIComponent(val.value));
+			theWebUI.fManager.actionlist[index] = flmUtil.addslashes(decodeURIComponent(val.value));
 
 		});
 
@@ -595,73 +775,8 @@ theWebUI.fManager = {
 		}
 	},
 
-	
-	bindDeleteKey: function (e) {
-		
-		theWebUI.fManager.doSel('Delete');
 
-	},
 
-	createTable : function() {
-
-		theWebUI.tables.flm = {
-			obj : new dxSTable(),
-			columns : [{
-				text : theUILang.Name,
-				width : "210px",
-				id : "name",
-				type : TYPE_STRING
-			}, {
-				text : theUILang.Size,
-				width : "60px",
-				id : "size",
-				type : TYPE_NUMBER
-			}, {
-				text : '',
-				width : "120px",
-				id : "time",
-				type : TYPE_STRING,
-				"align" : ALIGN_CENTER
-			}, {
-				text : '',
-				width : "80px",
-				id : "type",
-				type : TYPE_STRING
-			}, {
-				text : '',
-				width : "80px",
-				id : "perm",
-				type : TYPE_NUMBER
-			}],
-			container : "fManager_data",
-			format : theWebUI.fManager.format,
-			onselect : function(e, id) {
-				if (theWebUI.fManager.inaction) {
-					return false;
-				}
-				theWebUI.fManager.flmSelect(e, id);
-			},
-			
-				
-		ondelete: theWebUI.fManager.bindDeleteKey,
-	
-		ondblclick : function(obj) {
-				if (theWebUI.fManager.inaction) {
-					return false;
-				}
-				var target = obj.id.slice(5, obj.id.length);
-
-				if (flmUtil.isDir(target)) {
-					theWebUI.fManager.changedir(target);
-				} else {
-					theWebUI.fManager.getFile(target);
-				}
-
-				return (false);
-			}
-		};
-
-	},
 
 	doSel : function(diag) {
 
@@ -712,14 +827,12 @@ theWebUI.fManager = {
 		this.actStart(diag);
 
 		var actioncall = {
-			action : 'filesCompress',
+			method : 'filesCompress',
 			target : archive,
 			mode : options,
 			fls: theWebUI.fManager.actionlist
 		};
 
-		
-		console.log(actioncall);
 		this.action.postRequest({action : flmUtil.json_encode(actioncall)});
 
 
@@ -739,13 +852,11 @@ theWebUI.fManager = {
 		this.actStart(diag);
 
 		var actioncall = {
-			action : 'fileExtract',
+			method : 'fileExtract',
 			target : archive,
 			to: path
 		};
 
-		
-		console.log(actioncall);
 		this.action.postRequest({action : flmUtil.json_encode(actioncall)});
 	},
 
@@ -760,12 +871,11 @@ theWebUI.fManager = {
 
 	
 		var actioncall = {
-			action : 'svfCheck',
+			method : 'svfCheck',
 			target : fparts.pop()
 		};
 
-		
-		console.log(actioncall);
+
 		this.action.postRequest({action : flmUtil.json_encode(actioncall)});
 		
 		
@@ -791,13 +901,12 @@ theWebUI.fManager = {
 
 		
 		var actioncall = {
-			action : 'sfvCreate',
+			method : 'sfvCreate',
 			target : file,
 			fls: theWebUI.fManager.actionlist
 		};
 
-		
-		console.log(actioncall);
+
 		this.action.postRequest({action : flmUtil.json_encode(actioncall)});
 	
 	},
@@ -813,12 +922,10 @@ theWebUI.fManager = {
 		this.actStart(diag);
 
 		var actioncall = {
-			action : 'filesRemove',
+			method : 'filesRemove',
 			fls: theWebUI.fManager.actionlist
 		};
 
-		
-		console.log(actioncall);
 		this.action.postRequest({action : flmUtil.json_encode(actioncall)});
 
 	},
@@ -841,13 +948,11 @@ theWebUI.fManager = {
 		this.actStart(diag);
 		
 		var actioncall = {
-			action : 'filesMove',
+			method : 'filesMove',
 			to : path,
 			fls : theWebUI.fManager.actionlist
 		};
-		
-		console.log(actioncall);
-		
+
 		this.action.postRequest({
 			action : flmUtil.json_encode(actioncall)
 		});
@@ -870,11 +975,11 @@ theWebUI.fManager = {
 		this.actStart(diag);
 
 		var actioncall = {
-			action : 'filesCopy',
+			method : 'filesCopy',
 			to : path,
 			fls : theWebUI.fManager.actionlist
 		};
-		console.log(actioncall);
+
 		this.action.postRequest({
 			action : flmUtil.json_encode(actioncall)
 		});
@@ -912,11 +1017,10 @@ theWebUI.fManager = {
 
 		
 		var actioncall = {
-			action : 'newDirectory',
+			method : 'newDirectory',
 			target: ndn
 		};
 
-		console.log(actioncall);
 		this.action.postRequest(
 		{
 			action : flmUtil.json_encode(actioncall)
@@ -958,14 +1062,13 @@ theWebUI.fManager = {
 		};
 		
 		var actioncall = {
-			action : 'fileRename',
+			method : 'fileRename',
 			target : on,
 			to : nn,
 			fls: theWebUI.fManager.actionlist
 		};
 
-		
-		console.log(actioncall);
+
 		this.action.postRequest({action : flmUtil.json_encode(actioncall)},
 					 callback,
 					  function() {
@@ -993,13 +1096,12 @@ theWebUI.fManager = {
 		
 				
 		var actioncall = {
-			action : 'fileScreenSheet',
+			method : 'fileScreenSheet',
 			target : video,
 			to : screen_file
 			};
 
-		
-		console.log(actioncall);
+
 		this.action.postRequest({action : flmUtil.json_encode(actioncall)} );
 
 
@@ -1084,43 +1186,7 @@ theWebUI.fManager = {
 
 	},
 
-	format : function(table, arr) {
-		for (var i in arr) {
-			if (arr[i] == null) {
-				arr[i] = '';
-			} else {
-				switch(table.getIdByCol(i)) {
-				case 'name':
-					if (theWebUI.fManager.settings.stripdirs 
-						&& flmUtil.isDir(arr[i])) {
-						arr[i] = theWebUI.fManager.trimslashes(arr[i]);
-					}
-					break;
-				case 'size' :
-					if (arr[i] != '') {
-						arr[i] = theConverter.bytes(arr[i], 2);
-					}
-					break;
-				case 'type' :
-					if (flmUtil.isDir(arr[i])) {
-						arr[i] = '';
-					} else {
-						arr[i] = theWebUI.fManager.getExt(arr[i]);
-					}
-					break;
-				case 'time' :
-					arr[i] = theWebUI.fManager.formatDate(arr[i]);
-					break;
-				case 'perm':
-					if (theWebUI.fManager.settings.permf > 1) {
-						arr[i] = theWebUI.fManager.formatPerm(arr[i]);
-					}
-					break;
-				}
-			}
-		}
-		return (arr);
-	},
+
 
 	fPath : function() {
 
@@ -1175,16 +1241,7 @@ theWebUI.fManager = {
 		}
 	},
 
-	getExt : function(element) {
 
-		if (!$type(element)) {
-			return '';
-		}
-		var fname = element.split('.');
-		
-		
-		return (((element.charAt(1) == '.') && (fname.length == 2)) || (fname.pop() == element)) ? 'none' : element.split('.').pop();
-	},
 
 	getLastPath : function(path) {
 
@@ -1205,8 +1262,6 @@ theWebUI.fManager = {
 
 	getFile : function(id) {
 
-	console.log('getting file...');
-
 		$("#fManager_dir").val(theWebUI.fManager.curpath);
 		$("#fManager_getfile").val(id);
 		$("#fManager_getdata").submit();
@@ -1221,7 +1276,7 @@ theWebUI.fManager = {
 
 		var iko;
 
-		element = this.getExt(element).toLowerCase();
+		element = flmUtil.getExt(element).toLowerCase();
 
 		if (element.match(/^r[0-9]+$/)) {
 			return ('Icon_partRar');
@@ -1276,6 +1331,29 @@ theWebUI.fManager = {
 		return (iko);
 	},
 
+	Init: function () {
+		
+		this.loadConfig(); 
+		this.optSet(); // plugins settings page
+		this.table.Init(); // table init
+
+	},
+	
+	InitUI: function () {
+			
+		plugin.renameTab('FileManager', theUILang.fManager);
+	
+		$('#tab_lcont').append('<input type="button" id="fMan_showconsole" class="Button" value="Console" style="display: none;">');
+		$('#fMan_showconsole').click(function() {
+			theWebUI.fManager.makeVisbile('fMan_Console');
+		});
+	
+
+		theWebUI.fManager.createDialogs();
+		theWebUI.fManager.Refresh();
+		
+	},
+	
 	isChecked : function(diag, what) {
 
 		var ret = false;
@@ -1306,7 +1384,36 @@ theWebUI.fManager = {
 		return false;
 	},
 
+
+	isTopDir: function(file) {
+		
+		return (file == this.getLastPath(this.curpath) );
+	},
 	
+	
+	loadConfig: function() {
+		var call = {
+			method: 'getConfig'
+		};
+		
+		var self = this;
+		
+		var callback = function (data) {
+			
+			console.log('got config data');
+			console.log(data);
+			
+			for(var i in data) {
+				
+				self[i] = data[i];
+			}
+			
+			console.log(theWebUI.fManager);
+		};
+		
+		this.action.postRequest({action : flmUtil.json_encode(call)}, callback);
+		
+	},
 
 	loaderHide : function() {
 
@@ -1402,12 +1509,6 @@ theWebUI.fManager = {
 
 	Refresh : function() {
 		
-		$('#FileManager').keydown(function(e){
-    if(e.keyCode == 46){
-    	console.log('Delete Key Pressed');
-    	}
-}) ;
-		
 		this.action.getlisting(this.curpath);
 	},
 
@@ -1424,23 +1525,7 @@ theWebUI.fManager = {
 
 	},
 
-	renameStuff : function() {
-
-		var table = theWebUI.getTable("flm");
-
-		if (table.created && plugin.allStuffLoaded) {
-
-			table.renameColumnById('time', theUILang.fTime);
-			table.renameColumnById('type', theUILang.fType);
-			table.renameColumnById('perm', theUILang.fPerm);
-
-		//	log('FILE MANAGER ignited');
-
-		} else {
-			setTimeout(arguments.callee, 500);
-		}
-
-	},
+	
 
 	resize : function(w, h) {
 
@@ -1466,8 +1551,8 @@ theWebUI.fManager = {
 			return this.trimslashes(what);
 		}
 
-		var ext = this.getExt(what);
-		console.log(ext);
+		var ext = flmUtil.getExt(what);
+
 		var recf = what.split(ext);
 
 		if (recf.length > 1) {
@@ -1521,6 +1606,9 @@ theWebUI.fManager = {
 	TableData : function(data) {
 
 		var table = theWebUI.getTable("flm");
+
+		var self;
+
 		table.clearRows();
 
 		if (this.curpath != '/') {
@@ -1564,7 +1652,6 @@ theWebUI.fManager = {
 			}
 		});
 
-		table.refreshRows();
 	},
 
 	TableRegenerate : function() {
@@ -1607,7 +1694,7 @@ theWebUI.fManager = {
 
 
 		var actioncall = {
-			action : 'viewNfo',
+			method : 'viewNfo',
 			target : what,
 			mode : mode
 		};
@@ -1627,7 +1714,6 @@ theWebUI.fManager = {
 
 		};
 		
-		console.log(actioncall);
 		this.action.postRequest({action : flmUtil.json_encode(actioncall)}, callback);
 
 	}
@@ -1657,7 +1743,7 @@ theWebUI.fManager.flmSelect = function(e, id) {
 
 			flm.workpath = flm.curpath;
 
-			var fext = flm.getExt(target);
+			var fext = flmUtil.getExt(target);
 
 			if (fext == 'nfo') {
 				theContextMenu.add([CMENU_SEP]);
@@ -1693,7 +1779,7 @@ theWebUI.fManager.flmSelect = function(e, id) {
 			create_sub.push([CMENU_SEP]);
 			create_sub.push([theUILang.fcSFV, !targetIsDir ? flm.actionCheck('CreateSFV', target) : null]);
 
-			create_sub.push([theUILang.fcScreens, (thePlugins.isInstalled('screenshots') && !targetIsDir && flm.getExt(target).match(new RegExp("^(" + thePlugins.get('screenshots').extensions.join('|') + ")$", "i")) && !(this.actiontimeout > 0)) ? flm.actionCheck('Screenshots', target) : null]);
+			create_sub.push([theUILang.fcScreens, (thePlugins.isInstalled('screenshots') && !targetIsDir && flmUtil.getExt(target).match(new RegExp("^(" + thePlugins.get('screenshots').extensions.join('|') + ")$", "i")) && !(this.actiontimeout > 0)) ? flm.actionCheck('Screenshots', target) : null]);
 
 			theContextMenu.add([CMENU_CHILD, theUILang.fcreate, create_sub]);
 
@@ -1970,30 +2056,8 @@ theWebUI.addAndShowSettings = function(arg) {
 plugin.config = theWebUI.config;
 theWebUI.config = function(data) {
 
-	theWebUI.fManager.optSet();
-	theWebUI.fManager.createTable();
-	theWebUI.fManager.renameStuff();
+	theWebUI.fManager.Init();
 
-	var table = this.getTable("flm");
-	table.oldFilesSortAlphaNumeric = table.sortAlphaNumeric;
-	
-
-	
-	table.sortAlphaNumeric = function(x, y) {
-
-		if (x.key.split('_flm_')[1] == theWebUI.fManager.getLastPath(theWebUI.fManager.curpath)) {
-			return (this.reverse ? 1 : -1);
-		}
-		return (this.oldFilesSortAlphaNumeric(x, y));
-	};
-	
-	table.oldFilesSortNumeric = table.sortNumeric;
-	table.sortNumeric = function(x, y) {
-		if (x.key.split('_flm_')[1] == theWebUI.fManager.getLastPath(theWebUI.fManager.curpath)) {
-			return (this.reverse ? 1 : -1);
-		}
-		return (this.oldFilesSortNumeric(x, y));
-	};
 
 	plugin.config.call(this, data);
 };
@@ -2021,17 +2085,7 @@ theTabs.onShow = function(id) {
 
 plugin.onLangLoaded = function() {
 
-	plugin.renameTab('FileManager', theUILang.fManager);
-
-	$('#tab_lcont').append('<input type="button" id="fMan_showconsole" class="Button" value="Console" style="display: none;">');
-	$('#fMan_showconsole').click(function() {
-		theWebUI.fManager.makeVisbile('fMan_Console');
-	});
-
-	injectScript('plugins/filemanager/settings.js.php');
-
-	theWebUI.fManager.createDialogs();
-	theWebUI.fManager.Refresh();
+	theWebUI.fManager.InitUI();
 
 };
 

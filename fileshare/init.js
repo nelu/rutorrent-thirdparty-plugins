@@ -28,11 +28,15 @@ theWebUI.FS = {
 		var call = {'method': 'createShare',
 					'file': file,
 					'password': password,
-					'expire': duration};
+					'expire': duration
+					};
 
+	var self = this;
 		this.query(call,
-				function() {	theDialogManager.hide('FS_main');
-						log(theUILang.FSshow+': '+theUILang.FSlinkcreate);
+				function() {
+						self.refresh();	
+						theDialogManager.hide('FS_main');
+						log(theUILang.FSshow+': '+theUILang.FSlinkcreate + ' ' + self.getDownloadLink({'uh': '', 's': ''}) );
 		});
 	},
 
@@ -137,6 +141,13 @@ theWebUI.FS = {
 		
 },
 
+	getDownloadLink: function(getdata) {
+		
+		var uri = $.param(getdata);
+		
+		return theWebUI.FS.downlink+'?'+uri;
+	},
+	
 	resize: function (w, h) {
 
 		if(w!==null) {w-=8;}
@@ -176,7 +187,7 @@ theWebUI.FS = {
 					size: item.size,
 					time: item.expire,
 					pass: item.password,
-					link: theWebUI.FS.downlink+'?uh='+encodeURIComponent(data.uh)+'&s='+item.id
+					link: theWebUI.FS.getDownloadLink({'uh' : data.uh, 's': item.id}),
 				}, "_fsh_"+item.id, 'Icon_File');
 		});
 		

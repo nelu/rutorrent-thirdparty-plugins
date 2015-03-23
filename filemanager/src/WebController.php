@@ -10,7 +10,7 @@ class WebController {
 
     public function __construct($value = '') {
 
-        Helper::loadConfig();
+        Helper::getConfig();
 
         if (!isset($_POST['action'])) {
 
@@ -61,21 +61,50 @@ class WebController {
 
     }
 
+  
     public function _processCall($call) {
 
-        $method = $call->action;
+        $method = $call->method;
 
         if ((substr($method, 0, 1) == '_')) {
             die('invalid');
         }
 
-        unset($call->action);
+        unset($call->method);
 
         if (method_exists($this, $method)) {
             call_user_func_array(array($this, $method), array($call));
         }
     }
 
+  public function getConfig() {
+      global $topDirectory;
+      
+      $archive = Helper::$config['archive'];
+      $archive_bins = array_merge($archive['types'], array('unzip')); 
+      
+      // unzip should be the latest key index
+      foreach($archive_bins as $kid => $external) {
+            if( (findEXE($external) === false) 
+                && isset($archive['types'][$kid]) 
+                ) 
+             { 
+                $archive['types'][$kid] = false; 
+                echo 'log("FILE MANAGER: ',$external,' "+theUILang.fErrMsg[24]);',"\n";
+                die();
+            }
+        
+        }
+
+
+    $settings['homedir'] = rtrim($topDirectory, '/');
+    $settings['mkdefmask'] = Helper::$config['mkdperm'];
+    $settings['archives'] = $archive;
+
+    Helper::jsonOut($settings);
+      
+  }
+  
     public function taskLog($params) {
 
         try {

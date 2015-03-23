@@ -9,7 +9,10 @@ class FsUtils {
         'tgz' => 'tgzExtractCmd',
         'zip' => 'zipExtractCmd',
         'rar' => 'rarExtractCmd',
-        'bzip2' => 'bzipExtractCmd'
+        'bzip2' => 'bzipExtractCmd',
+       'bzip' => 'bzipExtractCmd',
+       'bz2' => 'bzipExtractCmd',
+       'tar.bz2' => 'bzipExtractCmd'
     );
 
     public static function getCopyCmd($source, $to) {
@@ -38,7 +41,13 @@ CMD;
 
         $ext = pathinfo($params->archive, PATHINFO_EXTENSION);
 
-        var_dump('Archive extension', $ext);
+        //$params->options->type
+
+        $config = Helper::getConfig();
+
+        if($params->options->type == 'bzip2') {
+            $ext = $params->options->type;
+        }
 
         if (isset($format_methods[$ext])) {
 
@@ -99,13 +108,9 @@ CMD;
 
     public static function zipCompressCmd($params) {
 
-        // $paths = Helper::escapeCmdArgs($params);
-
         $options = $params->options;
         $files = implode(' ', (array)Helper::escapeCmdArgs($params->files));
         $archive = Helper::mb_escapeshellarg($params->archive);
-
-        var_dump(__METHOD__, $params);
 
         return <<<CMD
 {$params->binary} -r {$options->compression} -y {$archive} {$files} 2>&1 | sed -u 's/^/0: /'
@@ -127,10 +132,10 @@ CMD;
 
         $files = implode(' ', (array)Helper::escapeCmdArgs($params->files));
         $archive = Helper::mb_escapeshellarg($params->archive);
-        var_dump(__METHOD__, $params);
+        $workdir = Helper::mb_escapeshellarg($params->options->workdir);
 
         return <<<CMD
-{$params->binary} -C {$archive} -czvf {$files} | sed -u 's/^/0: Adding /'
+{$params->binary} -C {$workdir} -czvf {$archive} {$files} | sed -u 's/^/0: Adding /'
 CMD;
     }
     
@@ -150,10 +155,6 @@ CMD;
     public static function tarExtractCmd($params) {
 
         $paths = Helper::escapeCmdArgs($params);
-        //extract($params);
-
-        var_dump(__METHOD__, $params);
-
         return <<<CMD
 {$params->binary} -xvf {$paths->file} -C {$paths->to} 2>&1 | sed -u 's/^/0: Extracting /' 
 CMD;
@@ -167,10 +168,10 @@ CMD;
         $options = $params->options;
         $files = implode(' ', (array)Helper::escapeCmdArgs($params->files));
         $archive = Helper::mb_escapeshellarg($params->archive);
-        var_dump(__METHOD__, $params);
-
+        $workdir = Helper::mb_escapeshellarg($params->options->workdir);
+        
         return <<<CMD
-{$params->binary} -C {$archive} -cvf {$files} | sed -u 's/^/0: Adding /'
+{$params->binary} -C {$workdir} -cvf {$archive} {$files} | sed -u 's/^/0: Adding /'
 CMD;
     }
 
@@ -211,9 +212,10 @@ CMD;
 
         $files = implode(' ', (array)Helper::escapeCmdArgs($params->files));
         $archive = Helper::mb_escapeshellarg($params->archive);
-
+        $workdir = Helper::mb_escapeshellarg($params->options->workdir);
+        
         return <<<CMD
-{$params->binary} -C {$archive} -cjvf {$files} | sed -u 's/^/0: Adding /'
+{$params->binary} -C {$workdir} -cjvf {$archive} {$files} | sed -u 's/^/0: Adding /'
 CMD;
     }
 

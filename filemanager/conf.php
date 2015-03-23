@@ -4,6 +4,7 @@ $fm['tempdir'] = '/tmp';		// path were to store temporary data ; must be writabl
 $fm['mkdperm'] = 755; 		// default permission to set to new created directories
 $fm['show_fullpaths'] = false; // wheter to show userpaths or full system paths in the UI
 
+global $pathToExternals;
 // set with fullpath to binary or leave empty
 $pathToExternals['rar'] = '';
 $pathToExternals['zip'] = '';
@@ -21,4 +22,3 @@ $fm['archive']['compress'][2] = $fm['archive']['compress'][3] = $fm['archive']['
 
 
 return $fm;
-

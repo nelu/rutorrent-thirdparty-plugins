@@ -140,12 +140,6 @@ class FSHARE {
         }
         
     }
-    
-    public function DownloadFile() {
-        
-    }
-
-
 
 }
 

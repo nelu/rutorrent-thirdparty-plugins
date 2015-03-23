@@ -1,4 +1,4 @@
-theUILang.fileUP = {}
+theUILang.fileUP = {};
 theUILang.fileUP.title =  'File Uploads';
 theUILang.fileUP.upto	= 'Upload to...';
 theUILang.fileUP.login = 'Login:';

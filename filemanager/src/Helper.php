@@ -126,10 +126,15 @@ class Helper {
         return $output;
     }
     
-    public static function loadConfig() {
+    public static function getConfig() {
         
+        if(is_null(self::$config)) {
             self::$config = require_once(dirname(__FILE__). '/../conf.php');
-    }
+    
+        }
+     
+        return self::$config;   
+     }
     
     
         

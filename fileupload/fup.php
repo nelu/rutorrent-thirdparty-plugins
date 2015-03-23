@@ -5,6 +5,7 @@ require_once( dirname(__FILE__)."/../filemanager/xmlfix.php" );
 require_once( dirname(__FILE__)."/fileup.class.php" );
 
 
+return false;
 
 $fup = new FILEUP();
 

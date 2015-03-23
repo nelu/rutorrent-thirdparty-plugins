@@ -64,6 +64,7 @@ class Filesystem {
             list($fd, $f['name'], $f['size'], $f['time'], $f['perm']) = explode("\t", trim($fileline));
 
             $f['name'] = stripslashes($f['name']);
+            $f['type'] = $fd;
             $f['time'] = intval($f['time']);
 
             if($fd == 'd') {
