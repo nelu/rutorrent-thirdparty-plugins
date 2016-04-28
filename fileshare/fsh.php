@@ -30,8 +30,3 @@ switch($f->postlist['action']) {
 	default: die('Invalid action');
 
 }
-
-
-
-
-?>
