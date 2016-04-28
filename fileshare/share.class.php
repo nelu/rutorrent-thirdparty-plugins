@@ -29,20 +29,34 @@ class FSHARE extends FLM {
 		$file = '/'.$file;
 		$pch = explode($this->userdir, $file);
 
-		
-		if((count($pch) < 2) || (($stat = LFS::stat('/'.$file)) === FALSE)) {die('Invalid file'); }
-		if(($duration < 1) || $this->islimited('duration', $duration)) {die('Invalid duration!');}
+
+		if((count($pch) < 2) || (($stat = LFS::stat('/'.$file)) === FALSE)) {die('Invalid file');}
+
+		if($limits['nolimit'] == 0) {
+			if($duration == 0) {die('No limit not allowed');}
+		}
+
+		if($this->islimited('duration', $duration)) {die('Invalid duration!');}
 
 		if($this->islimited('links', count($this->data))) {die('Link limit reached');}
 
+		if($password === FALSE) {$password = '';}
+
 		do {$token = $this->random_chars();} while (isset($this->data[$token]));
 
-
+		if($duration > 0) {
 		$this->data[$token] = array(
 					 'file' => $file,
 					 'size' => $stat['size'],
 					 'expire' => time()+(3600*$duration),
 					 'password' => $password);
+		} else {
+		$this->data[$token] = array(
+					'file' => $file,
+					'size' => $stat['size'],
+					'expire' => time()+(3600*876000),
+					'password' => $password);
+		}
 		$this->write();
 	}
 
@@ -57,17 +71,32 @@ class FSHARE extends FLM {
 	}
 
 	public function edit($id, $duration, $password) {
+		global $limits;
+
 		if(!isset($this->data[$id])) {die('Invalid link');}
+
 		if($duration !== FALSE) {
-			if(($duration < 1)|| $this->islimited('duration', $duration)) {die('Invalid duration!');}			
-			$this->data[$id]['expire'] = time()+(3600*$duration);
-		} 
-		$this->data[$id]['password'] = $password;
+			if($limits['nolimit'] == 0) {
+				if($duration == 0) {die('No limit not allowed');}
+			}
+			if($this->islimited('duration', $duration)) {die('Invalid duration!');}
+			if($duration > 0) {
+				$this->data[$id]['expire'] = time()+(3600*$duration);
+			} else {
+				$this->data[$id]['expire'] = time()+(3600*876000);
+			}
+		}
+
+		if($password === FALSE) {
+			$this->data[$id]['password'] = '';
+		} else {
+			$this->data[$id]['password'] = $password;
+		}
 		$this->write();
 	}
 
 	public function show() {
-		$out = array( 'uh' => base64_encode(getUser()), 
+		$out = array( 'uh' => base64_encode(getUser()),
 				'list' => array());
 
 		$out['list'] = $this->data;
@@ -88,7 +117,7 @@ class FSHARE extends FLM {
 			$randchar = $lists[rand(1,3)];
 
     			$rnd .= chr($randchar);
-		} 
+		}
 
  		return $rnd;
 	}
@@ -96,7 +125,7 @@ class FSHARE extends FLM {
 
 	protected function load() {
 		if(!is_file($this->datafile) && !$this->write()) {die('Failed to write file');}
-		
+
 		if(($rf = file_get_contents($this->datafile)) === FALSE) {die('Failed to load data');}
 		$this->data = unserialize($rf);
 	}
@@ -112,6 +141,3 @@ class FSHARE extends FLM {
    	}
 
 }
-
-
-?>

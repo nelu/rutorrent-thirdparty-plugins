@@ -15,10 +15,16 @@ theWebUI.FS = {
 		var file = $('#FS_file').val();
 		var duration = $('#FS_duration').val();
 		var password = $('#FS_password').val();
+		var maxduration = parseFloat(this.maxdur);
+		var allownolimit = parseFloat(this.nolimit);
 
-		if(!duration.match(/^\d+$/) || (duration < 1)) {alert(theUILang.FSvdur); return false;}
-		if(this.islimited(this.maxdur, duration)) {alert(theUILang.FSmaxdur+' '+this.maxdur); return false}
-		
+		if(!duration.match(/^\d+$/)) {alert(theUILang.FSvdur); return false;}
+		if(allownolimit == 0) {
+			if(duration == 0) {alert(theUILang.FSnolimitoff); return false;}
+			if(this.islimited(maxduration, duration)) {alert(theUILang.FSmaxdur+' '+this.maxdur); return false;}
+		} else {
+			if(this.islimited(maxduration, duration)) {alert(theUILang.FSmaxdur+' '+this.maxdur+' '+theUILang.FSnolimit); return false;}
+		}
 		$(button).attr('disabled',true);
 
 		this.query('action=add&file='+encodeURIComponent(file)+'&to='+encodeURIComponent(password)+'&target='+encodeURIComponent(duration),
@@ -32,15 +38,24 @@ theWebUI.FS = {
 		var duration = $('#FS_duration').val();
 		var password = $('#FS_password').val();
 		var linkid = $('#FS_lid').val();
+                var maxduration = parseFloat(this.maxdur);
+		var allownolimit = parseFloat(this.nolimit);
 
 		if($.trim(duration) != '') {
-			if (!duration.match(/^\d+$/) || (duration < 1)) {alert(theUILang.FSvdur); return false;}	
-			if(this.islimited(this.maxdur, duration)) {alert(theUILang.FSmaxdur+' '+this.maxdur); return false}
-		}	
-
+			if (!duration.match(/^\d+$/)) {alert(theUILang.FSvdur); return false;}
+			if(allownolimit == 0) {
+				if(duration == 0) {alert(theUILang.FSnolimitoff); return false;}
+				if(this.islimited(maxduration, duration)) {alert(theUILang.FSmaxdur+' '+this.maxdur); return false;}
+			} else {
+				if(this.islimited(maxduration, duration)) {alert(theUILang.FSmaxdur+' '+this.maxdur+' '+theUILang.FSnolimit); return false;}
+			}
+		}
 		$(button).attr('disabled',true);
 
-		this.query('action=edit&file='+encodeURIComponent(linkid)+'&to='+encodeURIComponent(password)+(duration ? '&target='+encodeURIComponent(duration) : ''));
+		this.query('action=edit&file='+encodeURIComponent(linkid)+'&to='+encodeURIComponent(password)+(duration ? '&target='+encodeURIComponent(duration) : ''),
+				function() {	theDialogManager.hide('FS_main');
+						log(theUILang.FSshow+': '+theUILang.FSlinkedit);
+		});
 	},
 
 	del: function () {
@@ -187,34 +202,27 @@ theWebUI.FS = {
 
 		if($type(id) && (e.button == 2)) {
 
-		       theContextMenu.clear();
+			theContextMenu.clear();
 
 			var table = theWebUI.getTable("fsh");
 			var target = id.split('_fsh_')[1];
+
 			if(table.selCount == 1) {
 				var link = theWebUI.getTable("fsh").getValueById('_fsh_'+target, 'link');
-				theWebUI.FS.clip.setText(link);
+				ZeroClipboard.setData("text/plain", link);
 			}
 
-			var target = id.split('_fsh_')[1];
 			theContextMenu.add([theUILang.fDelete, function() {askYesNo(theUILang.FSdel, theUILang.FSdelmsg, "theWebUI.FS.del()" );}]);
 			theContextMenu.add([theUILang.FSedit, (table.selCount > 1) ? null : function() {theWebUI.FS.show(target, 'edit');}]);
 			theContextMenu.add([CMENU_SEP]);
 			theContextMenu.add([theUILang.FScopylink,(table.selCount > 1) ? null : function() {}]);
 
 	   		theContextMenu.show();
-			
-			if(table.selCount == 1) {
-				var lie = theContextMenu.get(theUILang.FScopylink)[0];
 
-				if(!theWebUI.FS.clip.ready) {
-					theWebUI.FS.clip.glue(lie); 
-					theWebUI.FS.clip.addEventListener( 'onComplete', function() {theWebUI.FS.clip.hide();} );
-				}
-				theWebUI.FS.clip.reposition(lie);
-       			theWebUI.FS.clip.show(lie);
+			if(table.selCount == 1) {
+				var copyBtn = theContextMenu.get(theUILang.FScopylink)[0];
+				new ZeroClipboard(copyBtn);
 			}
-			
 
 			return(true);
 		}
@@ -297,9 +305,10 @@ theWebUI.fManager.flmSelect = function( e, id ) {
 plugin.onLangLoaded = function() {
 
 	injectScript('plugins/fileshare/settings.js.php', function() {theWebUI.FS.refresh();});
-	injectScript('plugins/fileshare/clip/clip.js', function() {
-								ZeroClipboard.setMoviePath('plugins/fileshare/clip/ZeroClipboard.swf');
-								theWebUI.FS.clip = new ZeroClipboard.Client();
+	injectScript('plugins/fileshare/clip/ZeroClipboard.js', function() {
+								ZeroClipboard.config( { swfPath: 'plugins/fileshare/clip/ZeroClipboard.swf', forceHandCursor: true } );
+								ZeroClipboard.on("copy", ZeroClipboard.blur);
+								new ZeroClipboard();
 							});
 
 	if(this.enabled) {

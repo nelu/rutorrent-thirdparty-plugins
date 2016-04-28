@@ -12,21 +12,22 @@ $f = new FSHARE();
 
 if(!isset($_GET['s']) || !isset($f->data[$_GET['s']]) || ($f->data[$_GET['s']]['expire'] < time())) {die('No such file or it expired');}
 
+if($f->data[$_GET['s']]['password'] != "") {
 function authenticate() {
-    header('WWW-Authenticate: Basic realm="LEAVE USERNAME EMPTY!! Password only!"');
+    header('WWW-Authenticate: Basic realm="Password"');
     header('HTTP/1.0 401 Unauthorized');
     echo "Not permitted\n";
     exit;
 }
 
-
 if (!isset($_SERVER['PHP_AUTH_USER']) || ($_SERVER['PHP_AUTH_PW'] != $f->data[$_GET['s']]['password'])) {authenticate();} else {
-
-
 
 $f->workdir = '';
 
 $f->send_file($f->data[$_GET['s']]['file']);
 
-}
-?>
+}}
+
+$f->workdir = '';
+
+$f->send_file($f->data[$_GET['s']]['file']);
