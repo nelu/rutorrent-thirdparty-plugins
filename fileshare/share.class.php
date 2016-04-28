@@ -73,14 +73,18 @@ class FSHARE extends FLM {
 	public function edit($id, $duration, $password) {
 		global $limits;
 
-		if($limits['nolimit'] == 0) {
-			if($duration == 0) {die('No limit not allowed');}
-		}
-		if($this->islimited('duration', $duration)) {die('Invalid duration!');}
-		if($duration > 0) {
-			$this->data[$id]['expire'] = time()+(3600*$duration);
-		} else {
-			$this->data[$id]['expire'] = time()+(3600*876000);
+		if(!isset($this->data[$id])) {die('Invalid link');}
+
+		if($duration !== FALSE) {
+			if($limits['nolimit'] == 0) {
+				if($duration == 0) {die('No limit not allowed');}
+			}
+			if($this->islimited('duration', $duration)) {die('Invalid duration!');}
+			if($duration > 0) {
+				$this->data[$id]['expire'] = time()+(3600*$duration);
+			} else {
+				$this->data[$id]['expire'] = time()+(3600*876000);
+			}
 		}
 
 		if($password === FALSE) {

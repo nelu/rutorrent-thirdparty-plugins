@@ -41,12 +41,14 @@ theWebUI.FS = {
                 var maxduration = parseFloat(this.maxdur);
 		var allownolimit = parseFloat(this.nolimit);
 
-		if (!duration.match(/^\d+$/)) {alert(theUILang.FSvdur); return false;}
-		if(allownolimit == 0) {
-			if(duration == 0) {alert(theUILang.FSnolimitoff); return false;}
-			if(this.islimited(maxduration, duration)) {alert(theUILang.FSmaxdur+' '+this.maxdur); return false;}
-		} else {
-			if(this.islimited(maxduration, duration)) {alert(theUILang.FSmaxdur+' '+this.maxdur+' '+theUILang.FSnolimit); return false;}
+		if($.trim(duration) != '') {
+			if (!duration.match(/^\d+$/)) {alert(theUILang.FSvdur); return false;}
+			if(allownolimit == 0) {
+				if(duration == 0) {alert(theUILang.FSnolimitoff); return false;}
+				if(this.islimited(maxduration, duration)) {alert(theUILang.FSmaxdur+' '+this.maxdur); return false;}
+			} else {
+				if(this.islimited(maxduration, duration)) {alert(theUILang.FSmaxdur+' '+this.maxdur+' '+theUILang.FSnolimit); return false;}
+			}
 		}
 		$(button).attr('disabled',true);
 
