@@ -14,7 +14,7 @@ if(!isset($_GET['s']) || !isset($f->data[$_GET['s']]) || ($f->data[$_GET['s']]['
 
 if($f->data[$_GET['s']]['password'] != "") {
 function authenticate() {
-    header('WWW-Authenticate: Basic realm="MOT DE PASSE SEULEMENT"');
+    header('WWW-Authenticate: Basic realm="Password"');
     header('HTTP/1.0 401 Unauthorized');
     echo "Not permitted\n";
     exit;
