@@ -1764,9 +1764,9 @@ plugin.onLangLoaded = function() {
 	$('#tab_lcont').append('<input type="button" id="fMan_showconsole" class="Button" value="Console" style="display: none;">');
 	$('#fMan_showconsole').click(function() {theWebUI.fManager.makeVisbile('fMan_Console');});
 
-  $.get('plugins/filemanager/settings.js.php', function(data) {
-    eval(data);
-  });
+	$.get('plugins/filemanager/settings.js.php', function(data) {
+		eval(data);
+	});
 
 	theWebUI.fManager.createDialogs();
 	theWebUI.fManager.Refresh();
