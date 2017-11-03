@@ -994,8 +994,6 @@ theWebUI.fManager = {
 					table.renameColumnById('type',theUILang.fType);
 					table.renameColumnById('perm',theUILang.fPerm);
 
-					log('FILE MANAGER ignited');
-
 				} else { setTimeout(arguments.callee,500);}
 
 	},
