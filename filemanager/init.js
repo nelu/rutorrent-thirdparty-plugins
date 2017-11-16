@@ -581,7 +581,7 @@ theWebUI.fManager = {
 
 	encode_string: function(str) {
 
-		return encodeURIComponent(this.json_encode(str));
+		return encodeURIComponent(JSON.stringify(str));
 
 	},
 
@@ -852,41 +852,6 @@ theWebUI.fManager = {
 		}
 
 		return false;
-	},
-
-	json_encode: function (obj) {
-	switch($type(obj))
-	{
-		case "number":
-			return(String(obj));
-		case "boolean":
-			return(obj ? "1" : "0");
-		case "string":
-			return('"'+obj+'"');
-		case "array":
-		{
-		        var s = '';
-		        $.each(obj,function(key,item)
-		        {
-		                if(s.length)
-                			s+=",";
-		        	s += theWebUI.fManager.json_encode(item);
-		        });
-			return("["+s+"]");
-		}
-		case "object":
-		{
-		        var s = '';
-		        $.each(obj,function(key,item)
-		        {
-		                if(s.length)
-                			s+=",";
-		        	s += ('"'+key+'":'+theWebUI.fManager.json_encode(item));
-		        });
-			return("{"+s+"}");
-		}
-	}
-	return("null");
 	},
 
 	loaderHide: function () {
