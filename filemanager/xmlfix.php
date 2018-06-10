@@ -10,7 +10,7 @@ class rxmlrpcfix extends rXMLRPCRequest {
 		$this->val = array();
 		if($this->makeCall())
 		{
-			$answer = self::send($this->content);
+			$answer = self::send($this->content,$trusted);
 
 			
 			if(!empty($answer))
