@@ -2,7 +2,7 @@
 
 
 class rxmlrpcfix extends rXMLRPCRequest {
-	public function run()
+	public function run($trusted = true)
 	{
 	        $ret = false;
 		$this->i8s = array();
@@ -10,7 +10,7 @@ class rxmlrpcfix extends rXMLRPCRequest {
 		$this->val = array();
 		if($this->makeCall())
 		{
-			$answer = self::send($this->content);
+			$answer = self::send($this->content,$trusted);
 
 			
 			if(!empty($answer))
