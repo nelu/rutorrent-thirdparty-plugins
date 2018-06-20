@@ -2,7 +2,7 @@
 
 
 class rxmlrpcfix extends rXMLRPCRequest {
-	public function run()
+	public function run($trusted = true)
 	{
 	        $ret = false;
 		$this->i8s = array();
