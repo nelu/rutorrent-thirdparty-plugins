@@ -28,7 +28,6 @@ theWebUI.fManager = {
 			scwidth: 300
 	},
 	pathlists: 5,
-	permf: 0,
 	tformat: '%d-%M-%y %h:%m:%s',
 	inaction: false,
 	actionlist:{},
@@ -663,20 +662,19 @@ theWebUI.fManager = {
 			} else {
    				switch(table.getIdByCol(i)){
 				case 'name':
-					if(theWebUI.fManager.settings.stripdirs && theWebUI.fManager.isDir(arr[i])) {arr[i] = theWebUI.fManager.trimslashes(arr[i]);}
+					arr[i] = (theWebUI.fManager.settings.stripdirs && theWebUI.fManager.isDir(arr[i])) ? theWebUI.fManager.trimslashes(arr[i]) : arr[i];
 					break;
-      				case 'size' :
-      					if(arr[i] != '') {arr[i] = theConverter.bytes(arr[i], 2);}
-      					break;
-      				case 'type' :
-      					if(theWebUI.fManager.isDir(arr[i])) { arr[i] = '';}
-					else {arr[i] = theWebUI.fManager.getExt(arr[i]);}
-      					break;
-				case 'time' :
+				case 'size':
+					arr[i] = arr[i] ? theConverter.bytes(arr[i], 2) : '';
+					break;
+				case 'time':
 					arr[i] = theWebUI.fManager.formatDate(arr[i]);
 					break;
+				case 'type':
+					arr[i] = theWebUI.fManager.isDir(arr[i]) ? '' : arr[i].substr(0, arr[i].indexOf(' '));
+					break;
 				case 'perm':
-					if (theWebUI.fManager.settings.permf > 1) {arr[i] = theWebUI.fManager.formatPerm(arr[i]);}
+					arr[i] = (theWebUI.fManager.settings.permf > 1) ? theWebUI.fManager.formatPerm(arr[i]) : arr[i];
 					break;
 	      			}
 			}
@@ -839,7 +837,7 @@ theWebUI.fManager = {
 			return ret;
 	},
 
-	isDir: function(element) {return	 (element.charAt(element.length-1) == '/') },
+	isDir: function(element) { return(element.charAt(element.length-1) == '/') },
 
 	isErr: function(errcode, extra) {
 
@@ -993,6 +991,7 @@ theWebUI.fManager = {
 					table.renameColumnById('time',theUILang.fTime);
 					table.renameColumnById('type',theUILang.fType);
 					table.renameColumnById('perm',theUILang.fPerm);
+					theWebUI.fManager.Refresh();
 
 				} else { setTimeout(arguments.callee,500);}
 
@@ -1086,7 +1085,7 @@ theWebUI.fManager = {
 					name: file.name,
 					size: file.size,
 					time: file.time,
-					type: ftype+file.name,
+					type: ftype ? theWebUI.fManager.getExt(file.name)+' '+file.name : ftype+file.name,
 					perm: file.perm
 				}, "_flm_"+file.name, theWebUI.fManager.getICO(file.name));
 				if(!theWebUI.fManager.settings.showhidden && (file.name.charAt(0) == '.')) {table.hideRow("_flm_"+file.name);}
@@ -1720,14 +1719,15 @@ theWebUI.config = function(data) {
 		table.oldFilesSortAlphaNumeric = table.sortAlphaNumeric;
 		table.sortAlphaNumeric = function(x, y)
 		{
-
-			if(x.key.split('_flm_')[1] == theWebUI.fManager.getLastPath(theWebUI.fManager.curpath)) {return(this.reverse ? 1 : -1);}
+			if((x.v == "../") || (x.key.split('_flm_')[1] == theWebUI.fManager.getLastPath(theWebUI.fManager.curpath))) {return(this.reverse ? 1 : -1);}
+			if((y.v == "../") || (y.key.split('_flm_')[1] == theWebUI.fManager.getLastPath(theWebUI.fManager.curpath))) {return(this.reverse ? -1 : 1);}
 			return(this.oldFilesSortAlphaNumeric(x,y));
 		}
 		table.oldFilesSortNumeric = table.sortNumeric;
 		table.sortNumeric = function(x, y)
 		{
-			if(x.key.split('_flm_')[1] == theWebUI.fManager.getLastPath(theWebUI.fManager.curpath)) {return(this.reverse ? 1 : -1);}
+			if((x.v == "../") || (x.key.split('_flm_')[1] == theWebUI.fManager.getLastPath(theWebUI.fManager.curpath))) {return(this.reverse ? 1 : -1);}
+			if((y.v == "../") || (y.key.split('_flm_')[1] == theWebUI.fManager.getLastPath(theWebUI.fManager.curpath))) {return(this.reverse ? -1 : 1);}
 			return(this.oldFilesSortNumeric(x,y));
 		}
 
