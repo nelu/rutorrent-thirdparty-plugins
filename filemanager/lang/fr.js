@@ -1,4 +1,4 @@
-﻿theUILang.fManager 		= "File Manager";
+theUILang.fManager 		= "File Manager";
 theUILang.fTime			= "Heure";
 theUILang.fType 		= "Type";
 theUILang.fPerm			= "Permissions";
@@ -13,11 +13,11 @@ theUILang.fcheckSFV		= "Vérifier le SFV";
 theUILang.fMediaI		= "Media info";
 theUILang.fView			= "Voir";
 theUILang.fcreate		= "Créer";
-theUILang.fcNewDir		= "un répertoire";
-theUILang.fcNewArchive		= "une archive";
-theUILang.fcNewTor		= "un .torrent";
-theUILang.fcSFV			= "un fichier SFV...";
-theUILang.fcScreens		= "une capture vidéo";
+theUILang.fcNewDir		= "Nouveau répertoire";
+theUILang.fcNewArchive		= "Une archive";
+theUILang.fcNewTor		= "Un .torrent";
+theUILang.fcSFV			= "Un fichier SFV...";
+theUILang.fcScreens		= "Une capture vidéo";
 theUILang.fRefresh		= "Rafraîchir";
 
 theUILang.fErrMsg = [];
@@ -42,7 +42,7 @@ theUILang.fErrMsg[18]		= "Fichier non valide.";
 theUILang.fErrMsg[19]		= "Opération déjà terminée.";
 theUILang.fErrMsg[20]		= "Échec de l'arrêt du processus.";
 theUILang.fErrMsg[21]		= "L'opération est terminée.";
-theUILang.fErrMsg[22]		= "Rien de marche avec.";
+theUILang.fErrMsg[22]		= "Rien à réaliser...";
 theUILang.fErrMsg[23]		= "Échec de l'opération.";
 theUILang.fErrMsg[24]		= "Manipulation des archives désactivée (applications introuvables)";
 
@@ -74,13 +74,13 @@ theUILang.fDiagDeleteBut	= "Supprimer";
 theUILang.fDiagConsole		= "Console";
 
 theUILang.fDiagMove		= "Déplacer des dossiers / fichiers";
-theUILang.fDiagMoveSel		= "Fichiers marqués à déplacer:";
+theUILang.fDiagMoveSel		= "Fichiers marqués à déplacer :";
 theUILang.fDiagMoveTo		= "Déplacer les fichiers vers :";
 theUILang.fDiagMoveEmpty	= "Veuillez sélectionne le chemin où doit être déplacés les fichiers.";
 theUILang.fDiagMoveFalse	= "Chemin non permis";
 
 theUILang.fDiagCopy		= "Copier des dossiers / fichiers";
-theUILang.fDiagCopySel		= "Fichiers marqués pour le copiage:";
+theUILang.fDiagCopySel		= "Fichiers marqués pour la copie :";
 theUILang.fDiagCopyTo		= "Copier vers :";
 
 theUILang.fDiagNFO		= "Lecteur de .NFO";
