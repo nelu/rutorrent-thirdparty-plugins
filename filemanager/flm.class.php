@@ -101,7 +101,8 @@ class FLM {
 
 	public function batch_exec($what) {
 
-		$lk = array_pop(array_keys($what));
+		$keys = array_keys($what);
+		$lk = array_pop($keys);
 
 		$what[$lk] .= ' '.$this->filelist.' &';
 		
