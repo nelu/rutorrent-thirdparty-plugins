@@ -8,7 +8,8 @@ $pathToExternals['rar'] = '';
 $pathToExternals['zip'] = '';
 $pathToExternals['unzip'] = '';
 $pathToExternals['tar'] = '';
-
+$pathToExternals['gzip'] = '';
+$pathToExternals['bzip2'] = '';
 
 // archive mangling, see archiver man page before editing
 
