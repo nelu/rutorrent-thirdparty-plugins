@@ -15,3 +15,5 @@ chmod 755 plugins/filemanager/scripts/*
 # fileshare plugin setup
 - create a symlink to /fileshare/share.php outside the AUTH protected space (domain.com/noauth/share.php, cdn.domain.com/fshare.php, etc)
 - edit fileshare/conf.php with that full domain path
+
+## Note that this project and plugins will be deprecated any time soon for https://github.com/nelu/rutorrent-filemanager
